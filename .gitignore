@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+build
+dist
+.env
+*.log
+.DS_Store
+data/db.json
+
+/lib/generated/prisma
+
+.env.local
+.env*.local
+dev.db
+*.db

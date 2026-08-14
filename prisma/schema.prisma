@@ -1,0 +1,512 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../prisma/client"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  lastname      String
+  document      String   @unique
+  phone         String
+  whatsapp      String?
+  email         String   @unique
+  passwordHash  String
+  city          String?
+  department    String?
+  address       String?
+  roleId        String
+  role          Role     @relation(fields: [roleId], references: [id])
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  orders          Order[]
+  cartItems       CartItem[]
+  wishlistItems   WishlistItem[]
+  auditLogs       AuditLog[]
+  notifications   Notification[]
+  addresses       Address[]
+  customerProfile Customer?
+  stockMovements  StockMovement[]
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  createdAt   DateTime     @default(now())
+  users       User[]
+  permissions Permission[]
+}
+
+model Permission {
+  id        String   @id @default(cuid())
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id])
+  resource  String
+  action    String
+  createdAt DateTime @default(now())
+
+  @@unique([roleId, resource, action])
+}
+
+model Customer {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id])
+  name           String
+  lastname       String
+  document       String
+  phone          String
+  whatsapp       String?
+  email          String
+  city           String?
+  department     String?
+  address        String?
+  notes          String?
+  totalPurchases Int      @default(0)
+  balance        Float    @default(0)
+  isBlocked      Boolean  @default(false)
+  blockedReason  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  orders       Order[]
+  receivablePayments ReceivablePayment[]
+  returns      ReturnOrder[]
+}
+
+model ReceivablePayment {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  type       String   // cargo | pago
+  amount     Float
+  method     String?
+  reference  String?
+  notes      String?
+  createdBy  String?
+  createdAt  DateTime @default(now())
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  label      String
+  address    String
+  city       String
+  department String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model Category {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  slug        String       @unique
+  parentId    String?
+  parent      Category?    @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[]   @relation("CategoryHierarchy")
+  description String?
+  image       String?
+  isActive    Boolean      @default(true)
+  sortOrder   Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  products    Product[]
+}
+
+model Brand {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  logo        String?
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Product {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  brandId          String
+  brand            Brand    @relation(fields: [brandId], references: [id])
+  categoryId       String
+  category         Category @relation(fields: [categoryId], references: [id])
+  description      String   @default("")
+  shortDescription String   @default("")
+  sku              String   @unique
+  manufacturerCode String?
+  price            Float
+  comparePrice     Float?
+  costPrice        Float?
+  currency         String   @default("PYG")
+  stock            Float    @default(0)
+  minStock         Int      @default(5)
+  unit             String   @default("pieza")
+  unitCost         Float?
+  salePrice        Float?
+  wholesalePrice   Float?
+  barcode          String?
+  secondaryBarcode String?
+  lastPurchaseCost Float?
+  brandName        String?
+  weight           Float?
+  isActive         Boolean  @default(true)
+  isFeatured       Boolean  @default(false)
+  isNew            Boolean  @default(false)
+  metaTitle        String?
+  metaDescription  String?
+  rating           Float    @default(0)
+  reviews          Int      @default(0)
+  sold             Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  images        ProductImage[]
+  specs         ProductSpec[]
+  tags          ProductTag[]
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+  orderItems    OrderItem[]
+  stockMovements StockMovement[]
+  purchaseItems   PurchaseItem[]
+  returnItems     ReturnItem[]
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  url       String
+  alt       String?
+  isPrimary Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model ProductSpec {
+  id         String  @id @default(cuid())
+  productId  String
+  product    Product @relation(fields: [productId], references: [id])
+  specName   String
+  specValue  String
+  createdAt  DateTime @default(now())
+}
+
+model ProductTag {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  tag       String
+  createdAt DateTime @default(now())
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  sessionId String?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Float    @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([userId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+  customerId      String?
+  customer        Customer? @relation(fields: [customerId], references: [id])
+  sellerId        String?
+  status          String   @default("pending")
+  subtotal        Float
+  discount        Float    @default(0)
+  shipping        Float    @default(0)
+  total           Float
+  paymentMethod   String?
+  paymentStatus   String   @default("pending")
+  couponId        String?
+  notes           String?
+  customerName    String
+  customerPhone   String
+  customerEmail   String
+  customerAddress String
+  customerCity    String
+  deliveryMethod  String?
+  amountPaid      Float    @default(0)
+  paidAt          DateTime?
+  deliveredAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  items    OrderItem[]
+  payments Payment[]
+  statusHistory OrderStatusHistory[]
+  returns  ReturnOrder[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  productName String
+  productSku  String
+  quantity    Float
+  unitPrice   Float
+  subtotal    Float
+  createdAt   DateTime @default(now())
+}
+
+model OrderStatusHistory {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  status    String
+  changedBy String?
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id])
+  gateway       String
+  transactionId String?
+  amount        Float
+  currency      String   @default("PYG")
+  status        String   @default("pending")
+  payload       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  type        String
+  value       Float
+  minPurchase Float?
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  startsAt    DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  action     String
+  resource   String
+  resourceId String?
+  details    String?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  sessionId String   @unique
+  data      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  name         String
+  ruc          String?
+  email        String?
+  phone        String?
+  whatsapp     String?
+  address      String?
+  city         String?
+  notes        String?
+  paymentTerms String?
+  contacts     String?
+  balance      Float    @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  purchases Purchase[]
+}
+
+model Purchase {
+  id             String   @id @default(cuid())
+  purchaseNumber String   @unique
+  invoiceNumber  String?
+  shippingCost   Float    @default(0)
+  supplierId     String?
+  supplier       Supplier? @relation(fields: [supplierId], references: [id])
+  status         String   @default("pending")
+  subtotal       Float
+  discount       Float    @default(0)
+  tax            Float    @default(0)
+  total          Float
+  paymentStatus  String   @default("pending")
+  amountPaid     Float    @default(0)
+  notes          String?
+  receivedAt     DateTime?
+  createdBy      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  items PurchaseItem[]
+
+  @@index([supplierId])
+  @@index([status])
+}
+
+model PurchaseItem {
+  id          String   @id @default(cuid())
+  purchaseId  String
+  purchase    Purchase @relation(fields: [purchaseId], references: [id])
+  productId   String?
+  product     Product?  @relation(fields: [productId], references: [id])
+  productName String
+  productSku  String   @default("")
+  quantity    Float
+  receivedQty Float    @default(0)
+  unitCost    Float
+  subtotal    Float
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+model StockMovement {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  type        String
+  quantity    Float
+  reason      String?
+  reference   String?
+  unit        String?
+  unitCost    Float?
+  stockBefore Float?
+  stockAfter  Float?
+  notes       String?
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@index([productId])
+  @@index([type])
+}
+
+model ReturnOrder {
+  id           String   @id @default(cuid())
+  returnNumber String   @unique
+  orderId      String?
+  order        Order?   @relation(fields: [orderId], references: [id])
+  customerId   String?
+  customer     Customer? @relation(fields: [customerId], references: [id])
+  customerName String?
+  status       String   @default("pending")
+  reason       String?
+  refundAmount Float    @default(0)
+  createdBy    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  items ReturnItem[]
+
+  @@index([orderId])
+  @@index([status])
+}
+
+model ReturnItem {
+  id           String      @id @default(cuid())
+  returnId     String
+  returnOrder  ReturnOrder @relation(fields: [returnId], references: [id])
+  productId    String?
+  product      Product?    @relation(fields: [productId], references: [id])
+  productName  String
+  quantity     Float
+  unitPrice    Float
+  condition    String?
+  createdAt    DateTime    @default(now())
+}
+
+model CashSession {
+  id             String   @id @default(cuid())
+  openedBy       String?
+  openedAt       DateTime @default(now())
+  closedAt       DateTime?
+  openingAmount  Float    @default(0)
+  closingAmount  Float?
+  expectedAmount Float?
+  notes          String?
+  status         String   @default("open")
+  closedBy       String?
+
+  movements CashMovement[]
+
+  @@index([status])
+}
+
+model CashMovement {
+  id          String   @id @default(cuid())
+  sessionId   String
+  session     CashSession @relation(fields: [sessionId], references: [id])
+  type        String
+  category    String?
+  amount      Float
+  description String?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+}
