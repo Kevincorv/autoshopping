@@ -1,10 +1,20 @@
 import "dotenv/config";
 import { PrismaClient } from "./client/client.js";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import bcrypt from "bcryptjs";
 
-const url = process.env.DATABASE_URL || "file:./prisma/dev.db";
-const prisma = new PrismaClient({ adapter: new PrismaLibSql({ url }) });
+const raw = process.env.DATABASE_URL || "mysql://root:root@localhost:3306/autoshopping";
+const url = new URL(raw);
+const prisma = new PrismaClient({
+  adapter: new PrismaMariaDb({
+    host: url.hostname,
+    port: Number(url.port || 3306),
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: url.pathname.replace(/^\//, ""),
+    ssl: { rejectUnauthorized: false },
+  }),
+});
 
 const ROLES = [
   { name: "admin", description: "Acceso total al sistema" },
@@ -38,7 +48,7 @@ const PERMISSIONS: Record<string, { resources: string[]; actions: string[] }> = 
 };
 
 async function main() {
-  console.log("Using database URL:", url);
+  console.log("Seeding database...");
   const adminPassword = await bcrypt.hash("admin123", 12);
 
   for (const roleData of ROLES) {
@@ -114,22 +124,6 @@ async function main() {
       update: {},
       create: s,
     });
-  }
-
-  const vehicles = [
-    { make: "Toyota", model: "Hilux", yearStart: 2015, yearEnd: 2019, engine: "2.8L Diesel", fuel: "Diésel", displacement: "2755cc", generation: "VIII (AN120/AN130)" },
-    { make: "Toyota", model: "Corolla", yearStart: 2015, yearEnd: 2019, engine: "1.8L", fuel: "Nafta", displacement: "1794cc", generation: "XI (E170)" },
-    { make: "Toyota", model: "Corolla", yearStart: 2020, yearEnd: 2026, engine: "2.0L", fuel: "Nafta", displacement: "1987cc", generation: "XII (E210)" },
-    { make: "Chevrolet", model: "Onix", yearStart: 2019, yearEnd: 2026, engine: "1.2L Turbo", fuel: "Nafta", displacement: "1199cc", generation: "II (RS)" },
-    { make: "Hyundai", model: "Tucson", yearStart: 2016, yearEnd: 2020, engine: "2.0L", fuel: "Nafta", displacement: "1999cc", generation: "III (TL)" },
-    { make: "Kia", model: "Sportage", yearStart: 2016, yearEnd: 2021, engine: "2.0L", fuel: "Nafta", displacement: "1999cc", generation: "IV (QL)" },
-    { make: "Volkswagen", model: "Amarok", yearStart: 2017, yearEnd: 2023, engine: "3.0L V6", fuel: "Diésel", displacement: "2967cc", generation: "I (facelift)" },
-    { make: "Nissan", model: "Frontier", yearStart: 2016, yearEnd: 2021, engine: "2.3L", fuel: "Diésel", displacement: "2298cc", generation: "D23" },
-  ];
-
-  for (const v of vehicles) {
-    const exist = await prisma.vehicle.findFirst({ where: { make: v.make, model: v.model, engine: v.engine } });
-    if (!exist) await prisma.vehicle.create({ data: v });
   }
 
   console.log("Seed completed successfully");
