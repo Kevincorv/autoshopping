@@ -17,6 +17,7 @@ export default function EditProduct() {
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<Option[]>([]);
   const [brands, setBrands] = useState<Option[]>([]);
   const [form, setForm] = useState({
@@ -46,6 +47,9 @@ export default function EditProduct() {
     fetch("/api/categories")
       .then((r) => r.json())
       .then((data) => setCategories(data.categories.map((c: any) => ({ id: c.slug, name: c.name, slug: c.slug }))));
+    fetch("/api/brands")
+      .then((r) => r.json())
+      .then((data) => setBrands((data.brands || []).map((b: any) => ({ id: b.id, name: b.name, slug: b.slug }))));
 
     if (!isNew) {
       fetch(`/api/products/${params.id}`)
@@ -58,15 +62,15 @@ export default function EditProduct() {
               slug: p.slug,
               sku: p.sku,
               manufacturerCode: p.manufacturerCode || "",
-              brandId: "",
+              brandId: p.brandId || "",
               categoryId: p.category || "",
               price: p.price,
               comparePrice: p.comparePrice || 0,
               stock: p.stock,
-              minStock: 5,
+              minStock: p.minStock ?? 5,
               description: p.description || "",
               shortDescription: p.shortDescription || "",
-              isActive: true,
+              isActive: p.isActive,
               isFeatured: p.featured,
               isNew: p.isNew,
               weight: p.weight || 0,
@@ -74,7 +78,7 @@ export default function EditProduct() {
                 url: typeof img === "string" ? img : img.url,
                 isPrimary: i === 0,
               })) : [{ url: "", isPrimary: true }],
-              specs: p.specs?.length ? p.specs : [{ specName: "", specValue: "" }],
+              specs: p.specs?.length ? p.specs.map((s: any) => ({ specName: s.specName || s.name, specValue: s.specValue || s.value })) : [{ specName: "", specValue: "" }],
               tags: p.tags || [],
               tagInput: "",
             });
@@ -106,9 +110,69 @@ export default function EditProduct() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    // TODO: Implement save via API
-    await new Promise((r) => setTimeout(r, 1000));
-    router.push("/dashboard/admin/products");
+    setError(null);
+
+    const payload = {
+      name: form.name,
+      slug: form.slug,
+      sku: form.sku,
+      manufacturerCode: form.manufacturerCode,
+      brandId: form.brandId || null,
+      categoryId: form.categoryId,
+      price: form.price,
+      comparePrice: form.comparePrice,
+      stock: form.stock,
+      minStock: form.minStock,
+      description: form.description,
+      shortDescription: form.shortDescription,
+      isActive: form.isActive,
+      isFeatured: form.isFeatured,
+      isNew: form.isNew,
+      weight: form.weight,
+      images: form.images.filter((i) => i.url.trim()),
+      specs: form.specs.filter((s) => s.specName.trim()),
+      tags: form.tags,
+    };
+
+    try {
+      const url = isNew ? "/api/products" : `/api/products/${params.id}`;
+      const res = await fetch(url, {
+        method: isNew ? "POST" : "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Error al guardar");
+        setSaving(false);
+        return;
+      }
+      router.push("/dashboard/admin/products");
+      router.refresh();
+    } catch {
+      setError("Error de conexión al guardar");
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!confirm("¿Seguro que querés eliminar este producto?")) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/products/${params.id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Error al eliminar");
+        setSaving(false);
+        return;
+      }
+      router.push("/dashboard/admin/products");
+      router.refresh();
+    } catch {
+      setError("Error de conexión al eliminar");
+      setSaving(false);
+    }
   }
 
   if (loading) {
@@ -133,7 +197,7 @@ export default function EditProduct() {
         </div>
         <div className="flex items-center gap-2">
           {!isNew && (
-            <button className="btn-ghost text-red-400 flex items-center gap-2 text-sm">
+            <button onClick={handleDelete} disabled={saving} className="btn-ghost text-red-400 flex items-center gap-2 text-sm">
               <Trash2 className="w-4 h-4" />
               Eliminar
             </button>
@@ -281,6 +345,12 @@ export default function EditProduct() {
           </div>
         </div>
       </form>
+
+      {error && (
+        <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+          {error}
+        </div>
+      )}
     </div>
   );
 }

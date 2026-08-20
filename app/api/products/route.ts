@@ -1,6 +1,98 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+function slugify(s: string) {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+async function resolveBrand(brandId?: string | null) {
+  if (brandId) {
+    const b = await prisma.brand.findUnique({ where: { id: brandId } });
+    if (b) return b;
+  }
+  return prisma.brand.upsert({
+    where: { slug: "sin-marca" },
+    update: {},
+    create: { name: "Sin marca", slug: "sin-marca" },
+  });
+}
+
+export async function POST(request: Request) {
+  try {
+    const d = await request.json();
+    const name = (d.name || "").trim();
+    const sku = (d.sku || "").trim();
+    if (!name || !sku) return NextResponse.json({ error: "Nombre y SKU son requeridos" }, { status: 400 });
+
+    const category = d.categoryId
+      ? await prisma.category.findFirst({ where: { OR: [{ id: d.categoryId }, { slug: d.categoryId }] } })
+      : null;
+    if (!category) return NextResponse.json({ error: "Seleccioná una categoría" }, { status: 400 });
+
+    const existing = await prisma.product.findFirst({ where: { OR: [{ sku }, { name }] } });
+    if (existing) return NextResponse.json({ error: "Ya existe un producto con ese SKU o nombre" }, { status: 409 });
+
+    let slug = (d.slug || "").trim() || slugify(name);
+    if (!slug || (await prisma.product.findUnique({ where: { slug } }))) {
+      slug = `${slugify(name)}-${Date.now().toString(36).slice(-4)}`;
+    }
+
+    const brand = await resolveBrand(d.brandId);
+
+    const product = await prisma.product.create({
+      data: {
+        name,
+        slug,
+        sku,
+        brandId: brand.id,
+        categoryId: category.id,
+        manufacturerCode: d.manufacturerCode || null,
+        price: parseFloat(d.price) || 0,
+        comparePrice: d.comparePrice != null && d.comparePrice !== "" ? parseFloat(d.comparePrice) : null,
+        costPrice: d.costPrice != null && d.costPrice !== "" ? parseFloat(d.costPrice) : null,
+        stock: parseFloat(d.stock) || 0,
+        minStock: parseInt(d.minStock) || 5,
+        unit: d.unit || "pieza",
+        description: d.description || "",
+        shortDescription: d.shortDescription || "",
+        weight: d.weight != null && d.weight !== "" ? parseFloat(d.weight) : null,
+        isActive: d.isActive !== false,
+        isFeatured: !!d.isFeatured,
+        isNew: d.isNew !== false,
+        images: {
+          create: (Array.isArray(d.images) ? d.images : []).filter((i: any) => i?.url).map((i: any, idx: number) => ({
+            url: i.url,
+            alt: i.alt || null,
+            isPrimary: !!i.isPrimary || idx === 0,
+            sortOrder: idx,
+          })),
+        },
+        specs: {
+          create: (Array.isArray(d.specs) ? d.specs : []).filter((s: any) => s?.specName).map((s: any) => ({
+            specName: s.specName,
+            specValue: s.specValue || "",
+          })),
+        },
+        tags: {
+          create: (Array.isArray(d.tags) ? d.tags : []).map((t: string) => ({ tag: t })),
+        },
+      },
+      include: {
+        images: true,
+        specs: true,
+        tags: true,
+        brand: { select: { name: true, slug: true } },
+        category: { select: { name: true, slug: true } },
+      },
+    });
+
+    return NextResponse.json({ product }, { status: 201 });
+  } catch (error) {
+    console.error("Product create error:", error);
+    return NextResponse.json({ error: "Error al crear el producto" }, { status: 500 });
+  }
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
