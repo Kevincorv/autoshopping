@@ -130,13 +130,15 @@ export default function EditProduct() {
     setError(null);
     setNewImageUrl("");
 
-    if (isNew) {
-      setImages((prev) => {
-        const hasPrimary = prev.some((i) => i.isPrimary);
-        return [...prev, { url, isPrimary: !hasPrimary && prev.length === 0, alt: "" }];
-      });
-      return;
-    }
+    // preview optimista inmediato
+    const tempId = `temp-${Date.now()}`;
+    setImages((prev) => {
+      const hasPrimary = prev.some((i) => i.isPrimary && i.url);
+      const arr = prev.filter((i) => i.url);
+      return [...arr, { id: tempId, url, alt: "", isPrimary: !hasPrimary }];
+    });
+
+    if (isNew) return;
 
     setImgBusy(true);
     try {
@@ -147,11 +149,9 @@ export default function EditProduct() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al guardar la imagen");
-      setImages((prev) => {
-        const hasPrimary = prev.some((i) => i.isPrimary);
-        return [...prev.filter((i) => i.url), { id: data.image.id, url, alt: "", isPrimary: !hasPrimary }];
-      });
+      setImages((prev) => prev.map((i) => (i.id === tempId ? { ...i, id: data.image.id } : i)));
     } catch (e: any) {
+      setImages((prev) => prev.filter((i) => i.id !== tempId));
       setError(e.message || "Error al agregar la imagen");
     } finally {
       setImgBusy(false);
@@ -464,7 +464,7 @@ export default function EditProduct() {
                     !img.url.trim() ? null : (
                       <div key={img.id || idx} className="flex items-start gap-3 p-2 rounded-lg bg-neutral-800/50">
                         <div className="relative w-16 h-16 rounded-md overflow-hidden bg-neutral-700 flex-shrink-0">
-                          <img src={img.url} alt={img.alt} className="w-full h-full object-cover" onError={(e) => { (e.currentTarget.style.display = "none"); }} />
+                          <img src={img.url} alt={img.alt} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                           {img.isPrimary && (
                             <span className="absolute top-0.5 left-0.5 px-1 py-0.5 rounded bg-emerald-500/90 text-white text-[9px] font-bold">PRAL</span>
                           )}

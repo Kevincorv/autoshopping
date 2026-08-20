@@ -163,7 +163,7 @@ export default function AdminProducts() {
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-neutral-800 flex items-center justify-center overflow-hidden shrink-0">
                         {p.images?.[0] ? (
-                          <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                          <img src={p.images[0]} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                         ) : (
                           <Package className="w-4 h-4 text-neutral-500" />
                         )}
