@@ -10,6 +10,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useSocketEvents } from "@/lib/socket";
 import { SearchX } from "lucide-react";
 import type { Product } from "@/lib/types";
+import { countPlus } from "@/lib/utils";
 
 function pageRange(current: number, total: number, maxVisible = 10): (number | string)[] {
   const pages: (number | string)[] = [];
@@ -129,7 +130,7 @@ export default function ProductsClient() {
         <div className="mb-4">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Productos</h1>
           <p className="text-sm text-neutral-400">
-            {loading ? "Cargando…" : `${total} resultado${total !== 1 ? "s" : ""}`}
+            {loading ? "Cargando…" : `${countPlus(total)} Productos`}
             {filters.q && (
               <>
                 {" "}para &quot;<span className="text-brand-400">{filters.q}</span>&quot;

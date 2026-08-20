@@ -10,6 +10,13 @@ export function formatPYG(value: number): string {
   }
 }
 
+export function countPlus(n: number): string {
+  if (!n || n <= 0) return "0";
+  if (n >= 1000) return Math.floor(n / 1000) * 1000 + "+";
+  if (n >= 10) return Math.floor(n / 10) * 10 + "+";
+  return String(n);
+}
+
 export function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): T {
   let t: ReturnType<typeof setTimeout> | null = null;
   return ((...args: any[]) => {

@@ -9,6 +9,7 @@ import { GridSkeleton } from "@/components/Skeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import type { Product } from "@/lib/types";
 import { useSocketEvents } from "@/lib/socket";
+import { countPlus } from "@/lib/utils";
 
 function HomeInner() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -127,7 +128,7 @@ function HomeInner() {
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 to-transparent" />
                   <div className="absolute bottom-2 left-2 right-2">
                     <p className="font-semibold text-sm text-white">{c.name}</p>
-                    <p className="text-[10px] text-white/70">{c.count} productos</p>
+                    <p className="text-[10px] text-white/70">{countPlus(c.count)} productos</p>
                   </div>
                 </div>
               </Link>
