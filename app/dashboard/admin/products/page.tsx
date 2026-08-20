@@ -174,7 +174,7 @@ export default function AdminProducts() {
       </div>
 
       <div className="rounded-xl border border-neutral-800 overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-neutral-800 bg-neutral-900/50">
