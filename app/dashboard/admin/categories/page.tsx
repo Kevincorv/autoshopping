@@ -127,7 +127,7 @@ export default function AdminCategories() {
                     <div className="flex items-center gap-3">
                       {cat.image && (
                         <div className="w-10 h-10 rounded-lg bg-neutral-800 overflow-hidden">
-                          <img src={cat.image} alt="" className="w-full h-full object-cover" />
+                          <img src={cat.image} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                         </div>
                       )}
                       <span className="text-white font-medium">{cat.name}</span>

@@ -280,7 +280,7 @@ function CheckoutInner() {
                     <div className="w-12 h-12 rounded-md overflow-hidden bg-neutral-800 shrink-0">
                       {p.images?.[0] ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
+                        <img src={p.images[0]} alt={p.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                       ) : null}
                     </div>
                     <div className="flex-1 min-w-0">

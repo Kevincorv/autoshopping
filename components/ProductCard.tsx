@@ -39,6 +39,7 @@ export function ProductCard({ product }: Props) {
             src={product.images[0]}
             alt={product.name}
             loading="lazy"
+            referrerPolicy="no-referrer"
             className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
           />
         ) : (

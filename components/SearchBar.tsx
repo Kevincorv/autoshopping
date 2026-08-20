@@ -217,7 +217,7 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
                       <div className="w-12 h-12 rounded-md overflow-hidden bg-neutral-800 shrink-0">
                         {p.images?.[0] ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" loading="lazy" />
+                          <img src={p.images[0]} alt={p.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" loading="lazy" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-neutral-600">
                             <Package className="w-5 h-5" />

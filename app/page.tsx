@@ -123,7 +123,7 @@ function HomeInner() {
               >
                 <div className="aspect-[4/3] bg-neutral-800 relative">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={c.image} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition" loading="lazy" />
+                  <img src={c.image} alt={c.name} referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-105 transition" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 to-transparent" />
                   <div className="absolute bottom-2 left-2 right-2">
                     <p className="font-semibold text-sm text-white">{c.name}</p>

@@ -69,7 +69,7 @@ function CartInner() {
                   <Link href={`/products/${p.id}`} className="w-24 h-24 rounded-lg overflow-hidden bg-neutral-800 shrink-0">
                     {p.images?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
+                      <img src={p.images[0]} alt={p.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-neutral-600">
                         <Package className="w-8 h-8" />

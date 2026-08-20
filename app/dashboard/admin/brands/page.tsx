@@ -142,7 +142,7 @@ export default function BrandsPage() {
                         {b.logo ? (
                           <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={b.logo} alt={b.name} className="max-w-full max-h-full object-contain" />
+                            <img src={b.logo} alt={b.name} referrerPolicy="no-referrer" className="max-w-full max-h-full object-contain" />
                           </div>
                         ) : (
                           <div className="w-10 h-10 rounded-lg bg-neutral-800 flex items-center justify-center shrink-0">

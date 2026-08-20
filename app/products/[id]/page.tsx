@@ -109,7 +109,7 @@ function ProductInner() {
           <div className="aspect-square rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800">
             {product.images?.[activeImage] ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
+              <img src={product.images[activeImage]} alt={product.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-neutral-600">
                 <Package className="w-16 h-16" />
@@ -128,7 +128,7 @@ function ProductInner() {
                   )}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

@@ -110,7 +110,7 @@ export function CartDrawer() {
                     >
                       {p.images?.[0] ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
+                        <img src={p.images[0]} alt={p.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                       ) : null}
                     </Link>
                     <div className="flex-1 min-w-0">
