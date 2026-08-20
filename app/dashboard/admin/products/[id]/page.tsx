@@ -261,7 +261,6 @@ export default function EditProduct() {
         return;
       }
       router.push(`/dashboard/admin/products?page=${returnPage}`);
-      router.refresh();
     } catch {
       setError("Error de conexión al guardar");
       setSaving(false);
@@ -281,7 +280,6 @@ export default function EditProduct() {
         return;
       }
       router.push(`/dashboard/admin/products?page=${returnPage}`);
-      router.refresh();
     } catch {
       setError("Error de conexión al eliminar");
       setSaving(false);

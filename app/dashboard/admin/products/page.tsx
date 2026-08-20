@@ -51,11 +51,23 @@ export default function AdminProducts() {
       .finally(() => setLoading(false));
   }, [sort]);
 
+  // sincronizar página desde la URL (al volver de editar, navegador back/forward)
+  useEffect(() => {
+    const p = parseInt(searchParams.get("page") || "1", 10);
+    const next = Number.isFinite(p) && p > 0 ? p : 1;
+    if (next !== page) setPage(next);
+  }, [searchParams]);
+
   // mantener la página en la URL
   useEffect(() => {
     const qs = page > 1 ? `?page=${page}` : "";
     router.replace(`/dashboard/admin/products${qs}`, { scroll: false });
   }, [page, router]);
+
+  // scroll arriba al montar y al cambiar de página
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [page]);
 
   const filtered = products.filter((p) => {
     const searchMatch =
