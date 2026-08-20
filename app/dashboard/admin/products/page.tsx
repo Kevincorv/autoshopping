@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Plus, Edit, Search, Package, AlertTriangle, Star, EyeOff } from "lucide-react";
 
 interface ProductRow {
@@ -29,12 +30,17 @@ const TABS = [
 ];
 
 export default function AdminProducts() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("createdAt");
   const [tab, setTab] = useState("all");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => {
+    const p = parseInt(searchParams.get("page") || "1", 10);
+    return Number.isFinite(p) && p > 0 ? p : 1;
+  });
   const PAGE_SIZE = 50;
 
   useEffect(() => {
@@ -44,6 +50,12 @@ export default function AdminProducts() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [sort]);
+
+  // mantener la página en la URL
+  useEffect(() => {
+    const qs = page > 1 ? `?page=${page}` : "";
+    router.replace(`/dashboard/admin/products${qs}`, { scroll: false });
+  }, [page, router]);
 
   const filtered = products.filter((p) => {
     const searchMatch =
@@ -70,6 +82,10 @@ export default function AdminProducts() {
   };
 
   useEffect(() => { setPage(1); }, [search, tab, sort]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [page]);
 
   if (loading) {
     return (
@@ -199,7 +215,7 @@ export default function AdminProducts() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link
-                      href={`/dashboard/admin/products/${p.id}`}
+                      href={`/dashboard/admin/products/${p.id}?page=${currentPage}`}
                       className="btn-ghost p-1.5 inline-flex"
                     >
                       <Edit className="w-4 h-4" />

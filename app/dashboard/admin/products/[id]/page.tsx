@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { Save, ArrowLeft, Trash2, Plus } from "lucide-react";
 
 interface Option {
@@ -20,6 +20,8 @@ interface ImageItem {
 export default function EditProduct() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
+  const returnPage = searchParams.get("page") || "1";
   const isNew = params.id === "new";
 
   const [loading, setLoading] = useState(!isNew);
@@ -258,7 +260,7 @@ export default function EditProduct() {
         setSaving(false);
         return;
       }
-      router.push("/dashboard/admin/products");
+      router.push(`/dashboard/admin/products?page=${returnPage}`);
       router.refresh();
     } catch {
       setError("Error de conexión al guardar");
@@ -278,7 +280,7 @@ export default function EditProduct() {
         setSaving(false);
         return;
       }
-      router.push("/dashboard/admin/products");
+      router.push(`/dashboard/admin/products?page=${returnPage}`);
       router.refresh();
     } catch {
       setError("Error de conexión al eliminar");
