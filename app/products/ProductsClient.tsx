@@ -11,6 +11,29 @@ import { useSocketEvents } from "@/lib/socket";
 import { SearchX } from "lucide-react";
 import type { Product } from "@/lib/types";
 
+function pageRange(current: number, total: number, maxVisible = 10): (number | string)[] {
+  const pages: (number | string)[] = [];
+  if (total <= maxVisible) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+    return pages;
+  }
+  const half = Math.floor(maxVisible / 2);
+  let start = Math.max(1, current - half);
+  let end = Math.min(total, current + half);
+  if (current - 1 <= half) { start = 1; end = maxVisible; }
+  if (total - current <= half) { start = total - maxVisible + 1; end = total; }
+  if (start > 1) {
+    pages.push(1);
+    if (start > 2) pages.push("…");
+  }
+  for (let i = start; i <= end; i++) pages.push(i);
+  if (end < total) {
+    if (end < total - 1) pages.push("…");
+    pages.push(total);
+  }
+  return pages;
+}
+
 export default function ProductsClient() {
   const sp = useSearchParams();
   const router = useRouter();
@@ -144,27 +167,31 @@ export default function ProductsClient() {
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-1.5 mt-8 flex-wrap">
                     <button
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       disabled={page === 1}
                       className="btn-ghost text-sm px-3 py-1.5 disabled:opacity-30"
                     >
                       Anterior
                     </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                      <button
-                        key={p}
-                        onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                        className={`min-w-[2rem] h-8 rounded-md text-sm font-medium transition ${
-                          p === page
-                            ? "bg-brand-600 text-white"
-                            : "hover:bg-neutral-800 text-neutral-400"
-                        }`}
-                      >
-                        {p}
-                      </button>
-                    ))}
+                    {pageRange(page, totalPages, 10).map((p, i) =>
+                      typeof p === "string" ? (
+                        <span key={`gap-${i}`} className="px-1 text-neutral-600">…</span>
+                      ) : (
+                        <button
+                          key={p}
+                          onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                          className={`min-w-[2rem] h-8 rounded-md text-sm font-medium transition ${
+                            p === page
+                              ? "bg-brand-600 text-white"
+                              : "hover:bg-neutral-800 text-neutral-400"
+                          }`}
+                        >
+                          {p}
+                        </button>
+                      )
+                    )}
                     <button
-                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                      onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       disabled={page === totalPages}
                       className="btn-ghost text-sm px-3 py-1.5 disabled:opacity-30"
                     >
