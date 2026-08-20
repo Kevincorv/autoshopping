@@ -47,7 +47,7 @@ function HomeInner() {
     }
   });
 
-  const featured = kojima.slice(0, 10);
+  const featured = kojima.slice(0, 8);
   const onSale = products.filter((p) => p.comparePrice && p.comparePrice > p.price).slice(0, 8);
   const newArrivals = products.filter((p) => p.isNew).slice(0, 8);
   const top = products.slice().sort((a, b) => b.sold - a.sold).slice(0, 8);
