@@ -53,14 +53,14 @@ function HomeInner() {
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 70% 20%, white 0%, transparent 40%)" }} />
         <div className="relative max-w-2xl">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur text-xs font-semibold mb-4">
-            <MapPin className="w-3.5 h-3.5" /> San Ignacio Misiones · Envíos a todo Paraguay
+            <MapPin className="w-3.5 h-3.5" /> Equipá tu vehículo con lo mejor
           </span>
           <h1 className="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
-            AUTOSHOPPING: accesorios automotrices <span className="underline decoration-white/40">premium</span>
+            Todo para mejorar, proteger y <span className="underline decoration-white/40">equipar tu vehículo</span>
           </h1>
           <p className="mt-4 text-white/90 text-sm md:text-base max-w-lg">
-            Carpitas, multimedias, Suntek 🇺🇸, detailing Vonixx y accesorios Sparco. Trabajamos sólo marcas
-            originales, con stock real, precios en guaraníes y atención personalizada.
+            Accesorios, multimedia, carpas, detailing, luces, barra led y productos de marcas reconocidas.
+            Productos originales, stock real y envíos a todo Paraguay.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <Link href="/products" className="btn bg-white text-brand-700 hover:bg-neutral-100 font-bold text-center">
