@@ -17,6 +17,29 @@ export function countPlus(n: number): string {
   return String(n);
 }
 
+export function pageRange(current: number, total: number, maxVisible = 10): (number | string)[] {
+  const pages: (number | string)[] = [];
+  if (total <= maxVisible) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+    return pages;
+  }
+  const half = Math.floor(maxVisible / 2);
+  let start = Math.max(1, current - half);
+  let end = Math.min(total, current + half);
+  if (current - 1 <= half) { start = 1; end = maxVisible; }
+  if (total - current <= half) { start = total - maxVisible + 1; end = total; }
+  if (start > 1) {
+    pages.push(1);
+    if (start > 2) pages.push("…");
+  }
+  for (let i = start; i <= end; i++) pages.push(i);
+  if (end < total) {
+    if (end < total - 1) pages.push("…");
+    pages.push(total);
+  }
+  return pages;
+}
+
 export function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): T {
   let t: ReturnType<typeof setTimeout> | null = null;
   return ((...args: any[]) => {

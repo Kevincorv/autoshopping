@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Plus, Edit, Search, Package, AlertTriangle, Star, EyeOff } from "lucide-react";
+import { pageRange } from "@/lib/utils";
 
 interface ProductRow {
   id: string;
@@ -42,6 +43,7 @@ export default function AdminProducts() {
     return Number.isFinite(p) && p > 0 ? p : 1;
   });
   const PAGE_SIZE = 50;
+  const firstRender = useRef(true);
 
   useEffect(() => {
     fetch(`/api/products?sort=${sort}&limit=5000&all=1`)
@@ -51,23 +53,13 @@ export default function AdminProducts() {
       .finally(() => setLoading(false));
   }, [sort]);
 
-  // sincronizar página desde la URL (al volver de editar, navegador back/forward)
+  // leer página desde la URL al montar (y al volver de editar)
   useEffect(() => {
     const p = parseInt(searchParams.get("page") || "1", 10);
     const next = Number.isFinite(p) && p > 0 ? p : 1;
     if (next !== page) setPage(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
-
-  // mantener la página en la URL
-  useEffect(() => {
-    const qs = page > 1 ? `?page=${page}` : "";
-    router.replace(`/dashboard/admin/products${qs}`, { scroll: false });
-  }, [page, router]);
-
-  // scroll arriba al montar y al cambiar de página
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }, [page]);
 
   const filtered = products.filter((p) => {
     const searchMatch =
@@ -85,6 +77,17 @@ export default function AdminProducts() {
   const currentPage = Math.min(page, totalPages);
   const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
+  const goToPage = useCallback(
+    (n: number) => {
+      const target = Math.max(1, Math.min(n, totalPages));
+      setPage(target);
+      window.scrollTo({ top: 0, behavior: "auto" });
+      const qs = target > 1 ? `?page=${target}` : "";
+      router.replace(`/dashboard/admin/products${qs}`, { scroll: false });
+    },
+    [router, totalPages]
+  );
+
   const counts = {
     all: products.length,
     active: products.filter((p) => p.isActive && p.stock > 0).length,
@@ -93,11 +96,11 @@ export default function AdminProducts() {
     inactive: products.filter((p) => !p.isActive).length,
   };
 
-  useEffect(() => { setPage(1); }, [search, tab, sort]);
-
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [page]);
+    if (firstRender.current) { firstRender.current = false; return; }
+    setPage(1);
+    router.replace("/dashboard/admin/products", { scroll: false });
+  }, [search, tab, sort, router]);
 
   if (loading) {
     return (
@@ -248,23 +251,37 @@ export default function AdminProducts() {
       </div>
 
       {filtered.length > PAGE_SIZE && (
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between mt-4 gap-4 flex-wrap">
           <p className="text-sm text-neutral-500">
             Mostrando {(currentPage - 1) * PAGE_SIZE + 1}-{Math.min(currentPage * PAGE_SIZE, filtered.length)} de {filtered.length}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
               className="btn-ghost px-3 py-1.5 text-sm disabled:opacity-40"
             >
               Anterior
             </button>
-            <span className="text-sm text-neutral-400">
-              {currentPage} / {totalPages}
-            </span>
+            {pageRange(currentPage, totalPages, 10).map((p, i) =>
+              typeof p === "string" ? (
+                <span key={`gap-${i}`} className="px-1 text-neutral-600">…</span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => goToPage(p)}
+                  className={`min-w-[2rem] h-8 rounded-md text-sm font-medium transition ${
+                    p === currentPage
+                      ? "bg-brand-600 text-white"
+                      : "hover:bg-neutral-800 text-neutral-400"
+                  }`}
+                >
+                  {p}
+                </button>
+              )
+            )}
             <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}
               className="btn-ghost px-3 py-1.5 text-sm disabled:opacity-40"
             >
