@@ -39,8 +39,10 @@ export default function AdminProducts() {
   const [sort, setSort] = useState("createdAt");
   const [tab, setTab] = useState("all");
   const [page, setPage] = useState(() => {
-    const p = parseInt(searchParams.get("page") || "1", 10);
-    return Number.isFinite(p) && p > 0 ? p : 1;
+    const sp = parseInt(searchParams.get("page") || "1", 10);
+    const ss = typeof window !== "undefined" ? parseInt(sessionStorage.getItem("adminProdPage") || "", 10) : NaN;
+    const cand = Number.isFinite(ss) && ss > 0 ? ss : sp;
+    return Number.isFinite(cand) && cand > 0 ? cand : 1;
   });
   const PAGE_SIZE = 50;
   const firstRender = useRef(true);
@@ -53,13 +55,10 @@ export default function AdminProducts() {
       .finally(() => setLoading(false));
   }, [sort]);
 
-  // leer página desde la URL al montar (y al volver de editar)
+  // scroll arriba al montar (al volver de editar)
   useEffect(() => {
-    const p = parseInt(searchParams.get("page") || "1", 10);
-    const next = Number.isFinite(p) && p > 0 ? p : 1;
-    if (next !== page) setPage(next);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
 
   const filtered = products.filter((p) => {
     const searchMatch =
@@ -81,6 +80,7 @@ export default function AdminProducts() {
     (n: number) => {
       const target = Math.max(1, Math.min(n, totalPages));
       setPage(target);
+      try { sessionStorage.setItem("adminProdPage", String(target)); } catch {}
       window.scrollTo({ top: 0, behavior: "auto" });
       const qs = target > 1 ? `?page=${target}` : "";
       router.replace(`/dashboard/admin/products${qs}`, { scroll: false });
@@ -99,6 +99,7 @@ export default function AdminProducts() {
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     setPage(1);
+    try { sessionStorage.setItem("adminProdPage", "1"); } catch {}
     router.replace("/dashboard/admin/products", { scroll: false });
   }, [search, tab, sort, router]);
 
