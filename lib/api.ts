@@ -27,6 +27,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       ...init,
       signal: ctrl.signal,
       headers,
+      cache: "no-store",
     });
     clearTimeout(to);
     if (!res.ok) {
@@ -41,7 +42,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getProducts: (params?: { category?: string; brand?: string; min?: number; max?: number; q?: string; sort?: string }) => {
+  getProducts: (params?: { category?: string; brand?: string; min?: number; max?: number; q?: string; sort?: string; page?: number; limit?: number }) => {
     const sp = new URLSearchParams();
     if (params?.category) sp.set("category", params.category);
     if (params?.brand) sp.set("brand", params.brand);
@@ -49,6 +50,8 @@ export const api = {
     if (params?.max != null) sp.set("maxPrice", String(params.max));
     if (params?.q) sp.set("search", params.q);
     if (params?.sort) sp.set("sort", params.sort);
+    if (params?.page) sp.set("page", String(params.page));
+    if (params?.limit) sp.set("limit", String(params.limit));
     const q = sp.toString();
     return request<{ products: Product[]; total: number }>(`/products${q ? "?" + q : ""}`);
   },

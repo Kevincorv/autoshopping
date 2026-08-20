@@ -19,10 +19,10 @@ export default function ProductsClient() {
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const PAGE_SIZE = 12;
-  const totalPages = Math.ceil(products.length / PAGE_SIZE);
-  const paginatedProducts = products.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const PAGE_SIZE = 24;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const [filters, setFilters] = useState<FilterState>({
     category: sp.get("category") || "all",
     brand: sp.get("brand") || "all",
@@ -56,7 +56,6 @@ export default function ProductsClient() {
   }, [filters, pathname, router]);
 
   useEffect(() => {
-    setPage(1);
     let alive = true;
     setLoading(true);
     setError(null);
@@ -68,9 +67,13 @@ export default function ProductsClient() {
         max: filters.max ? Number(filters.max) : undefined,
         sort: filters.sort,
         q: filters.q || undefined,
+        page,
+        limit: PAGE_SIZE,
       })
       .then((r) => {
-        if (alive) setProducts(r.products || []);
+        if (!alive) return;
+        setProducts(r.products || []);
+        setTotal(r.total || 0);
       })
       .catch((e) => {
         console.error(e);
@@ -80,7 +83,7 @@ export default function ProductsClient() {
     return () => {
       alive = false;
     };
-  }, [filters]);
+  }, [filters, page]);
 
   useSocketEvents((evt) => {
     if (evt.type === "product:updated") {
@@ -92,13 +95,18 @@ export default function ProductsClient() {
 
   const brands = useMemo(() => Array.from(new Set(products.map((p) => p.brand))).sort(), [products]);
 
+  function applyFilters(next: FilterState) {
+    setFilters(next);
+    setPage(1);
+  }
+
   return (
     <ErrorBoundary>
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="mb-4">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Productos</h1>
           <p className="text-sm text-neutral-400">
-            {loading ? "Cargando…" : `${products.length} resultado${products.length !== 1 ? "s" : ""}`}
+            {loading ? "Cargando…" : `${total} resultado${total !== 1 ? "s" : ""}`}
             {filters.q && (
               <>
                 {" "}para &quot;<span className="text-brand-400">{filters.q}</span>&quot;
@@ -108,7 +116,7 @@ export default function ProductsClient() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-6">
           <aside>
-            <Filters value={filters} onChange={setFilters} brands={brands} categories={categories} />
+            <Filters value={filters} onChange={applyFilters} brands={brands} categories={categories} />
           </aside>
           <div>
             {error ? (
@@ -120,7 +128,7 @@ export default function ProductsClient() {
                 <SearchX className="w-10 h-10 text-neutral-600 mx-auto mb-2" />
                 <p className="text-neutral-300">No encontramos productos con esos filtros.</p>
                 <button
-                  onClick={() => setFilters({ category: "all", brand: "all", min: "", max: "", sort: "featured", q: "" })}
+                  onClick={() => applyFilters({ category: "all", brand: "all", min: "", max: "", sort: "featured", q: "" })}
                   className="btn-primary mt-4"
                 >
                   Limpiar filtros
@@ -129,12 +137,12 @@ export default function ProductsClient() {
             ) : (
               <>
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {paginatedProducts.map((p) => (
+                  {products.map((p) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
                 </div>
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-1.5 mt-8">
+                  <div className="flex items-center justify-center gap-1.5 mt-8 flex-wrap">
                     <button
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page === 1}
@@ -145,7 +153,7 @@ export default function ProductsClient() {
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                       <button
                         key={p}
-                        onClick={() => setPage(p)}
+                        onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                         className={`min-w-[2rem] h-8 rounded-md text-sm font-medium transition ${
                           p === page
                             ? "bg-brand-600 text-white"
