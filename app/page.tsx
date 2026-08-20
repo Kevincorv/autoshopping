@@ -116,7 +116,7 @@ function HomeInner() {
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {categories.map((c) => (
+            {[...categories].sort((a, b) => b.count - a.count).slice(0, 10).map((c) => (
               <Link
                 key={c.id}
                 href={`/products?category=${c.id}`}
