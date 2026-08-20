@@ -66,9 +66,6 @@ function HomeInner() {
             <Link href="/products" className="btn bg-white text-brand-700 hover:bg-neutral-100 font-bold text-center">
               Ver catálogo <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/products?category=suntek" className="btn bg-white/10 backdrop-blur hover:bg-white/20 text-white text-center">
-              Suntek 🇺🇸
-            </Link>
           </div>
           <div className="mt-8 grid grid-cols-3 gap-3 sm:gap-4 max-w-md">
             <div>
