@@ -87,12 +87,14 @@ export default function EditProduct() {
               tags: p.tags || [],
               tagInput: "",
             });
-            const arr: ImageItem[] = (p.images as any[]).map((img: any) => ({
-              id: typeof img === "string" ? undefined : img.id,
-              url: typeof img === "string" ? img : img.url,
-              alt: typeof img === "string" ? "" : img.alt || "",
-              isPrimary: typeof img === "string" ? false : !!img.isPrimary,
-            }));
+            const arr: ImageItem[] = (() => {
+              const src = (p.imageDetails as any[]) || (p.images as any[]) || [];
+              if (!src.length) return [{ url: "", isPrimary: true, alt: "" }];
+              return src.map((img: any) => {
+                if (typeof img === "string") return { url: img, alt: "", isPrimary: false };
+                return { id: img.id, url: img.url, alt: img.alt || "", isPrimary: !!img.isPrimary };
+              });
+            })();
             if (arr.length && !arr.some((i) => i.isPrimary)) arr[0].isPrimary = true;
             setImages(arr.length ? arr : [{ url: "", isPrimary: true, alt: "" }]);
           }
