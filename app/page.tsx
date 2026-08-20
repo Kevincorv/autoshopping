@@ -15,6 +15,7 @@ function HomeInner() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{ id: string; name: string; count: number; image: string }[]>([]);
   const [kojima, setKojima] = useState<Product[]>([]);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,6 +25,7 @@ function HomeInner() {
       .then(([p, c, k]) => {
         if (!alive) return;
         setProducts(p.products || []);
+        setTotalProducts(p.total || 0);
         setCategories(c.categories || []);
         setKojima(k.products || []);
       })
@@ -72,7 +74,7 @@ function HomeInner() {
           </div>
           <div className="mt-8 grid grid-cols-3 gap-3 sm:gap-4 max-w-md">
             <div>
-              <p className="text-xl sm:text-2xl md:text-3xl font-extrabold">{products.length}+</p>
+              <p className="text-xl sm:text-2xl md:text-3xl font-extrabold">{countPlus(totalProducts)}</p>
               <p className="text-[10px] sm:text-xs text-white/80">Productos</p>
             </div>
             <div>
