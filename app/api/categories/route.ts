@@ -18,7 +18,20 @@ export async function GET() {
   try {
     const categories = await prisma.category.findMany({
       where: { isActive: true },
-      include: { _count: { select: { products: { where: { isActive: true } } } } },
+      include: {
+        _count: { select: { products: { where: { isActive: true } } } },
+        products: {
+          where: { isActive: true, images: { some: {} } },
+          take: 1,
+          select: {
+            images: {
+              orderBy: { isPrimary: "desc" },
+              take: 1,
+              select: { url: true },
+            },
+          },
+        },
+      },
       orderBy: { sortOrder: "asc" },
     });
 
@@ -28,7 +41,7 @@ export async function GET() {
         name: c.name,
         slug: c.slug,
         count: c._count.products,
-        image: CATEGORY_IMAGES[c.slug] || null,
+        image: c.products[0]?.images[0]?.url || CATEGORY_IMAGES[c.slug] || null,
         parentId: c.parentId,
       })),
     });

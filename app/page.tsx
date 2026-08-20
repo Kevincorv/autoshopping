@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Zap, Shield, Truck, Award, TrendingUp, Tag, MapPin, Star, Sparkles, Percent } from "lucide-react";
+import { ArrowRight, Zap, Shield, Truck, Award, TrendingUp, Tag, MapPin, Star, Sparkles, Percent, Package } from "lucide-react";
 import { api } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
 import { GridSkeleton } from "@/components/Skeleton";
@@ -123,8 +123,14 @@ function HomeInner() {
                 className="group card overflow-hidden hover:border-brand-500/50 transition"
               >
                 <div className="aspect-[4/3] bg-neutral-800 relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={c.image} alt={c.name} referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-105 transition" loading="lazy" />
+                  {c.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={c.image} alt={c.name} referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-105 transition" loading="lazy" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-neutral-600">
+                      <Package className="w-10 h-10" />
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 to-transparent" />
                   <div className="absolute bottom-2 left-2 right-2">
                     <p className="font-semibold text-sm text-white">{c.name}</p>
