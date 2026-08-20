@@ -5,10 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { Facebook, Instagram, Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { WHATSAPP_LINK } from "@/lib/constants";
+import { useAuth } from "@/lib/auth/store";
 
 export function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const el = sentinelRef.current;
@@ -24,6 +29,8 @@ export function Footer() {
   const footerClass = show
     ? "fixed bottom-0 left-0 right-0 z-40 border-t border-neutral-800 bg-neutral-950 transition-opacity duration-500 opacity-100"
     : "fixed bottom-0 left-0 right-0 z-40 border-t border-neutral-800 bg-neutral-950 transition-opacity duration-500 opacity-0 pointer-events-none";
+
+  if (mounted && user) return null;
 
   return (
     <Fragment>
