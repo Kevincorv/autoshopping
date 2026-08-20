@@ -34,9 +34,11 @@ export default function AdminProducts() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("createdAt");
   const [tab, setTab] = useState("all");
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 50;
 
   useEffect(() => {
-    fetch(`/api/products?sort=${sort}&limit=200&all=1`)
+    fetch(`/api/products?sort=${sort}&limit=5000&all=1`)
       .then((r) => r.json())
       .then((data) => setProducts(data.products || []))
       .catch(() => {})
@@ -55,6 +57,10 @@ export default function AdminProducts() {
     return true;
   });
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   const counts = {
     all: products.length,
     active: products.filter((p) => p.isActive && p.stock > 0).length,
@@ -62,6 +68,8 @@ export default function AdminProducts() {
     featured: products.filter((p) => p.isFeatured).length,
     inactive: products.filter((p) => !p.isActive).length,
   };
+
+  useEffect(() => { setPage(1); }, [search, tab, sort]);
 
   if (loading) {
     return (
@@ -149,7 +157,7 @@ export default function AdminProducts() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((p) => (
+              {paged.map((p) => (
                 <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-800/30 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
@@ -199,7 +207,7 @@ export default function AdminProducts() {
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && (
+              {paged.length === 0 && (
                 <tr>
                   <td colSpan={8} className="px-4 py-12 text-center text-neutral-500">
                     No se encontraron productos
@@ -210,6 +218,33 @@ export default function AdminProducts() {
           </table>
         </div>
       </div>
+
+      {filtered.length > PAGE_SIZE && (
+        <div className="flex items-center justify-between mt-4">
+          <p className="text-sm text-neutral-500">
+            Mostrando {(currentPage - 1) * PAGE_SIZE + 1}-{Math.min(currentPage * PAGE_SIZE, filtered.length)} de {filtered.length}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="btn-ghost px-3 py-1.5 text-sm disabled:opacity-40"
+            >
+              Anterior
+            </button>
+            <span className="text-sm text-neutral-400">
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="btn-ghost px-3 py-1.5 text-sm disabled:opacity-40"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

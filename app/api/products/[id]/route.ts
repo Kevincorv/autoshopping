@@ -58,7 +58,35 @@ export async function PATCH(
     if (d.isFeatured !== undefined) data.isFeatured = !!d.isFeatured;
     if (d.isNew !== undefined) data.isNew = !!d.isNew;
 
-    const product = await prisma.product.update({ where: { id: existing.id }, data });
+    if (d.images !== undefined && Array.isArray(d.images)) {
+      const imgs = d.images.filter((i: any) => i?.url).map((i: any, idx: number) => ({
+        url: String(i.url),
+        alt: i.alt || null,
+        isPrimary: !!i.isPrimary || idx === 0,
+        sortOrder: idx,
+      }));
+      // ensure exactly one primary
+      if (imgs.length && !imgs.some((i: any) => i.isPrimary)) imgs[0].isPrimary = true;
+      data.images = { deleteMany: {}, create: imgs };
+    }
+    if (d.specs !== undefined && Array.isArray(d.specs)) {
+      data.specs = {
+        deleteMany: {},
+        create: d.specs.filter((s: any) => s?.specName || s?.name).map((s: any) => ({
+          specName: s.specName || s.name,
+          specValue: s.specValue || s.value || "",
+        })),
+      };
+    }
+    if (d.tags !== undefined && Array.isArray(d.tags)) {
+      data.tags = { deleteMany: {}, create: d.tags.map((t: string) => ({ tag: t })) };
+    }
+
+    const product = await prisma.product.update({
+      where: { id: existing.id },
+      data,
+      include: { images: { orderBy: { sortOrder: "asc" } } },
+    });
     return NextResponse.json({ product });
   } catch (error) {
     console.error("Product update error:", error);
@@ -154,7 +182,7 @@ export async function GET(
         manufacturerCode: product.manufacturerCode,
         description: product.description,
         shortDescription: product.shortDescription,
-        images: product.images.map((i) => ({ url: i.url, alt: i.alt, isPrimary: i.isPrimary })),
+        images: product.images.map((i) => ({ id: i.id, url: i.url, alt: i.alt, isPrimary: i.isPrimary })),
         specs: product.specs.map((s) => ({ name: s.specName, value: s.specValue })),
         tags: product.tags.map((t) => t.tag),
         rating: product.rating,

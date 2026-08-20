@@ -103,9 +103,10 @@ export async function GET(request: Request) {
     const search = searchParams.get("search");
     const sort = searchParams.get("sort") || "featured";
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
-
     const includeInactive = searchParams.get("all") === "1";
+    const requested = parseInt(searchParams.get("limit") || "50");
+    const limit = includeInactive ? Math.min(requested || 50, 5000) : Math.min(requested || 50, 100);
+
     const where: Record<string, unknown> = includeInactive ? {} : { isActive: true };
 
     if (category) {

@@ -2,12 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Save, ArrowLeft, Trash2 } from "lucide-react";
+import { Save, ArrowLeft, Trash2, Plus } from "lucide-react";
 
 interface Option {
   id: string;
   name: string;
   slug: string;
+}
+
+interface ImageItem {
+  id?: string;
+  url: string;
+  alt: string;
+  isPrimary: boolean;
 }
 
 export default function EditProduct() {
@@ -18,8 +25,11 @@ export default function EditProduct() {
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [newImageUrl, setNewImageUrl] = useState("");
+  const [imgBusy, setImgBusy] = useState(false);
   const [categories, setCategories] = useState<Option[]>([]);
   const [brands, setBrands] = useState<Option[]>([]);
+  const [images, setImages] = useState<ImageItem[]>([{ url: "", isPrimary: true, alt: "" }]);
   const [form, setForm] = useState({
     name: "",
     slug: "",
@@ -37,7 +47,6 @@ export default function EditProduct() {
     isFeatured: false,
     isNew: true,
     weight: 0,
-    images: [{ url: "", isPrimary: true }],
     specs: [{ specName: "", specValue: "" }],
     tags: [] as string[],
     tagInput: "",
@@ -74,14 +83,18 @@ export default function EditProduct() {
               isFeatured: p.featured,
               isNew: p.isNew,
               weight: p.weight || 0,
-              images: p.images?.length ? p.images.map((img: any, i: number) => ({
-                url: typeof img === "string" ? img : img.url,
-                isPrimary: i === 0,
-              })) : [{ url: "", isPrimary: true }],
               specs: p.specs?.length ? p.specs.map((s: any) => ({ specName: s.specName || s.name, specValue: s.specValue || s.value })) : [{ specName: "", specValue: "" }],
               tags: p.tags || [],
               tagInput: "",
             });
+            const arr: ImageItem[] = (p.images as any[]).map((img: any) => ({
+              id: typeof img === "string" ? undefined : img.id,
+              url: typeof img === "string" ? img : img.url,
+              alt: typeof img === "string" ? "" : img.alt || "",
+              isPrimary: typeof img === "string" ? false : !!img.isPrimary,
+            }));
+            if (arr.length && !arr.some((i) => i.isPrimary)) arr[0].isPrimary = true;
+            setImages(arr.length ? arr : [{ url: "", isPrimary: true, alt: "" }]);
           }
         })
         .finally(() => setLoading(false));
@@ -107,6 +120,102 @@ export default function EditProduct() {
     setForm((prev) => ({ ...prev, tags: prev.tags.filter((t) => t !== tag) }));
   }
 
+  async function addImage() {
+    const url = newImageUrl.trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) {
+      setError("La URL debe empezar con http:// o https://");
+      return;
+    }
+    setError(null);
+    setNewImageUrl("");
+
+    if (isNew) {
+      setImages((prev) => {
+        const hasPrimary = prev.some((i) => i.isPrimary);
+        return [...prev, { url, isPrimary: !hasPrimary && prev.length === 0, alt: "" }];
+      });
+      return;
+    }
+
+    setImgBusy(true);
+    try {
+      const res = await fetch(`/api/products/${params.id}/images`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error al guardar la imagen");
+      setImages((prev) => {
+        const hasPrimary = prev.some((i) => i.isPrimary);
+        return [...prev.filter((i) => i.url), { id: data.image.id, url, alt: "", isPrimary: !hasPrimary }];
+      });
+    } catch (e: any) {
+      setError(e.message || "Error al agregar la imagen");
+    } finally {
+      setImgBusy(false);
+    }
+  }
+
+  async function removeImage(idx: number) {
+    const img = images[idx];
+    if (!img || !img.url) return;
+
+    if (isNew || !img.id) {
+      setImages((prev) => {
+        const arr = prev.filter((_, i) => i !== idx);
+        if (arr.length && !arr.some((i) => i.isPrimary)) arr[0].isPrimary = true;
+        return arr.length ? arr : [{ url: "", isPrimary: true, alt: "" }];
+      });
+      return;
+    }
+
+    setImgBusy(true);
+    try {
+      const res = await fetch(`/api/products/${params.id}/images/${img.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error al eliminar");
+      }
+      setImages((prev) => {
+        const arr = prev.filter((_, i) => i !== idx);
+        if (arr.length && !arr.some((i) => i.isPrimary)) arr[0].isPrimary = true;
+        return arr.length ? arr : [{ url: "", isPrimary: true, alt: "" }];
+      });
+    } catch (e: any) {
+      setError(e.message || "Error al eliminar la imagen");
+    } finally {
+      setImgBusy(false);
+    }
+  }
+
+  async function setPrimaryImage(idx: number) {
+    const img = images[idx];
+    if (!img || img.isPrimary) return;
+
+    setImages((prev) => prev.map((im, i) => ({ ...im, isPrimary: i === idx })));
+
+    if (isNew || !img.id) return;
+
+    setImgBusy(true);
+    try {
+      const res = await fetch(`/api/products/${params.id}/images/${img.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isPrimary: true }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error al marcar principal");
+      }
+    } catch (e: any) {
+      setError(e.message || "Error al marcar principal");
+    } finally {
+      setImgBusy(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -129,7 +238,7 @@ export default function EditProduct() {
       isFeatured: form.isFeatured,
       isNew: form.isNew,
       weight: form.weight,
-      images: form.images.filter((i) => i.url.trim()),
+      images: images.filter((i) => i.url.trim()),
       specs: form.specs.filter((s) => s.specName.trim()),
       tags: form.tags,
     };
@@ -329,16 +438,51 @@ export default function EditProduct() {
             </div>
 
             <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5 space-y-3">
-              <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Imagen principal</h2>
-              <input
-                value={form.images[0]?.url || ""}
-                onChange={(e) => setForm((prev) => ({ ...prev, images: [{ url: e.target.value, isPrimary: true }] }))}
-                placeholder="URL de la imagen..."
-                className="input px-3 w-full text-sm"
-              />
-              {form.images[0]?.url && (
-                <div className="w-full aspect-square rounded-lg overflow-hidden bg-neutral-800">
-                  <img src={form.images[0].url} alt="" className="w-full h-full object-cover" />
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Imágenes (URL)</h2>
+                {imgBusy && <span className="text-xs text-neutral-500">Guardando...</span>}
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  value={newImageUrl}
+                  onChange={(e) => setNewImageUrl(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addImage(); } }}
+                  placeholder="Pegar URL (https://...) y Enter"
+                  className="input px-3 w-full text-sm"
+                />
+                <button type="button" onClick={addImage} disabled={imgBusy || !newImageUrl.trim()} className="btn-primary px-3 py-2 text-sm whitespace-nowrap disabled:opacity-50">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+
+              {images.filter((i) => i.url.trim()).length === 0 ? (
+                <p className="text-xs text-gray-500">Sin imágenes. Agregá una URL arriba.</p>
+              ) : (
+                <div className="space-y-2">
+                  {images.map((img, idx) => (
+                    !img.url.trim() ? null : (
+                      <div key={img.id || idx} className="flex items-start gap-3 p-2 rounded-lg bg-neutral-800/50">
+                        <div className="relative w-16 h-16 rounded-md overflow-hidden bg-neutral-700 flex-shrink-0">
+                          <img src={img.url} alt={img.alt} className="w-full h-full object-cover" onError={(e) => { (e.currentTarget.style.display = "none"); }} />
+                          {img.isPrimary && (
+                            <span className="absolute top-0.5 left-0.5 px-1 py-0.5 rounded bg-emerald-500/90 text-white text-[9px] font-bold">PRAL</span>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <p className="text-xs text-neutral-400 truncate" title={img.url}>{img.url}</p>
+                          <div className="flex items-center gap-3">
+                            <button type="button" onClick={() => setPrimaryImage(idx)} disabled={img.isPrimary || imgBusy} className="text-xs text-blue-400 hover:text-blue-300 disabled:text-gray-600">
+                              {img.isPrimary ? "Principal" : "Marcar principal"}
+                            </button>
+                            <button type="button" onClick={() => removeImage(idx)} disabled={imgBusy} className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 disabled:opacity-50">
+                              <Trash2 className="w-3 h-3" /> Quitar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  ))}
                 </div>
               )}
             </div>
