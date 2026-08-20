@@ -13,9 +13,10 @@ interface ProductRow {
   stock: number;
   isActive: boolean;
   isFeatured: boolean;
-  brand: { name: string };
-  category: { name: string };
-  images: { url: string }[];
+  brand: string;
+  category: string;
+  categoryName: string;
+  images: string[];
   sold: number;
 }
 
@@ -35,7 +36,7 @@ export default function AdminProducts() {
   const [tab, setTab] = useState("all");
 
   useEffect(() => {
-    fetch(`/api/products?sort=${sort}&limit=200`)
+    fetch(`/api/products?sort=${sort}&limit=200&all=1`)
       .then((r) => r.json())
       .then((data) => setProducts(data.products || []))
       .catch(() => {})
@@ -153,20 +154,20 @@ export default function AdminProducts() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-neutral-800 flex items-center justify-center overflow-hidden shrink-0">
-                        {p.images?.[0]?.url ? (
-                          <img src={p.images[0].url} alt="" className="w-full h-full object-cover" />
+                        {p.images?.[0] ? (
+                          <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
                         ) : (
                           <Package className="w-4 h-4 text-neutral-500" />
                         )}
                       </div>
                       <div>
                         <p className="text-white font-medium truncate max-w-[250px]">{p.name}</p>
-                        <p className="text-neutral-500 text-xs">{p.brand?.name}</p>
+                        <p className="text-neutral-500 text-xs">{p.brand}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-neutral-400">{p.sku}</td>
-                  <td className="px-4 py-3 text-neutral-400">{p.category?.name}</td>
+                  <td className="px-4 py-3 text-neutral-400">{p.categoryName}</td>
                   <td className="px-4 py-3 text-right text-white font-medium">
                     Gs. {p.price.toLocaleString("es-PY")}
                   </td>

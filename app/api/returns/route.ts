@@ -51,8 +51,9 @@ export async function POST(request: Request) {
     if (!parsed.success) return NextResponse.json({ error: "Motivo y al menos 1 ítem requeridos" }, { status: 400 });
     const d = parsed.data;
 
-    const count = await prisma.returnOrder.count();
-    const returnNumber = `DEV-${String(count + 1).padStart(5, "0")}`;
+    const last = await prisma.returnOrder.findFirst({ orderBy: { returnNumber: "desc" }, select: { returnNumber: true } });
+    const lastSeq = last ? parseInt(last.returnNumber.replace("DEV-", ""), 10) || 0 : 0;
+    const returnNumber = `DEV-${String(lastSeq + 1).padStart(5, "0")}`;
     const refundAmount = Math.round(d.items.reduce((s, i) => s + i.quantity * i.unitPrice, 0) * 100) / 100;
 
     const ret = await prisma.$transaction(async (tx) => {

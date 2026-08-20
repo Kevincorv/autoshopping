@@ -418,6 +418,7 @@ export const ModelName = {
   Coupon: 'Coupon',
   AuditLog: 'AuditLog',
   Setting: 'Setting',
+  PaymentMethod: 'PaymentMethod',
   Notification: 'Notification',
   Session: 'Session',
   Supplier: 'Supplier',
@@ -443,7 +444,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "role" | "permission" | "customer" | "receivablePayment" | "address" | "category" | "brand" | "product" | "productImage" | "productSpec" | "productTag" | "cartItem" | "wishlistItem" | "order" | "orderItem" | "orderStatusHistory" | "payment" | "coupon" | "auditLog" | "setting" | "notification" | "session" | "supplier" | "purchase" | "purchaseItem" | "stockMovement" | "returnOrder" | "returnItem" | "cashSession" | "cashMovement"
+    modelProps: "user" | "role" | "permission" | "customer" | "receivablePayment" | "address" | "category" | "brand" | "product" | "productImage" | "productSpec" | "productTag" | "cartItem" | "wishlistItem" | "order" | "orderItem" | "orderStatusHistory" | "payment" | "coupon" | "auditLog" | "setting" | "paymentMethod" | "notification" | "session" | "supplier" | "purchase" | "purchaseItem" | "stockMovement" | "returnOrder" | "returnItem" | "cashSession" | "cashMovement"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1833,6 +1834,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PaymentMethod: {
+      payload: Prisma.$PaymentMethodPayload<ExtArgs>
+      fields: Prisma.PaymentMethodFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PaymentMethodFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PaymentMethodFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload>
+        }
+        findFirst: {
+          args: Prisma.PaymentMethodFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PaymentMethodFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload>
+        }
+        findMany: {
+          args: Prisma.PaymentMethodFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload>[]
+        }
+        create: {
+          args: Prisma.PaymentMethodCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload>
+        }
+        createMany: {
+          args: Prisma.PaymentMethodCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.PaymentMethodDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload>
+        }
+        update: {
+          args: Prisma.PaymentMethodUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload>
+        }
+        deleteMany: {
+          args: Prisma.PaymentMethodDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PaymentMethodUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.PaymentMethodUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentMethodPayload>
+        }
+        aggregate: {
+          args: Prisma.PaymentMethodAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePaymentMethod>
+        }
+        groupBy: {
+          args: Prisma.PaymentMethodGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PaymentMethodGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PaymentMethodCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PaymentMethodCountAggregateOutputType> | number
+        }
+      }
+    }
     Notification: {
       payload: Prisma.$NotificationPayload<ExtArgs>
       fields: Prisma.NotificationFieldRefs
@@ -2870,6 +2937,23 @@ export const SettingScalarFieldEnum = {
 export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
 
 
+export const PaymentMethodScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  icon: 'icon',
+  description: 'description',
+  commission: 'commission',
+  minAmount: 'minAmount',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentMethodScalarFieldEnum = (typeof PaymentMethodScalarFieldEnum)[keyof typeof PaymentMethodScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -3315,6 +3399,17 @@ export const SettingOrderByRelevanceFieldEnum = {
 export type SettingOrderByRelevanceFieldEnum = (typeof SettingOrderByRelevanceFieldEnum)[keyof typeof SettingOrderByRelevanceFieldEnum]
 
 
+export const PaymentMethodOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  icon: 'icon',
+  description: 'description'
+} as const
+
+export type PaymentMethodOrderByRelevanceFieldEnum = (typeof PaymentMethodOrderByRelevanceFieldEnum)[keyof typeof PaymentMethodOrderByRelevanceFieldEnum]
+
+
 export const NotificationOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -3654,6 +3749,7 @@ export type GlobalOmitConfig = {
   coupon?: Prisma.CouponOmit
   auditLog?: Prisma.AuditLogOmit
   setting?: Prisma.SettingOmit
+  paymentMethod?: Prisma.PaymentMethodOmit
   notification?: Prisma.NotificationOmit
   session?: Prisma.SessionOmit
   supplier?: Prisma.SupplierOmit

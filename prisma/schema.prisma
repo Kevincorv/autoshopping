@@ -273,17 +273,17 @@ model Order {
 }
 
 model OrderItem {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   orderId     String
-  order       Order    @relation(fields: [orderId], references: [id])
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id])
+  order       Order     @relation(fields: [orderId], references: [id])
+  productId   String?
+  product     Product?  @relation(fields: [productId], references: [id])
   productName String
   productSku  String
   quantity    Float
   unitPrice   Float
   subtotal    Float
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 }
 
 model OrderStatusHistory {
@@ -339,9 +339,23 @@ model AuditLog {
 model Setting {
   id        String   @id @default(cuid())
   key       String   @unique
-  value     String
+  value     String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PaymentMethod {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  type        String   @default("efectivo")
+  icon        String?
+  description String?
+  commission  Float    @default(0)
+  minAmount   Float    @default(0)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Notification {

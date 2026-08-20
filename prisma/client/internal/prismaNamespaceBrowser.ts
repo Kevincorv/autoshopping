@@ -72,6 +72,7 @@ export const ModelName = {
   Coupon: 'Coupon',
   AuditLog: 'AuditLog',
   Setting: 'Setting',
+  PaymentMethod: 'PaymentMethod',
   Notification: 'Notification',
   Session: 'Session',
   Supplier: 'Supplier',
@@ -436,6 +437,23 @@ export const SettingScalarFieldEnum = {
 } as const
 
 export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+export const PaymentMethodScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  icon: 'icon',
+  description: 'description',
+  commission: 'commission',
+  minAmount: 'minAmount',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentMethodScalarFieldEnum = (typeof PaymentMethodScalarFieldEnum)[keyof typeof PaymentMethodScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {
@@ -881,6 +899,17 @@ export const SettingOrderByRelevanceFieldEnum = {
 } as const
 
 export type SettingOrderByRelevanceFieldEnum = (typeof SettingOrderByRelevanceFieldEnum)[keyof typeof SettingOrderByRelevanceFieldEnum]
+
+
+export const PaymentMethodOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  icon: 'icon',
+  description: 'description'
+} as const
+
+export type PaymentMethodOrderByRelevanceFieldEnum = (typeof PaymentMethodOrderByRelevanceFieldEnum)[keyof typeof PaymentMethodOrderByRelevanceFieldEnum]
 
 
 export const NotificationOrderByRelevanceFieldEnum = {

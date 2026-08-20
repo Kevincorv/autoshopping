@@ -5,7 +5,7 @@ import { Plus, X, Save, Search, Trash2, TrendingUp, Wallet, CheckCircle2, AlertT
 import { useUI } from "@/lib/store";
 import { formatPYG } from "@/lib/utils";
 
-interface ProductRow { id: string; name: string; unit: string; stock: number; salePrice?: number | null; wholesalePrice?: number | null; brand?: { name: string } | null; }
+interface ProductRow { id: string; name: string; unit: string; stock: number; price?: number | null; salePrice?: number | null; wholesalePrice?: number | null; brand?: { name: string } | null; }
 interface SaleRow {
   id: string; orderNumber: string; status: string; paymentStatus: string; paymentMethod?: string | null;
   subtotal: number; discount: number; shipping: number; total: number; amountPaid: number;
@@ -68,7 +68,7 @@ export default function SalesPage() {
   };
 
   const addItem = (p: ProductRow) => {
-    const price = p.salePrice && p.salePrice > 0 ? p.salePrice : 0;
+    const price = (p.salePrice && p.salePrice > 0 ? p.salePrice : p.price) || 0;
     const existing = items.find((i) => i.productId === p.id);
     if (existing) {
       setItems(items.map((i) => i.key === existing.key ? { ...i, quantity: Math.min(i.quantity + 1, i.maxStock) } : i));
@@ -92,8 +92,8 @@ export default function SalesPage() {
   const save = async () => {
     if (items.length === 0) { ui.showToast("Agregá al menos un producto", "error"); return; }
     if (items.some((i) => !i.productId && !i.productName.trim())) { ui.showToast("Revisá los ítems", "error"); return; }
-    if (form.paymentStatus !== "pending" && !form.customerId && !form.customerName.trim()) {
-      ui.showToast("Para cobrar, cargá el cliente (o selecciona pagado sin cliente)", "error"); return;
+    if (form.paymentStatus === "pending" && !form.customerId && !form.customerName.trim()) {
+      ui.showToast("Para cobrar a crédito, cargá el cliente", "error"); return;
     }
     setSaving(true);
     try {

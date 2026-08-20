@@ -7,6 +7,7 @@ import { formatPYG } from "@/lib/utils";
 
 interface ReturnRow { id: string; returnNumber: string; customerName?: string | null; reason?: string | null; status: string; refundAmount: number; createdAt: string; order?: { orderNumber: string } | null; items?: { id: string; productName: string; quantity: number; unitPrice: number; condition?: string }[]; }
 interface DraftItem { key: string; productId?: string; productName: string; quantity: number; unitPrice: number; condition: string; }
+interface SearchResult { id: string; name: string; unit: string; price?: number | null; salePrice?: number | null; }
 
 let seq = 0;
 
@@ -23,7 +24,7 @@ export default function ReturnsPage() {
   const [form, setForm] = useState({ orderId: "", customerId: "", customerName: "", reason: "" });
   const [items, setItems] = useState<DraftItem[]>([]);
   const [term, setTerm] = useState("");
-  const [results, setResults] = useState<{ id: string; name: string; unit: string; salePrice?: number | null }[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [orderTerm, setOrderTerm] = useState("");
   const [orderResults, setOrderResults] = useState<{ id: string; orderNumber: string; customerName: string }[]>([]);
   const searchTimer = useRef<any>(null);
@@ -76,8 +77,8 @@ export default function ReturnsPage() {
     setResults(d.products || []);
   };
 
-  const addItem = (p?: { id: string; name: string; salePrice?: number | null }) => {
-    setItems([...items, { key: `k${seq++}`, productId: p?.id, productName: p?.name || term.trim(), quantity: 1, unitPrice: p?.salePrice || 0, condition: "bueno" }]);
+  const addItem = (p?: SearchResult) => {
+    setItems([...items, { key: `k${seq++}`, productId: p?.id, productName: p?.name || term.trim(), quantity: 1, unitPrice: (p?.salePrice && p.salePrice > 0 ? p.salePrice : p?.price) || 0, condition: "bueno" }]);
     setTerm("");
     setResults([]);
   };

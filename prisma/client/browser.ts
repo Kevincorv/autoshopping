@@ -123,6 +123,11 @@ export type AuditLog = Prisma.AuditLogModel
  */
 export type Setting = Prisma.SettingModel
 /**
+ * Model PaymentMethod
+ * 
+ */
+export type PaymentMethod = Prisma.PaymentMethodModel
+/**
  * Model Notification
  * 
  */

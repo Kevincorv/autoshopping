@@ -73,15 +73,26 @@ export async function POST(request: Request) {
 
     let supplierId: string | null = d.supplierId || null;
     if (!supplierId && d.supplierName) {
-      const count = await prisma.supplier.count();
+      const codes = await prisma.supplier.findMany({ select: { code: true } });
+      const maxN = codes.reduce((m, s) => {
+        const r = /^PROV-(\d+)$/.exec(s.code);
+        return r ? Math.max(m, parseInt(r[1])) : m;
+      }, 0);
       const sup = await prisma.supplier.create({
-        data: { code: `PROV-${String(count + 1).padStart(3, "0")}`, name: d.supplierName },
+        data: { code: `PROV-${String(maxN + 1).padStart(3, "0")}`, name: d.supplierName },
       });
       supplierId = sup.id;
     }
 
-    const purchaseCount = await prisma.purchase.count();
-    const purchaseNumber = `OC${String(purchaseCount + 1).padStart(5, "0")}`;
+    const [purchases, purchaseCount] = await Promise.all([
+      prisma.purchase.findMany({ select: { purchaseNumber: true } }),
+      prisma.purchase.count(),
+    ]);
+    const maxP = purchases.reduce((m, p) => {
+      const r = /^OC(\d+)$/.exec(p.purchaseNumber);
+      return r ? Math.max(m, parseInt(r[1])) : m;
+    }, 0);
+    const purchaseNumber = `OC${String(Math.max(maxP, purchaseCount) + 1).padStart(5, "0")}`;
     const itemTotal = d.items.reduce((s, i) => s + i.quantity * i.unitCost, 0);
     const total = Math.round((itemTotal + d.shippingCost) * 100) / 100;
     const subtotal = Math.round(itemTotal * 100) / 100;

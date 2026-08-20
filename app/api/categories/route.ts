@@ -4,7 +4,7 @@ import { audit } from "@/lib/audit";
 
 const CATEGORY_IMAGES: Record<string, string> = {
   "carpitas": "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400",
-  "multimedia": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400",
+  "multimedias": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400",
   "suntek": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400",
   "vonixx": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400",
   "sparco": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400",

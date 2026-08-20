@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Users, Shield, Search, Ban, CheckCircle, Plus, MoreVertical, X } from "lucide-react";
 
 interface UserRow {
@@ -241,7 +242,7 @@ export default function AdminUsers() {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-neutral-400">{role._count.users} usuario(s)</span>
-                <button className="text-brand-400 text-xs hover:underline">Editar permisos</button>
+                <Link href="/dashboard/admin/roles" className="text-brand-400 text-xs hover:underline">Editar permisos</Link>
               </div>
             </div>
           ))}

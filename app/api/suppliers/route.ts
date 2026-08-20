@@ -42,8 +42,12 @@ export async function POST(request: Request) {
 
     let code = d.code?.trim();
     if (!code) {
-      const count = await prisma.supplier.count();
-      code = `PROV-${String(count + 1).padStart(3, "0")}`;
+      const codes = await prisma.supplier.findMany({ select: { code: true } });
+      const maxN = codes.reduce((m, s) => {
+        const r = /^PROV-(\d+)$/.exec(s.code);
+        return r ? Math.max(m, parseInt(r[1])) : m;
+      }, 0);
+      code = `PROV-${String(maxN + 1).padStart(3, "0")}`;
     }
     const existing = await prisma.supplier.findFirst({ where: { OR: [{ code }, { name: d.name }] } });
     if (existing) return NextResponse.json({ error: "Código o nombre ya existente" }, { status: 409 });

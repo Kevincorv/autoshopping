@@ -5,7 +5,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Toast } from "@/components/Toast";
-import { LiveStatus } from "@/components/LiveStatus";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 export const metadata: Metadata = {
@@ -58,7 +57,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <CartDrawer />
           <Toast />
-          <LiveStatus />
           <WhatsAppButton />
         </Providers>
       </body>

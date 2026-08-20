@@ -14,7 +14,8 @@ const saleSchema = z.object({
   shipping: z.number().nonnegative().default(0),
   notes: z.string().optional(),
   items: z.array(z.object({
-    productId: z.string().min(1),
+    productId: z.string().optional(),
+    productName: z.string().optional(),
     quantity: z.number().positive(),
     unitPrice: z.number().nonnegative().optional(),
   })).min(1),
@@ -76,22 +77,35 @@ export async function POST(request: Request) {
     if (!parsed.success) return NextResponse.json({ error: "Datos de venta inválidos (mínimo 1 ítem)" }, { status: 400 });
     const d = parsed.data;
 
-    const products = await prisma.product.findMany({ where: { id: { in: d.items.map((i) => i.productId) } } });
+    const products = await prisma.product.findMany({ where: { id: { in: d.items.map((i) => i.productId).filter(Boolean) as string[] } } });
     const productMap = new Map(products.map((p) => [p.id, p]));
     for (const item of d.items) {
+      if (!item.productId) {
+        if (!item.productName) return NextResponse.json({ error: "Ítem sin nombre de producto" }, { status: 400 });
+        item.unitPrice = item.unitPrice ?? 0;
+        continue;
+      }
       const p = productMap.get(item.productId);
       if (!p) return NextResponse.json({ error: "Producto no encontrado en catálogo" }, { status: 404 });
       if (p.stock < item.quantity) {
         return NextResponse.json({ error: `Stock insuficiente: ${p.name} (disponible ${p.stock} ${p.unit})` }, { status: 409 });
       }
       if (item.unitPrice === undefined) {
-        if (!p.salePrice) return NextResponse.json({ error: `Sin precio de venta definido: ${p.name}` }, { status: 400 });
-        item.unitPrice = p.salePrice;
+        const salePrice = p.salePrice && p.salePrice > 0 ? p.salePrice : p.price;
+        if (!salePrice) return NextResponse.json({ error: `Sin precio de venta definido: ${p.name}` }, { status: 400 });
+        item.unitPrice = salePrice;
       }
     }
 
-    const saleCount = await prisma.order.count();
-    const orderNumber = `VTA-${new Date().getFullYear()}-${String(saleCount + 1).padStart(4, "0")}`;
+    const [orders, saleCount] = await Promise.all([
+      prisma.order.findMany({ select: { orderNumber: true } }),
+      prisma.order.count(),
+    ]);
+    const maxSeq = orders.reduce((m, o) => {
+      const r = /^VTA-\d+-(\d+)$/.exec(o.orderNumber);
+      return r ? Math.max(m, parseInt(r[1])) : m;
+    }, 0);
+    const orderNumber = `VTA-${new Date().getFullYear()}-${String(Math.max(maxSeq, saleCount) + 1).padStart(4, "0")}`;
     const subtotal = Math.round(d.items.reduce((s, i) => s + i.quantity * i.unitPrice!, 0) * 100) / 100;
     const discount = Math.min(Math.round(d.discount * 100) / 100, subtotal);
     const total = Math.round((subtotal - discount + d.shipping) * 100) / 100;
@@ -117,13 +131,13 @@ export async function POST(request: Request) {
           customerAddress: "Local",
           customerCity: "",
           notes: d.notes || null,
-          items: {
+items: {
             create: d.items.map((i) => {
-              const p = productMap.get(i.productId)!;
+              const p = i.productId ? productMap.get(i.productId) : null;
               return {
-                productId: p.id,
-                productName: p.name,
-                productSku: p.sku || "",
+                productId: p?.id ?? null,
+                productName: p?.name ?? (i.productName || "Ítem"),
+                productSku: p?.sku || "",
                 quantity: i.quantity,
                 unitPrice: i.unitPrice!,
                 subtotal: Math.round(i.quantity * i.unitPrice! * 100) / 100,
@@ -135,6 +149,7 @@ export async function POST(request: Request) {
       });
 
       for (const item of d.items) {
+        if (!item.productId) continue;
         const p = productMap.get(item.productId)!;
         const prev = p.stock;
         const next = Math.round((prev - item.quantity) * 100) / 100;

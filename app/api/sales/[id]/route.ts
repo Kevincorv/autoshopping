@@ -59,6 +59,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
         const order = await tx.order.update({ where: { id: sale.id }, data: { status: "cancelled" } });
         const items = await tx.orderItem.findMany({ where: { orderId: sale.id } });
         for (const item of items) {
+          if (!item.productId) continue;
           const product = await tx.product.findUnique({ where: { id: item.productId } });
           if (!product) continue;
           const prev = product.stock;
