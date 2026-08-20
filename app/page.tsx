@@ -14,16 +14,18 @@ import { countPlus } from "@/lib/utils";
 function HomeInner() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{ id: string; name: string; count: number; image: string }[]>([]);
+  const [kojima, setKojima] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
-    Promise.all([api.getProducts({}), api.getCategories()])
-      .then(([p, c]) => {
+    Promise.all([api.getProducts({}), api.getCategories(), api.getProducts({ q: "KOJIMA", limit: 12 })])
+      .then(([p, c, k]) => {
         if (!alive) return;
         setProducts(p.products || []);
         setCategories(c.categories || []);
+        setKojima(k.products || []);
       })
       .catch((e) => {
         console.error(e);
@@ -43,7 +45,7 @@ function HomeInner() {
     }
   });
 
-  const featured = products.filter((p) => p.featured).slice(0, 8);
+  const featured = kojima.slice(0, 10);
   const onSale = products.filter((p) => p.comparePrice && p.comparePrice > p.price).slice(0, 8);
   const newArrivals = products.filter((p) => p.isNew).slice(0, 8);
   const top = products.slice().sort((a, b) => b.sold - a.sold).slice(0, 8);
@@ -147,11 +149,11 @@ function HomeInner() {
         <div className="flex items-end justify-between mb-4">
           <div>
             <h2 className="text-xl md:text-2xl font-bold flex items-center gap-2">
-              <Zap className="w-5 h-5 text-brand-500" /> Destacados
+              <Zap className="w-5 h-5 text-brand-500" /> Productos Kojima
             </h2>
-            <p className="text-sm text-neutral-400">Los más populares del momento</p>
+            <p className="text-sm text-neutral-400">Variedad de productos Kojima</p>
           </div>
-          <Link href="/products" className="text-sm text-brand-400 hover:underline">
+          <Link href="/products?q=KOJIMA" className="text-sm text-brand-400 hover:underline">
             Ver todo →
           </Link>
         </div>
@@ -159,6 +161,8 @@ function HomeInner() {
           <GridSkeleton count={8} />
         ) : error ? (
           <div className="card p-8 text-center text-rose-400">{error}</div>
+        ) : featured.length === 0 ? (
+          <div className="card p-8 text-center text-neutral-500">No hay productos Kojima disponibles.</div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {featured.map((p) => (
