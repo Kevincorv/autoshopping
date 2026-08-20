@@ -123,7 +123,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   return (
-    <div className="flex h-screen bg-neutral-950 overflow-hidden">
+    <div className="flex bg-neutral-950">
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/60 z-40 lg:hidden"
@@ -132,7 +132,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-72 flex flex-col bg-neutral-950 border-r border-neutral-800 transition-transform duration-300 ${
+        className={`fixed lg:sticky top-0 left-0 z-50 w-72 h-screen flex flex-col bg-neutral-950 border-r border-neutral-800 transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -200,7 +200,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-sm flex items-center justify-between px-4 md:px-6 shrink-0">
+        <header className="h-16 sticky top-0 z-30 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-sm flex items-center justify-between px-4 md:px-6 shrink-0">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -299,7 +299,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-neutral-950">
+        <main className="flex-1 bg-neutral-950">
           <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
             {children}
           </div>
