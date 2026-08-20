@@ -64,8 +64,8 @@ export function Header() {
         <nav className="hidden lg:flex items-center gap-0.5 ml-2">
           <Link href="/" className="btn-ghost text-sm px-2.5">Inicio</Link>
           <Link href="/products" className="btn-ghost text-sm px-2.5">Productos</Link>
-          {mounted && user && (
-            <Link href="/dashboard" className="btn-ghost text-sm px-2.5 flex items-center gap-1">
+{mounted && user && (
+            <Link href={isAdmin ? "/dashboard/admin" : "/dashboard"} className="btn-ghost text-sm px-2.5 flex items-center gap-1">
               Dashboard
               {live && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
             </Link>
@@ -118,7 +118,7 @@ export function Header() {
                       <p className="text-sm font-medium text-white truncate">{user.name} {user.lastname}</p>
                       <p className="text-xs text-gray-400 truncate">{user.email}</p>
                     </div>
-                    <Link href="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-neutral-800">
+                    <Link href={isAdmin ? "/dashboard/admin" : "/dashboard"} onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-neutral-800">
                       <BarChart3 className="w-4 h-4" /> Dashboard
                     </Link>
                     {isAdmin && (
@@ -160,7 +160,7 @@ export function Header() {
             <Package className="w-4 h-4" /> Productos
           </Link>
           {user && (
-            <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-800 text-sm">
+            <Link href={isAdmin ? "/dashboard/admin" : "/dashboard"} onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-800 text-sm">
               <BarChart3 className="w-4 h-4" /> Dashboard
             </Link>
           )}

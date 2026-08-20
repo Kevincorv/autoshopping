@@ -73,10 +73,11 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-neutral-800 py-4 text-center text-xs text-neutral-500">
-        <p>© {new Date().getFullYear()} AUTOSHOPPING — San Ignacio, Misiones, Paraguay.</p>
+<p>© {new Date().getFullYear()} AUTOSHOPPING — San Ignacio, Misiones, Paraguay.</p>
+        {/* Desarrollado por KRC Technologies - Software · Web · Digital Solutions
         <p className="mt-1" style={{ fontSize: 12, opacity: 0.6 }}>
           <a href="https://www.instagram.com/krctechs/" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition-colors">Desarrollado por KRC Technologies - Software · Web · Digital Solutions</a>
-        </p>
+        </p> */}
       </div>
     </footer>
     </Fragment>

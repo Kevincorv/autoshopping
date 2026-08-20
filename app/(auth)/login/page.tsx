@@ -38,7 +38,14 @@ export default function LoginPage() {
       }
 
       setUser(data.user);
-      router.push(redirect);
+      const roleName = data.user?.role?.name;
+      const dest =
+        redirect !== "/dashboard"
+          ? redirect
+          : roleName === "admin"
+            ? "/dashboard/admin"
+            : "/dashboard";
+      router.push(dest);
       router.refresh();
     } catch {
       setError("Error de conexión");
