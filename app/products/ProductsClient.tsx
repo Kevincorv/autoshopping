@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { api } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
@@ -8,8 +8,10 @@ import { Filters, type FilterState } from "@/components/Filters";
 import { GridSkeleton } from "@/components/Skeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useSocketEvents } from "@/lib/socket";
-import { SearchX } from "lucide-react";
+import { SearchX, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Product } from "@/lib/types";
+
+const PER_PAGE = 100;
 
 export default function ProductsClient() {
   const sp = useSearchParams();
@@ -20,9 +22,8 @@ export default function ProductsClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const PAGE_SIZE = 12;
-  const totalPages = Math.ceil(products.length / PAGE_SIZE);
-  const paginatedProducts = products.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const [total, setTotal] = useState(0);
+  const totalPages = Math.ceil(total / PER_PAGE);
   const [filters, setFilters] = useState<FilterState>({
     category: sp.get("category") || "all",
     brand: sp.get("brand") || "all",
@@ -38,9 +39,7 @@ export default function ProductsClient() {
       .getCategories()
       .then((c) => alive && setCategories(c.categories || []))
       .catch((e) => console.error(e));
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, []);
 
   useEffect(() => {
@@ -55,8 +54,7 @@ export default function ProductsClient() {
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   }, [filters, pathname, router]);
 
-  useEffect(() => {
-    setPage(1);
+  const fetchProducts = useCallback(() => {
     let alive = true;
     setLoading(true);
     setError(null);
@@ -68,19 +66,26 @@ export default function ProductsClient() {
         max: filters.max ? Number(filters.max) : undefined,
         sort: filters.sort,
         q: filters.q || undefined,
+        page,
+        limit: PER_PAGE,
       })
       .then((r) => {
-        if (alive) setProducts(r.products || []);
+        if (alive) {
+          setProducts(r.products || []);
+          setTotal(r.total || 0);
+        }
       })
       .catch((e) => {
         console.error(e);
         if (alive) setError("No pudimos cargar los productos");
       })
       .finally(() => alive && setLoading(false));
-    return () => {
-      alive = false;
-    };
-  }, [filters]);
+    return () => { alive = false; };
+  }, [filters, page]);
+
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  useEffect(() => { setPage(1); }, [filters.category, filters.brand, filters.min, filters.max, filters.sort, filters.q]);
 
   useSocketEvents((evt) => {
     if (evt.type === "product:updated") {
@@ -98,7 +103,7 @@ export default function ProductsClient() {
         <div className="mb-4">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Productos</h1>
           <p className="text-sm text-neutral-400">
-            {loading ? "Cargando…" : `${products.length} resultado${products.length !== 1 ? "s" : ""}`}
+            {loading ? "Cargando…" : `${total.toLocaleString("es-PY")} resultado${total !== 1 ? "s" : ""}`}
             {filters.q && (
               <>
                 {" "}para &quot;<span className="text-brand-400">{filters.q}</span>&quot;
@@ -129,39 +134,55 @@ export default function ProductsClient() {
             ) : (
               <>
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {paginatedProducts.map((p) => (
+                  {products.map((p) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
                 </div>
+
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-1.5 mt-8">
-                    <button
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page === 1}
-                      className="btn-ghost text-sm px-3 py-1.5 disabled:opacity-30"
-                    >
-                      Anterior
-                    </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <div className="flex items-center justify-between mt-8">
+                    <p className="text-sm text-neutral-500">
+                      Página {page} de {totalPages} ({total.toLocaleString("es-PY")} productos)
+                    </p>
+                    <div className="flex items-center gap-2">
                       <button
-                        key={p}
-                        onClick={() => setPage(p)}
-                        className={`min-w-[2rem] h-8 rounded-md text-sm font-medium transition ${
-                          p === page
-                            ? "bg-brand-600 text-white"
-                            : "hover:bg-neutral-800 text-neutral-400"
-                        }`}
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="btn-ghost p-2 disabled:opacity-40"
                       >
-                        {p}
+                        <ChevronLeft className="w-4 h-4" />
                       </button>
-                    ))}
-                    <button
-                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={page === totalPages}
-                      className="btn-ghost text-sm px-3 py-1.5 disabled:opacity-30"
-                    >
-                      Siguiente
-                    </button>
+                      {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+                        let pageNum: number;
+                        if (totalPages <= 7) {
+                          pageNum = i + 1;
+                        } else if (page <= 4) {
+                          pageNum = i + 1;
+                        } else if (page >= totalPages - 3) {
+                          pageNum = totalPages - 6 + i;
+                        } else {
+                          pageNum = page - 3 + i;
+                        }
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => setPage(pageNum)}
+                            className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${
+                              page === pageNum ? "bg-brand-600 text-white" : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+                      <button
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        className="btn-ghost p-2 disabled:opacity-40"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 )}
               </>
