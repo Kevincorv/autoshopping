@@ -17,7 +17,9 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
 
-    const where: Record<string, unknown> = { isActive: true };
+    const includeInactive = searchParams.get("includeInactive") === "1";
+    const where: Record<string, unknown> = {};
+    if (!includeInactive) where.isActive = true;
 
     if (category) {
       where.category = { slug: category };
