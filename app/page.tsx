@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Zap, Shield, Truck, Award, TrendingUp, Tag, MapPin, Star, Sparkles, Percent, ChevronRight } from "lucide-react";
+import { ArrowRight, Zap, Shield, Truck, Award, TrendingUp, Tag, MapPin, Sparkles, Percent, ChevronRight } from "lucide-react";
 import { api } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
 import { GridSkeleton } from "@/components/Skeleton";
@@ -76,7 +76,7 @@ function HomeInner() {
               Suntek 🇺🇸
             </Link>
           </div>
-          <div className="mt-8 grid grid-cols-3 gap-3 sm:gap-4 max-w-md">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 max-w-md">
             <div>
               <p className="text-xl sm:text-2xl md:text-3xl font-extrabold">3000+</p>
               <p className="text-[10px] sm:text-xs text-white/80">Productos</p>
@@ -84,12 +84,6 @@ function HomeInner() {
             <div>
               <p className="text-xl sm:text-2xl md:text-3xl font-extrabold">24/48h</p>
               <p className="text-[10px] sm:text-xs text-white/80">Envíos</p>
-            </div>
-            <div>
-              <p className="text-xl sm:text-2xl md:text-3xl font-extrabold flex items-center gap-1">
-                4.8<Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-amber-300 text-amber-300" />
-              </p>
-              <p className="text-[10px] sm:text-xs text-white/80">Reseñas</p>
             </div>
           </div>
         </div>
