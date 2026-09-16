@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { getSessionUser } from "@/lib/auth/session";
+import { requireAuth } from "@/lib/auth/middleware";
 import { audit } from "@/lib/audit";
 import bcrypt from "bcryptjs";
 
@@ -22,6 +23,8 @@ const createSchema = z.object({
 
 export async function GET(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const url = new URL(request.url);
     const q = url.searchParams.get("q")?.toLowerCase() || "";
     const blocked = url.searchParams.get("blocked");
@@ -67,6 +70,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     const parsed = createSchema.safeParse(body);
     if (!parsed.success) {

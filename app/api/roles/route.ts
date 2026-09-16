@@ -1,14 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
+import { requireAdmin } from "@/lib/auth/middleware";
 
 export const dynamic = "force-dynamic";
 
 const RESOURCES = ["dashboard", "products", "categories", "brands", "stock", "purchases", "suppliers", "sales", "returns", "customers", "receivables", "cash", "reports", "settings", "users", "integrations", "notifications"];
 const ACTIONS = ["view", "create", "update", "delete", "approve"];
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await requireAdmin(request as any);
+  if (auth.response) return auth.response;
   try {
     const roles = await prisma.role.findMany({
       include: {
@@ -26,6 +29,8 @@ export async function GET() {
 const roleSchema = z.object({ name: z.string().min(1), description: z.string().optional() });
 
 export async function POST(request: Request) {
+  const auth = await requireAdmin(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const parsed = roleSchema.safeParse(body);
@@ -42,6 +47,8 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const auth = await requireAdmin(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const { roleId, permissions } = body as { roleId: string; permissions: { resource: string; actions: string[] }[] };
@@ -67,6 +74,8 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const auth = await requireAdmin(request as any);
+  if (auth.response) return auth.response;
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");

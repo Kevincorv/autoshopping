@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/middleware";
 
 export const dynamic = "force-dynamic";
 import { z } from "zod";
@@ -20,6 +21,8 @@ const returnSchema = z.object({
 });
 
 export async function GET(request: Request) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const url = new URL(request.url);
     const q = url.searchParams.get("q")?.toLowerCase() || "";
@@ -47,6 +50,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const parsed = returnSchema.safeParse(body);

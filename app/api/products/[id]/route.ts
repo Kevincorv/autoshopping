@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/middleware";
 
 export async function GET(
   _request: Request,
@@ -95,6 +96,8 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const existing = await prisma.product.findFirst({
@@ -222,6 +225,8 @@ export async function DELETE(
   _request: Request,
   { params }: { params: { id: string } }
 ) {
+  const auth = await requireAuth(_request as any);
+  if (auth.response) return auth.response;
   try {
     const existing = await prisma.product.findFirst({
       where: { OR: [{ id: params.id }, { slug: params.id }] },

@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { requireAuth } from "@/lib/auth/middleware";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
+  const auth = await requireAuth(_request as any);
+  if (auth.response) return auth.response;
   try {
     const ret = await prisma.returnOrder.findUnique({
       where: { id: params.id },
@@ -17,6 +20,8 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 }
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const ret = await prisma.returnOrder.findUnique({ where: { id: params.id } });

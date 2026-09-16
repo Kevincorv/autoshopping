@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireAuth } from "@/lib/auth/middleware";
 import { audit } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,8 @@ const createSchema = z.object({
 
 export async function GET(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const url = new URL(request.url);
     const q = url.searchParams.get("q")?.toLowerCase() || "";
     const type = url.searchParams.get("type") || "";
@@ -58,6 +61,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     const parsed = createSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: "Tipo (ENTRADA/SALIDA), cantidad y motivo requeridos" }, { status: 400 });

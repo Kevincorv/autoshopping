@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/middleware";
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     const notification = await prisma.notification.update({
       where: { id: params.id },

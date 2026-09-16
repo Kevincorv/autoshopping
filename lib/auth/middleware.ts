@@ -24,3 +24,32 @@ export async function requireAuth(
   }
   return { payload, response: null };
 }
+
+export async function requireAdmin(
+  request: NextRequest
+): Promise<{ payload: JwtPayload; response: null } | { payload: null; response: NextResponse }> {
+  const result = await requireAuth(request);
+  if (result.response) return result;
+  if (result.payload?.roleName !== "admin") {
+    return {
+      payload: null,
+      response: NextResponse.json(
+        { error: "Acceso denegado" },
+        { status: 403 }
+      ),
+    };
+  }
+  return result;
+}
+
+export function unauthorized() {
+  return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+}
+
+export function forbidden() {
+  return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
+}
+
+export async function getSessionUser(request: NextRequest) {
+  return getSession(request);
+}

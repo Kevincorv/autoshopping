@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
+import { requireAuth } from "@/lib/auth/middleware";
 
 export const dynamic = "force-dynamic";
 
@@ -118,6 +119,8 @@ async function generateUniqueSku(base: string): Promise<string> {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const {

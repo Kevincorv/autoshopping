@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/auth/session";
+import { requireAuth } from "@/lib/auth/middleware";
 import { audit } from "@/lib/audit";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(_request as any);
+    if (auth.response) return auth.response;
     const customer = await prisma.customer.findUnique({
       where: { id: params.id },
       include: {
@@ -26,6 +29,8 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     const session = await getSessionUser();
     const customer = await prisma.customer.findUnique({ where: { id: params.id } });

@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireAuth } from "@/lib/auth/middleware";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const open = await prisma.cashSession.findFirst({ where: { status: "open" }, include: { movements: { orderBy: { createdAt: "desc" }, take: 100 } } });
     const sessions = await prisma.cashSession.findMany({ orderBy: { openedAt: "desc" }, take: 10, include: { _count: { select: { movements: true } } } });
     const all = await prisma.cashMovement.findMany({ orderBy: { createdAt: "desc" }, take: 50 });
@@ -18,6 +21,8 @@ const openSchema = z.object({ openingAmount: z.number().nonnegative().default(0)
 
 export async function POST(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     if (body.action === "open") {
       const parsed = openSchema.safeParse(body);

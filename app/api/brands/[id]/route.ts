@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { requireAuth } from "@/lib/auth/middleware";
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const brand = await prisma.brand.findUnique({ where: { id: params.id }, include: { _count: { select: { products: true } } } });
@@ -24,6 +27,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const brand = await prisma.brand.findUnique({ where: { id: params.id }, include: { _count: { select: { products: true } } } });
     if (!brand) return NextResponse.json({ error: "Marca no encontrada" }, { status: 404 });

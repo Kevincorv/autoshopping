@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/middleware";
 import { audit } from "@/lib/audit";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(_request as any);
+    if (auth.response) return auth.response;
     const supplier = await prisma.supplier.findUnique({
       where: { id: params.id },
       include: {
@@ -33,6 +36,8 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     const supplier = await prisma.supplier.findUnique({ where: { id: params.id } });
     if (!supplier) return NextResponse.json({ error: "Proveedor no encontrado" }, { status: 404 });
@@ -55,6 +60,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const supplier = await prisma.supplier.findUnique({ where: { id: params.id }, include: { _count: { select: { purchases: true } } } });
     if (!supplier) return NextResponse.json({ error: "Proveedor no encontrado" }, { status: 404 });
     if (supplier._count.purchases > 0) {

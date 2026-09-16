@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireAuth } from "@/lib/auth/middleware";
 import { audit } from "@/lib/audit";
 
 const moveSchema = z.object({ type: z.enum(["INGRESO", "EGRESO"]), amount: z.number().positive(), category: z.string().optional(), description: z.string().optional() });
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     const session = await prisma.cashSession.findUnique({ where: { id: params.id }, include: { movements: true } });
     if (!session) return NextResponse.json({ error: "Caja no encontrada" }, { status: 404 });

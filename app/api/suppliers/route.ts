@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireAuth } from "@/lib/auth/middleware";
 import { audit } from "@/lib/audit";
 
 const schema = z.object({
@@ -17,8 +18,10 @@ const schema = z.object({
   contactsJson: z.string().optional(),
 });
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const suppliers = await prisma.supplier.findMany({
       include: {
         _count: { select: { purchases: true } },
@@ -35,6 +38,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: "Nombre requerido" }, { status: 400 });

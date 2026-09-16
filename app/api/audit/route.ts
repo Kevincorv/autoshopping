@@ -1,7 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/auth/middleware";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await requireAdmin(request as any);
+  if (auth.response) return auth.response;
   try {
     const logs = await prisma.auditLog.findMany({
       select: { id: true, action: true, resource: true, resourceId: true, details: true, ipAddress: true, createdAt: true, user: { select: { name: true, lastname: true } } },
@@ -15,6 +18,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAdmin(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const log = await prisma.auditLog.create({ data: body });

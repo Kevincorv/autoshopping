@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
+import { requireAuth } from "@/lib/auth/middleware";
 
 const schema = z.object({
   name: z.string().min(1),
@@ -29,6 +30,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const parsed = schema.safeParse(body);

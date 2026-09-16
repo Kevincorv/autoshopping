@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireAuth } from "@/lib/auth/middleware";
 
 const createOrderSchema = z.object({
   items: z.array(z.object({
@@ -20,7 +21,9 @@ const createOrderSchema = z.object({
   notes: z.string().max(500).optional(),
 });
 
-export async function GET() {
+export async function GET(request: Request) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const orders = await prisma.order.findMany({
       include: {
@@ -38,6 +41,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const parsed = createOrderSchema.safeParse(body);

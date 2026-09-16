@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/auth/middleware";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await requireAdmin(request as any);
+  if (auth.response) return auth.response;
   try {
     const settings = await prisma.setting.findMany({ orderBy: { key: "asc" } });
     return NextResponse.json({ settings });
@@ -11,6 +14,8 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const auth = await requireAdmin(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const { settings } = body;

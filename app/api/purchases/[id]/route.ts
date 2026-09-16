@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireAuth } from "@/lib/auth/middleware";
 import { audit } from "@/lib/audit";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(_request as any);
+    if (auth.response) return auth.response;
     const purchase = await prisma.purchase.findUnique({
       where: { id: params.id },
       include: {
@@ -26,6 +29,8 @@ const receiveSchema = z.object({
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
 
     if (body.action === "receive") {
@@ -153,6 +158,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const purchase = await prisma.purchase.findUnique({ where: { id: params.id } });
     if (!purchase) return NextResponse.json({ error: "Compra no encontrada" }, { status: 404 });
     if (purchase.status !== "draft") {

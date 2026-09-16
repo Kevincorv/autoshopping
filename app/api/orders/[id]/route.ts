@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/middleware";
 
 const VALID_STATUSES = ["pending", "confirmed", "preparing", "shipped", "delivered", "cancelled"];
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await requireAuth(request as any);
+  if (auth.response) return auth.response;
   try {
     const body = await request.json();
     const { status } = body;

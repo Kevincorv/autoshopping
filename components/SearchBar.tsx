@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { Search, X, Loader2, Package } from "lucide-react";
+import { Search, X, Loader2, Package, Star } from "lucide-react";
 import { api } from "@/lib/api";
 import { debounce, formatPYG, classNames } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -21,8 +21,10 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [took, setTook] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const router = useRouter();
   const acRef = useRef<AbortController | null>(null);
 
@@ -32,9 +34,7 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
 
   const runSearch = useCallback(async (q: string) => {
     if (acRef.current) {
-      try {
-        acRef.current.abort();
-      } catch (_) {}
+      try { acRef.current.abort(); } catch (_) {}
     }
     if (!q || q.trim().length < 1) {
       setResults([]);
@@ -67,6 +67,7 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
     const v = e.target.value || "";
     setQuery(v);
     setOpen(true);
+    setActiveIndex(-1);
     if (v.trim().length === 0) {
       setResults([]);
       setLoading(false);
@@ -91,11 +92,11 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
     setQuery("");
     setResults([]);
     setLoading(false);
+    setActiveIndex(-1);
     inputRef.current?.focus();
   };
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const goToResults = () => {
     if (query.trim().length > 0) {
       router.push(`/products?q=${encodeURIComponent(query.trim())}`);
       setOpen(false);
@@ -113,8 +114,28 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
     if (e.key === "Escape") {
       setOpen(false);
       onClose?.();
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((prev) => Math.min(prev + 1, results.length - 1));
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((prev) => Math.max(prev - 1, -1));
+    }
+    if (e.key === "Enter" && activeIndex >= 0 && results[activeIndex]) {
+      e.preventDefault();
+      onPick(results[activeIndex]);
     }
   };
+
+  useEffect(() => {
+    if (activeIndex >= 0 && listRef.current) {
+      const items = listRef.current.querySelectorAll("[role='option']");
+      items[activeIndex]?.scrollIntoView({ block: "nearest" });
+    }
+  }, [activeIndex]);
 
   const inputRect = useRef<{ top: number; left: number; width: number } | null>(null);
 
@@ -127,17 +148,14 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
 
   return (
     <div ref={containerRef} className={classNames("w-full", className)}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={(e) => { e.preventDefault(); if (activeIndex >= 0 && results[activeIndex]) { onPick(results[activeIndex]); } else { goToResults(); } }}>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
           <input
             ref={inputRef}
             value={query}
             onChange={onChange}
-            onFocus={() => {
-              updateRect();
-              if (query.length > 0) setOpen(true);
-            }}
+            onFocus={() => { updateRect(); if (query.length > 0) setOpen(true); }}
             onKeyDown={onKey}
             type="text"
             inputMode="search"
@@ -148,14 +166,10 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
             aria-label="Buscar productos"
             aria-autocomplete="list"
             aria-controls="search-results"
+            aria-activedescendant={activeIndex >= 0 ? `search-item-${activeIndex}` : undefined}
           />
           {query.length > 0 && (
-            <button
-              type="button"
-              onClick={clear}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-neutral-800 text-neutral-400"
-              aria-label="Limpiar"
-            >
+            <button type="button" onClick={clear} className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-neutral-800 text-neutral-400" aria-label="Limpiar">
               <X className="w-4 h-4" />
             </button>
           )}
@@ -172,10 +186,7 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
           zIndex: 999,
         } : {};
         return (
-        <div
-          style={style}
-          className="card overflow-hidden shadow-2xl animate-fade-in max-h-[70vh] overflow-y-auto scrollbar-thin"
-        >
+        <div style={style} className="card overflow-hidden shadow-2xl animate-fade-in max-h-[70vh] overflow-y-auto scrollbar-thin">
           {loading && results.length === 0 && (
             <div className="p-3 space-y-2">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -195,28 +206,31 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
               <Package className="w-10 h-10 text-neutral-600 mx-auto mb-2" />
               <p className="text-sm text-neutral-300">No encontramos productos para &quot;{query}&quot;</p>
               <p className="text-xs text-neutral-500 mt-1">Probá con otra marca o palabra clave.</p>
+              <button onClick={goToResults} className="mt-3 text-xs text-brand-400 hover:underline">
+                Ver todos los resultados →
+              </button>
             </div>
           )}
 
           {!loading && results.length > 0 && (
             <>
               <div className="px-3 py-2 text-xs text-neutral-500 border-b border-neutral-800 flex items-center justify-between">
-                <span>
-                  {results.length} resultado{results.length !== 1 ? "s" : ""} para &quot;{query}&quot;
-                </span>
+                <span>{results.length} resultado{results.length !== 1 ? "s" : ""} para &quot;{query}&quot;</span>
                 {took > 0 && <span>{took}ms</span>}
               </div>
-              <ul role="listbox">
-                {results.map((p) => (
-                  <li key={p.id}>
+              <ul ref={listRef} role="listbox">
+                {results.map((p, i) => (
+                  <li key={p.id} id={`search-item-${i}`}>
                     <button
                       type="button"
                       onClick={() => onPick(p)}
-                      className="w-full flex items-center gap-3 p-2.5 hover:bg-neutral-800/70 transition text-left"
+                      className={classNames(
+                        "w-full flex items-center gap-3 p-2.5 transition text-left",
+                        i === activeIndex ? "bg-brand-500/10" : "hover:bg-neutral-800/70"
+                      )}
                     >
                       <div className="w-12 h-12 rounded-md overflow-hidden bg-neutral-800 shrink-0">
                         {p.images?.[0] ? (
-                          // eslint-disable-next-line @next/next/no-img-element
                           <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" loading="lazy" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-neutral-600">
@@ -227,24 +241,27 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-neutral-100 truncate">{p.name}</p>
                         <p className="text-xs text-neutral-500 truncate">
-                          {p.brand} · {p.sku}
+                          {p.brand}{(p as any).categoryName ? ` · ${(p as any).categoryName}` : ""}{p.sku ? ` · ${p.sku}` : ""}
                         </p>
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-sm font-semibold text-brand-400">{formatPYG(p.price)}</p>
-                        <p className={classNames("text-[10px] mt-0.5", p.stock > 0 ? "text-emerald-400" : "text-rose-400")}>
-                          {p.stock > 0 ? `Stock: ${p.stock}` : "Sin stock"}
-                        </p>
+                        <div className="flex items-center gap-1 justify-end mt-0.5">
+                          {p.rating > 0 && (
+                            <span className="flex items-center gap-0.5 text-[10px] text-neutral-400">
+                              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />{p.rating.toFixed(1)}
+                            </span>
+                          )}
+                          <span className={classNames("text-[10px]", p.stock > 0 ? "text-emerald-400" : "text-rose-400")}>
+                            {p.stock > 0 ? `Stock: ${p.stock}` : "Sin stock"}
+                          </span>
+                        </div>
                       </div>
                     </button>
                   </li>
                 ))}
               </ul>
-              <button
-                type="button"
-                onClick={onSubmit}
-                className="w-full px-3 py-2.5 text-sm font-medium text-brand-400 hover:bg-neutral-800/60 border-t border-neutral-800"
-              >
+              <button type="button" onClick={goToResults} className="w-full px-3 py-2.5 text-sm font-medium text-brand-400 hover:bg-neutral-800/60 border-t border-neutral-800">
                 Ver todos los resultados →
               </button>
             </>
@@ -252,11 +269,11 @@ export function SearchBar({ className, placeholder = "Buscar productos, marcas, 
 
           {loading && results.length > 0 && (
             <div className="px-3 py-1.5 text-xs text-neutral-500 flex items-center gap-2 border-t border-neutral-800">
-              <Loader2 className="w-3 h-3 animate-spin" /> Buscando mas...
+              <Loader2 className="w-3 h-3 animate-spin" /> Buscando más...
             </div>
           )}
         </div>
-      );
+        );
       })()}
     </div>
   );

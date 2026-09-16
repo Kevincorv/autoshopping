@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { getSessionUser } from "@/lib/auth/session";
+import { requireAuth } from "@/lib/auth/middleware";
 
 export async function GET() {
   try {
@@ -30,6 +31,8 @@ const createSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    const auth = await requireAuth(request as any);
+    if (auth.response) return auth.response;
     const body = await request.json();
     const parsed = createSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: "Destinatario, tipo, título y mensaje requeridos" }, { status: 400 });
