@@ -13,6 +13,7 @@ export type SocketEvent =
 let socket: any = null;
 let listeners: Set<(evt: SocketEvent) => void> = new Set();
 let connectionState = false;
+let socketAttempted = false;
 
 function emitToListeners(evt: SocketEvent) {
   listeners.forEach((fn) => {
@@ -28,9 +29,20 @@ function notifyStatus() {
   });
 }
 
+function isServerlessEnvironment(): boolean {
+  if (typeof window === "undefined") return true;
+  const host = window.location.hostname;
+  return host.includes("vercel.app") || host.includes("netlify.app") || host.includes("herokuapp.com");
+}
+
 function getSocketInstance(): any {
   if (typeof window === "undefined") return null;
-  if (socket) return socket;
+  if (socketAttempted) return socket;
+  socketAttempted = true;
+
+  if (isServerlessEnvironment()) {
+    return null;
+  }
 
   try {
     const { io } = require("socket.io-client");
@@ -39,7 +51,7 @@ function getSocketInstance(): any {
       autoConnect: true,
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 10,
+      reconnectionAttempts: 5,
     });
 
     s.on("connect", () => {
