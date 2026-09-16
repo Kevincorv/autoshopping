@@ -33,7 +33,6 @@ function getSocketInstance(): any {
   if (socket) return socket;
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { io } = require("socket.io-client");
     const s = io("/", {
       transports: ["websocket", "polling"],
