@@ -60,7 +60,7 @@ export async function GET(
         secondaryBarcode: product.secondaryBarcode,
         description: product.description,
         shortDescription: product.shortDescription,
-        images: product.images.map((i) => ({ url: i.url, alt: i.alt, isPrimary: i.isPrimary })),
+        images: product.images.map((i) => i.url),
         specs: product.specs.map((s) => ({ name: s.specName, value: s.specValue })),
         tags: product.tags.map((t) => t.tag),
         rating: product.rating,
