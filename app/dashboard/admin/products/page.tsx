@@ -180,86 +180,99 @@ export default function AdminProducts() {
         </select>
       </div>
 
-      {/* Table */}
-      <div className="rounded-xl border border-neutral-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-900/50">
-                <th className="text-left px-4 py-3 text-neutral-400 font-medium">Producto</th>
-                <th className="text-left px-4 py-3 text-neutral-400 font-medium">SKU</th>
-                <th className="text-left px-4 py-3 text-neutral-400 font-medium">Categoría</th>
-                <th className="text-right px-4 py-3 text-neutral-400 font-medium">Precio</th>
-                <th className="text-right px-4 py-3 text-neutral-400 font-medium">Stock</th>
-                <th className="text-right px-4 py-3 text-neutral-400 font-medium">Vendidos</th>
-                <th className="text-center px-4 py-3 text-neutral-400 font-medium">Estado</th>
-                <th className="text-right px-4 py-3 text-neutral-400 font-medium">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                Array.from({ length: 10 }).map((_, i) => (
-                  <tr key={i} className="border-b border-neutral-800/50">
-                    <td colSpan={8} className="px-4 py-3">
-                      <div className="h-5 bg-neutral-800/50 rounded animate-pulse" />
-                    </td>
-                  </tr>
-                ))
-              ) : filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-neutral-500">
-                    No se encontraron productos
-                  </td>
-                </tr>
-              ) : (
-                filtered.map((p) => (
-                  <tr key={p.id} className="border-b border-neutral-800/50 hover:bg-neutral-800/30 transition-colors">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-neutral-800 flex items-center justify-center overflow-hidden shrink-0">
-                          {p.images?.[0]?.url ? (
-                            <img src={p.images[0].url} alt="" className="w-full h-full object-cover" />
-                          ) : (
-                            <Package className="w-4 h-4 text-neutral-500" />
-                          )}
-                        </div>
-                        <div>
-                          <p className="text-white font-medium truncate max-w-[250px]">{p.name}</p>
-                          <p className="text-neutral-500 text-xs">{p.brand?.name}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-neutral-400">{p.sku}</td>
-                    <td className="px-4 py-3 text-neutral-400">{p.category?.name}</td>
-                    <td className="px-4 py-3 text-right text-white font-medium">
-                      Gs. {p.price.toLocaleString("es-PY")}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <span className={p.stock <= 0 ? "text-rose-400 font-medium" : p.stock <= 5 ? "text-amber-400 font-medium" : "text-neutral-300"}>
-                        {p.stock}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right text-neutral-400">{p.sold}</td>
-                    <td className="px-4 py-3 text-center">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                        p.isFeatured ? "bg-amber-500/10 text-amber-400" : p.isActive ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
-                      }`}>
-                        {p.isFeatured && <Star className="w-3 h-3" />}
-                        {p.isFeatured ? "Destacado" : p.isActive ? "Activo" : "Inactivo"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Link href={`/dashboard/admin/products/${p.id}`} className="btn-ghost p-1.5 inline-flex">
-                        <Edit className="w-4 h-4" />
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {/* Product cards */}
+      {loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="rounded-xl border border-neutral-800 overflow-hidden">
+              <div className="aspect-[4/3] bg-neutral-800/50 animate-pulse" />
+              <div className="p-3 space-y-2">
+                <div className="h-4 bg-neutral-800/50 rounded animate-pulse" />
+                <div className="h-3 w-2/3 bg-neutral-800/50 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : filtered.length === 0 ? (
+        <div className="rounded-xl border border-neutral-800 py-16 text-center text-neutral-500">
+          No se encontraron productos
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filtered.map((p) => {
+            const statusLabel = p.isFeatured ? "Destacado" : p.isActive ? "Activo" : "Inactivo";
+            const statusClass = p.isFeatured
+              ? "bg-amber-500/10 text-amber-400"
+              : p.isActive
+                ? "bg-emerald-500/10 text-emerald-400"
+                : "bg-rose-500/10 text-rose-400";
+            return (
+              <div
+                key={p.id}
+                className="group rounded-xl border border-neutral-800 bg-neutral-900/50 overflow-hidden flex flex-col hover:border-neutral-700 transition-colors"
+              >
+                <Link
+                  href={`/dashboard/admin/products/${p.id}`}
+                  className="relative aspect-[4/3] bg-neutral-800 overflow-hidden block"
+                >
+                  {p.images?.[0]?.url ? (
+                    <img
+                      src={p.images[0].url}
+                      alt={p.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-neutral-600">
+                      <Package className="w-10 h-10" />
+                    </div>
+                  )}
+                  <span
+                    className={`absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${statusClass}`}
+                  >
+                    {p.isFeatured && <Star className="w-3 h-3" />}
+                    {statusLabel}
+                  </span>
+                  {p.stock <= 0 && (
+                    <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/90 text-white">
+                      Sin stock
+                    </span>
+                  )}
+                </Link>
+                <div className="p-3 flex flex-col flex-1">
+                  <p className="text-sm text-white font-medium line-clamp-2 min-h-[2.5rem]">{p.name}</p>
+                  <p className="text-xs text-neutral-500 mt-1 truncate">
+                    {p.brand?.name} · {p.category?.name}
+                  </p>
+                  <p className="text-[11px] text-neutral-600 mt-0.5 truncate">SKU {p.sku}</p>
+                  <div className="flex items-center justify-between gap-2 mt-3">
+                    <span className="text-brand-400 font-bold text-sm">
+                      Gs. {p.price.toLocaleString("es-PY")}
+                    </span>
+                    <span
+                      className={`text-xs shrink-0 ${
+                        p.stock <= 0 ? "text-rose-400 font-medium" : p.stock <= 5 ? "text-amber-400 font-medium" : "text-neutral-400"
+                      }`}
+                    >
+                      Stock: {p.stock}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-neutral-800/70">
+                    <span className="text-[11px] text-neutral-500">{p.sold} vendidos</span>
+                    <Link
+                      href={`/dashboard/admin/products/${p.id}`}
+                      className="btn-ghost p-1.5 inline-flex"
+                      aria-label="Editar producto"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (

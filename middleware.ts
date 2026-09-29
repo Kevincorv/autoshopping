@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
 
   if (AUTH_PATHS.some((p) => pathname.startsWith(p))) {
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/dashboard/admin", request.url));
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 

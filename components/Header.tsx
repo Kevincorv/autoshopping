@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShoppingCart, Heart, User, Menu, X, Home, Package, BarChart3, Car, LogOut, ChevronDown } from "lucide-react";
 import { useCart, useWishlist } from "@/lib/store";
@@ -11,6 +12,7 @@ import { useSocketStatus } from "@/lib/socket";
 import { useAuth } from "@/lib/auth/store";
 
 export function Header() {
+  const router = useRouter();
   const items = useCart((s) => s.items);
   const openCart = useCart((s) => s.open);
   const wishlistIds = useWishlist((s) => s.ids);
@@ -38,6 +40,14 @@ export function Header() {
   const wishCount = wishlistIds.length;
 
   const isAdmin = user?.role.name === "admin";
+  const showDashboard = !!user && user.role.name !== "customer";
+
+  const handleLogout = async () => {
+    setUserMenuOpen(false);
+    setMobileOpen(false);
+    await logout();
+    router.push("/");
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-neutral-800/80 bg-neutral-950/80 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/70">
@@ -64,7 +74,7 @@ export function Header() {
         <nav className="hidden lg:flex items-center gap-0.5 ml-2">
           <Link href="/" className="btn-ghost text-sm px-2.5">Inicio</Link>
           <Link href="/products" className="btn-ghost text-sm px-2.5">Productos</Link>
-          {mounted && user && (
+          {mounted && showDashboard && (
             <Link href="/dashboard" className="btn-ghost text-sm px-2.5 flex items-center gap-1">
               Dashboard
               {live && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
@@ -118,9 +128,11 @@ export function Header() {
                       <p className="text-sm font-medium text-white truncate">{user.name} {user.lastname}</p>
                       <p className="text-xs text-gray-400 truncate">{user.email}</p>
                     </div>
-                    <Link href="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-neutral-800">
-                      <BarChart3 className="w-4 h-4" /> Dashboard
-                    </Link>
+                    {showDashboard && (
+                      <Link href="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-neutral-800">
+                        <BarChart3 className="w-4 h-4" /> Dashboard
+                      </Link>
+                    )}
                     {isAdmin && (
                       <Link href="/dashboard/admin" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-neutral-800">
                         <Package className="w-4 h-4" /> Administración
@@ -128,7 +140,7 @@ export function Header() {
                     )}
                     <hr className="border-neutral-800 my-1" />
                     <button
-                      onClick={() => { logout(); setUserMenuOpen(false); }}
+                      onClick={handleLogout}
                       className="flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-neutral-800 w-full"
                     >
                       <LogOut className="w-4 h-4" /> Cerrar Sesión
@@ -159,7 +171,7 @@ export function Header() {
           <Link href="/products" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-800 text-sm">
             <Package className="w-4 h-4" /> Productos
           </Link>
-          {user && (
+          {showDashboard && (
             <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-800 text-sm">
               <BarChart3 className="w-4 h-4" /> Dashboard
             </Link>

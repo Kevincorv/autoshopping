@@ -70,7 +70,11 @@ export const useAuth = create<AuthState>((set) => ({
   },
 
   logout: async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
     set({ user: null });
   },
 

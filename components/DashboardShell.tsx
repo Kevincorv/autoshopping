@@ -123,7 +123,7 @@ export default function DashboardShell({ children, padContent = false }: Dashboa
 
   const handleLogout = async () => {
     await useAuth.getState().logout();
-    router.push("/login");
+    router.push("/");
   };
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
