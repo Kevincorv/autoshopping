@@ -11,10 +11,12 @@
     "typecheck": "tsc --noEmit",
     "seed": "npx tsx prisma/seed.mts",
     "db:reset": "npx prisma migrate reset --force",
-    "db:studio": "npx prisma studio"
+    "db:studio": "npx prisma studio",
+    "actualizar-imagenes": "npx tsx scripts/actualizar-imagenes.mts"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
+    "@mudbill/duckduckgo-images-api": "^2.0.1",
     "@prisma/adapter-libsql": "^7.9.1",
     "@prisma/adapter-mariadb": "^7.10.0",
     "@prisma/client": "^7.9.1",
