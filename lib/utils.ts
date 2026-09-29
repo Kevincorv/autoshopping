@@ -62,3 +62,8 @@ export function slugify(s: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
+
+export function toHttps(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return url.startsWith("http://") ? "https://" + url.slice(7) : url;
+}

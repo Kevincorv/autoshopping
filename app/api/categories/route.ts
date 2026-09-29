@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { toHttps } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +55,7 @@ export async function GET() {
         name: c.name,
         slug: c.slug,
         count: c._count.products,
-        image: sampleByCategory[c.id] || c.image || CATEGORY_IMAGES[c.slug] || null,
+        image: toHttps(sampleByCategory[c.id] || c.image || CATEGORY_IMAGES[c.slug]),
         parentId: c.parentId,
       })),
     });

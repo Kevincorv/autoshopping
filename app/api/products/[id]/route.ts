@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth/middleware";
+import { toHttps } from "@/lib/utils";
 
 export async function GET(
   _request: Request,
@@ -60,7 +61,7 @@ export async function GET(
         secondaryBarcode: product.secondaryBarcode,
         description: product.description,
         shortDescription: product.shortDescription,
-        images: product.images.map((i) => i.url),
+        images: product.images.map((i) => toHttps(i.url)).filter(Boolean) as string[],
         specs: product.specs.map((s) => ({ name: s.specName, value: s.specValue })),
         tags: product.tags.map((t) => t.tag),
         rating: product.rating,
@@ -79,7 +80,7 @@ export async function GET(
         brand: p.brand.name,
         price: p.price,
         comparePrice: p.comparePrice,
-        images: p.images.map((i) => i.url),
+        images: p.images.map((i) => toHttps(i.url)).filter(Boolean) as string[],
         rating: p.rating,
         reviews: p.reviews,
         stock: p.stock,

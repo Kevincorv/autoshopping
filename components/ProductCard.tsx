@@ -25,6 +25,7 @@ export function ProductCard({ product }: Props) {
   const showToast = useUI((s) => s.showToast);
   const [liveStock, setLiveStock] = useState<number | null>(null);
   const [added, setAdded] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const stock = liveStock ?? product.stock;
   const hasDiscount = product.comparePrice && product.comparePrice > product.price;
   const discount = hasDiscount ? Math.round((1 - product.price / (product.comparePrice || 1)) * 100) : 0;
@@ -56,11 +57,12 @@ export function ProductCard({ product }: Props) {
       className="card overflow-hidden group hover:border-brand-500/50 hover:shadow-lg hover:shadow-brand-500/5 transition-all duration-300 flex flex-col"
     >
       <div className="relative aspect-[4/3] bg-neutral-800 overflow-hidden">
-        {product.images?.[0] ? (
+        {product.images?.[0] && !imgError ? (
           <img
             src={product.images[0]}
             alt={product.name}
             loading="lazy"
+            onError={() => setImgError(true)}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
           />
         ) : (

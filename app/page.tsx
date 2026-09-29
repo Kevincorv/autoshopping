@@ -41,7 +41,6 @@ function HomeInner() {
   });
 
   const featured = products.filter((p) => p.featured).slice(0, 8);
-  const withImages = products.filter((p) => p.images && p.images.length > 0);
   const onSale = products.filter((p) => p.comparePrice && p.comparePrice > p.price).slice(0, 8);
   const newArrivals = products.filter((p) => p.isNew).slice(0, 8);
   const top = products.slice().sort((a, b) => b.sold - a.sold).slice(0, 8);
@@ -151,16 +150,6 @@ function HomeInner() {
               </Link>
             ))}
           </div>
-
-          {!loading && withImages.length > 0 && (
-            <div className="mt-8">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {withImages.slice(0, 8).map((p) => (
-                  <ProductCard key={p.id} product={p} />
-                ))}
-              </div>
-            </div>
-          )}
         </section>
       )}
 

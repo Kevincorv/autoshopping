@@ -4,7 +4,6 @@ import { verifyToken } from "@/lib/auth/jwt";
 import { AUTH_CONFIG } from "@/lib/auth/config";
 
 const ADMIN_PATHS = ["/dashboard/admin"];
-const AUTH_PATHS = ["/login", "/register", "/forgot-password"];
 const PROTECTED_PATHS = ["/dashboard", "/wishlist"];
 
 export async function middleware(request: NextRequest) {
@@ -33,12 +32,6 @@ export async function middleware(request: NextRequest) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
-    }
-  }
-
-  if (AUTH_PATHS.some((p) => pathname.startsWith(p))) {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 

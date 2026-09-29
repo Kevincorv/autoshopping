@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { slugify } from "@/lib/utils";
+import { slugify, toHttps } from "@/lib/utils";
 import { requireAuth } from "@/lib/auth/middleware";
 
 export const dynamic = "force-dynamic";
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
       sku: p.sku,
       description: p.description,
       shortDescription: p.shortDescription,
-      images: p.images.map((i) => i.url),
+      images: p.images.map((i) => toHttps(i.url)).filter(Boolean) as string[],
       rating: p.rating,
       reviews: p.reviews,
       featured: p.isFeatured,

@@ -215,17 +215,17 @@ export default function AdminProducts() {
                   href={`/dashboard/admin/products/${p.id}`}
                   className="relative aspect-[4/3] bg-neutral-800 overflow-hidden block"
                 >
-                  {p.images?.[0]?.url ? (
+                  <div className="absolute inset-0 flex items-center justify-center text-neutral-600">
+                    <Package className="w-10 h-10" />
+                  </div>
+                  {p.images?.[0]?.url && (
                     <img
                       src={p.images[0].url}
                       alt={p.name}
                       loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
+                      className="relative w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-neutral-600">
-                      <Package className="w-10 h-10" />
-                    </div>
                   )}
                   <span
                     className={`absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${statusClass}`}
