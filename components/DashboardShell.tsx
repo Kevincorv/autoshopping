@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/lib/auth/store";
 import {
   LayoutDashboard, Package, ShoppingCart, Box, BarChart3,
   Settings, ArrowLeft, CreditCard, Users, Shield,
@@ -121,7 +122,7 @@ export default function DashboardShell({ children, padContent = false }: Dashboa
   };
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await useAuth.getState().logout();
     router.push("/login");
   };
 
@@ -205,7 +206,7 @@ export default function DashboardShell({ children, padContent = false }: Dashboa
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-sm flex items-center justify-between px-4 md:px-6 shrink-0">
+        <header className="relative z-30 h-16 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-sm flex items-center justify-between px-4 md:px-6 shrink-0">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(true)}

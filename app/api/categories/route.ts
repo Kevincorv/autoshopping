@@ -19,13 +19,42 @@ export async function GET() {
       orderBy: { sortOrder: "asc" },
     });
 
+    let sampleByCategory: Record<string, string> = {};
+    if (categories.length > 0) {
+      try {
+        const samples = await prisma.product.findMany({
+          where: {
+            isActive: true,
+            categoryId: { in: categories.map((c) => c.id) },
+            images: { some: {} },
+          },
+          select: {
+            categoryId: true,
+            images: {
+              orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
+              take: 1,
+              select: { url: true },
+            },
+          },
+          orderBy: [{ sold: "desc" }, { createdAt: "desc" }],
+          distinct: ["categoryId"],
+        });
+        sampleByCategory = samples.reduce<Record<string, string>>((acc, p) => {
+          if (p.images[0]?.url) acc[p.categoryId] = p.images[0].url;
+          return acc;
+        }, {});
+      } catch (e) {
+        console.error("Category sample images error:", e);
+      }
+    }
+
     return NextResponse.json({
       categories: categories.map((c) => ({
         id: c.slug,
         name: c.name,
         slug: c.slug,
         count: c._count.products,
-        image: CATEGORY_IMAGES[c.slug] || null,
+        image: sampleByCategory[c.id] || c.image || CATEGORY_IMAGES[c.slug] || null,
         parentId: c.parentId,
       })),
     });

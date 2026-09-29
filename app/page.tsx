@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Zap, Shield, Truck, Award, TrendingUp, Tag, MapPin, Sparkles, Percent, ChevronRight } from "lucide-react";
+import { ArrowRight, Zap, Shield, Truck, Award, TrendingUp, Tag, MapPin, Sparkles, Percent, ChevronRight, Package } from "lucide-react";
 import { api } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
 import { GridSkeleton } from "@/components/Skeleton";
@@ -41,6 +41,7 @@ function HomeInner() {
   });
 
   const featured = products.filter((p) => p.featured).slice(0, 8);
+  const withImages = products.filter((p) => p.images && p.images.length > 0);
   const onSale = products.filter((p) => p.comparePrice && p.comparePrice > p.price).slice(0, 8);
   const newArrivals = products.filter((p) => p.isNew).slice(0, 8);
   const top = products.slice().sort((a, b) => b.sold - a.sold).slice(0, 8);
@@ -129,12 +130,18 @@ function HomeInner() {
                 className="group card overflow-hidden hover:border-brand-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-brand-500/5"
               >
                 <div className="aspect-[4/3] bg-neutral-800 relative overflow-hidden">
-                  <img
-                    src={c.image}
-                    alt={c.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                  />
+                  <div className="absolute inset-0 flex items-center justify-center text-neutral-600">
+                    <Package className="w-8 h-8" />
+                  </div>
+                  {c.image && (
+                    <img
+                      src={c.image}
+                      alt={c.name}
+                      className="relative w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent" />
                   <div className="absolute bottom-2 left-2 right-2">
                     <p className="font-semibold text-sm text-white">{c.name}</p>
@@ -144,6 +151,16 @@ function HomeInner() {
               </Link>
             ))}
           </div>
+
+          {!loading && withImages.length > 0 && (
+            <div className="mt-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {withImages.slice(0, 8).map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       )}
 
