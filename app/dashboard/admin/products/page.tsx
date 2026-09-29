@@ -15,7 +15,7 @@ interface ProductRow {
   isFeatured: boolean;
   brand: { name: string };
   category: { name: string; slug: string };
-  images: { url: string }[];
+  images: string[];
   sold: number;
 }
 
@@ -218,9 +218,9 @@ export default function AdminProducts() {
                   <div className="absolute inset-0 flex items-center justify-center text-neutral-600">
                     <Package className="w-10 h-10" />
                   </div>
-                  {p.images?.[0]?.url && (
+                  {p.images?.[0] && (
                     <img
-                      src={p.images[0].url}
+                      src={p.images[0]}
                       alt={p.name}
                       loading="lazy"
                       onError={(e) => { e.currentTarget.style.display = "none"; }}
