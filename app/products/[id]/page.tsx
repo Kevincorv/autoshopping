@@ -299,11 +299,9 @@ function ProductInner() {
           </div>
 
           {/* Trust badges */}
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="mt-6 grid grid-cols-1 gap-2 max-w-xs">
             {[
               { icon: Truck, t: "Envío 24/48h", d: "Asunción y Central" },
-              { icon: Shield, t: "Garantía 1 año", d: "Producto original" },
-              { icon: RotateCcw, t: "Devolución gratis", d: "30 días" },
             ].map((b, i) => (
               <div key={i} className="card p-3 flex items-center gap-2">
                 <b.icon className="w-4 h-4 text-brand-400 shrink-0" />
