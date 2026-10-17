@@ -53,6 +53,8 @@ export type UserMinAggregateOutputType = {
   twoFactorEnabled: boolean | null
   twoFactorSecret: string | null
   twoFactorRecovery: string | null
+  resetToken: string | null
+  resetTokenExpires: Date | null
   failedLoginAttempts: number | null
   lockedUntil: Date | null
   lastLoginAt: Date | null
@@ -79,6 +81,8 @@ export type UserMaxAggregateOutputType = {
   twoFactorEnabled: boolean | null
   twoFactorSecret: string | null
   twoFactorRecovery: string | null
+  resetToken: string | null
+  resetTokenExpires: Date | null
   failedLoginAttempts: number | null
   lockedUntil: Date | null
   lastLoginAt: Date | null
@@ -105,6 +109,8 @@ export type UserCountAggregateOutputType = {
   twoFactorEnabled: number
   twoFactorSecret: number
   twoFactorRecovery: number
+  resetToken: number
+  resetTokenExpires: number
   failedLoginAttempts: number
   lockedUntil: number
   lastLoginAt: number
@@ -141,6 +147,8 @@ export type UserMinAggregateInputType = {
   twoFactorEnabled?: true
   twoFactorSecret?: true
   twoFactorRecovery?: true
+  resetToken?: true
+  resetTokenExpires?: true
   failedLoginAttempts?: true
   lockedUntil?: true
   lastLoginAt?: true
@@ -167,6 +175,8 @@ export type UserMaxAggregateInputType = {
   twoFactorEnabled?: true
   twoFactorSecret?: true
   twoFactorRecovery?: true
+  resetToken?: true
+  resetTokenExpires?: true
   failedLoginAttempts?: true
   lockedUntil?: true
   lastLoginAt?: true
@@ -193,6 +203,8 @@ export type UserCountAggregateInputType = {
   twoFactorEnabled?: true
   twoFactorSecret?: true
   twoFactorRecovery?: true
+  resetToken?: true
+  resetTokenExpires?: true
   failedLoginAttempts?: true
   lockedUntil?: true
   lastLoginAt?: true
@@ -306,6 +318,8 @@ export type UserGroupByOutputType = {
   twoFactorEnabled: boolean
   twoFactorSecret: string | null
   twoFactorRecovery: string | null
+  resetToken: string | null
+  resetTokenExpires: Date | null
   failedLoginAttempts: number
   lockedUntil: Date | null
   lastLoginAt: Date | null
@@ -355,6 +369,8 @@ export type UserWhereInput = {
   twoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean
   twoFactorSecret?: Prisma.StringNullableFilter<"User"> | string | null
   twoFactorRecovery?: Prisma.StringNullableFilter<"User"> | string | null
+  resetToken?: Prisma.StringNullableFilter<"User"> | string | null
+  resetTokenExpires?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   failedLoginAttempts?: Prisma.IntFilter<"User"> | number
   lockedUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -394,6 +410,8 @@ export type UserOrderByWithRelationInput = {
   twoFactorEnabled?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrderInput | Prisma.SortOrder
   twoFactorRecovery?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetTokenExpires?: Prisma.SortOrderInput | Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -419,6 +437,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   document?: string
   email?: string
+  resetToken?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -437,6 +456,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   twoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean
   twoFactorSecret?: Prisma.StringNullableFilter<"User"> | string | null
   twoFactorRecovery?: Prisma.StringNullableFilter<"User"> | string | null
+  resetTokenExpires?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   failedLoginAttempts?: Prisma.IntFilter<"User"> | number
   lockedUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -455,7 +475,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   loginAttempts?: Prisma.LoginAttemptListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   chatSessions?: Prisma.ChatSessionListRelationFilter
-}, "id" | "document" | "email">
+}, "id" | "document" | "email" | "resetToken">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -476,6 +496,8 @@ export type UserOrderByWithAggregationInput = {
   twoFactorEnabled?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrderInput | Prisma.SortOrder
   twoFactorRecovery?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetTokenExpires?: Prisma.SortOrderInput | Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -510,6 +532,8 @@ export type UserScalarWhereWithAggregatesInput = {
   twoFactorEnabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   twoFactorSecret?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   twoFactorRecovery?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  resetToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  resetTokenExpires?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   failedLoginAttempts?: Prisma.IntWithAggregatesFilter<"User"> | number
   lockedUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -535,6 +559,8 @@ export type UserCreateInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -574,6 +600,8 @@ export type UserUncheckedCreateInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -611,6 +639,8 @@ export type UserUpdateInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -650,6 +680,8 @@ export type UserUncheckedUpdateInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -688,6 +720,8 @@ export type UserCreateManyInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -713,6 +747,8 @@ export type UserUpdateManyMutationInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -739,6 +775,8 @@ export type UserUncheckedUpdateManyInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -771,6 +809,8 @@ export type UserCountOrderByAggregateInput = {
   twoFactorEnabled?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrder
   twoFactorRecovery?: Prisma.SortOrder
+  resetToken?: Prisma.SortOrder
+  resetTokenExpires?: Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -801,6 +841,8 @@ export type UserMaxOrderByAggregateInput = {
   twoFactorEnabled?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrder
   twoFactorRecovery?: Prisma.SortOrder
+  resetToken?: Prisma.SortOrder
+  resetTokenExpires?: Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -827,6 +869,8 @@ export type UserMinOrderByAggregateInput = {
   twoFactorEnabled?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrder
   twoFactorRecovery?: Prisma.SortOrder
+  resetToken?: Prisma.SortOrder
+  resetTokenExpires?: Prisma.SortOrder
   failedLoginAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -1128,6 +1172,8 @@ export type UserCreateWithoutRoleInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1165,6 +1211,8 @@ export type UserUncheckedCreateWithoutRoleInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1232,6 +1280,8 @@ export type UserScalarWhereInput = {
   twoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean
   twoFactorSecret?: Prisma.StringNullableFilter<"User"> | string | null
   twoFactorRecovery?: Prisma.StringNullableFilter<"User"> | string | null
+  resetToken?: Prisma.StringNullableFilter<"User"> | string | null
+  resetTokenExpires?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   failedLoginAttempts?: Prisma.IntFilter<"User"> | number
   lockedUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -1257,6 +1307,8 @@ export type UserCreateWithoutCustomerProfileInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1295,6 +1347,8 @@ export type UserUncheckedCreateWithoutCustomerProfileInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1347,6 +1401,8 @@ export type UserUpdateWithoutCustomerProfileInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1385,6 +1441,8 @@ export type UserUncheckedUpdateWithoutCustomerProfileInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1421,6 +1479,8 @@ export type UserCreateWithoutAddressesInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1459,6 +1519,8 @@ export type UserUncheckedCreateWithoutAddressesInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1511,6 +1573,8 @@ export type UserUpdateWithoutAddressesInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1549,6 +1613,8 @@ export type UserUncheckedUpdateWithoutAddressesInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1585,6 +1651,8 @@ export type UserCreateWithoutCartItemsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1623,6 +1691,8 @@ export type UserUncheckedCreateWithoutCartItemsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1675,6 +1745,8 @@ export type UserUpdateWithoutCartItemsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1713,6 +1785,8 @@ export type UserUncheckedUpdateWithoutCartItemsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1749,6 +1823,8 @@ export type UserCreateWithoutWishlistItemsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1787,6 +1863,8 @@ export type UserUncheckedCreateWithoutWishlistItemsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1839,6 +1917,8 @@ export type UserUpdateWithoutWishlistItemsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1877,6 +1957,8 @@ export type UserUncheckedUpdateWithoutWishlistItemsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1913,6 +1995,8 @@ export type UserCreateWithoutOrdersInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -1951,6 +2035,8 @@ export type UserUncheckedCreateWithoutOrdersInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2003,6 +2089,8 @@ export type UserUpdateWithoutOrdersInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2041,6 +2129,8 @@ export type UserUncheckedUpdateWithoutOrdersInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2077,6 +2167,8 @@ export type UserCreateWithoutReviewsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2115,6 +2207,8 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2167,6 +2261,8 @@ export type UserUpdateWithoutReviewsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2205,6 +2301,8 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2241,6 +2339,8 @@ export type UserCreateWithoutAuditLogsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2279,6 +2379,8 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2331,6 +2433,8 @@ export type UserUpdateWithoutAuditLogsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2369,6 +2473,8 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2405,6 +2511,8 @@ export type UserCreateWithoutNotificationsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2443,6 +2551,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2495,6 +2605,8 @@ export type UserUpdateWithoutNotificationsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2533,6 +2645,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2569,6 +2683,8 @@ export type UserCreateWithoutSessionsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2607,6 +2723,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2659,6 +2777,8 @@ export type UserUpdateWithoutSessionsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2697,6 +2817,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2733,6 +2855,8 @@ export type UserCreateWithoutLoginAttemptsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2771,6 +2895,8 @@ export type UserUncheckedCreateWithoutLoginAttemptsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2823,6 +2949,8 @@ export type UserUpdateWithoutLoginAttemptsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2861,6 +2989,8 @@ export type UserUncheckedUpdateWithoutLoginAttemptsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2897,6 +3027,8 @@ export type UserCreateWithoutStockMovementsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2935,6 +3067,8 @@ export type UserUncheckedCreateWithoutStockMovementsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -2987,6 +3121,8 @@ export type UserUpdateWithoutStockMovementsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3025,6 +3161,8 @@ export type UserUncheckedUpdateWithoutStockMovementsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3061,6 +3199,8 @@ export type UserCreateWithoutChatSessionsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -3099,6 +3239,8 @@ export type UserUncheckedCreateWithoutChatSessionsInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -3151,6 +3293,8 @@ export type UserUpdateWithoutChatSessionsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3189,6 +3333,8 @@ export type UserUncheckedUpdateWithoutChatSessionsInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3225,6 +3371,8 @@ export type UserCreateManyRoleInput = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
   twoFactorRecovery?: string | null
+  resetToken?: string | null
+  resetTokenExpires?: Date | string | null
   failedLoginAttempts?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
@@ -3250,6 +3398,8 @@ export type UserUpdateWithoutRoleInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3287,6 +3437,8 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3324,6 +3476,8 @@ export type UserUncheckedUpdateManyWithoutRoleInput = {
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twoFactorRecovery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetTokenExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3471,6 +3625,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   twoFactorEnabled?: boolean
   twoFactorSecret?: boolean
   twoFactorRecovery?: boolean
+  resetToken?: boolean
+  resetTokenExpires?: boolean
   failedLoginAttempts?: boolean
   lockedUntil?: boolean
   lastLoginAt?: boolean
@@ -3513,6 +3669,8 @@ export type UserSelectScalar = {
   twoFactorEnabled?: boolean
   twoFactorSecret?: boolean
   twoFactorRecovery?: boolean
+  resetToken?: boolean
+  resetTokenExpires?: boolean
   failedLoginAttempts?: boolean
   lockedUntil?: boolean
   lastLoginAt?: boolean
@@ -3520,7 +3678,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "lastname" | "document" | "phone" | "whatsapp" | "email" | "passwordHash" | "city" | "department" | "address" | "roleId" | "isActive" | "mustChangePassword" | "passwordChangedAt" | "twoFactorEnabled" | "twoFactorSecret" | "twoFactorRecovery" | "failedLoginAttempts" | "lockedUntil" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "lastname" | "document" | "phone" | "whatsapp" | "email" | "passwordHash" | "city" | "department" | "address" | "roleId" | "isActive" | "mustChangePassword" | "passwordChangedAt" | "twoFactorEnabled" | "twoFactorSecret" | "twoFactorRecovery" | "resetToken" | "resetTokenExpires" | "failedLoginAttempts" | "lockedUntil" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   addresses?: boolean | Prisma.User$addressesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
@@ -3574,6 +3732,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     twoFactorEnabled: boolean
     twoFactorSecret: string | null
     twoFactorRecovery: string | null
+    resetToken: string | null
+    resetTokenExpires: Date | null
     failedLoginAttempts: number
     lockedUntil: Date | null
     lastLoginAt: Date | null
@@ -3979,6 +4139,8 @@ export interface UserFieldRefs {
   readonly twoFactorEnabled: Prisma.FieldRef<"User", 'Boolean'>
   readonly twoFactorSecret: Prisma.FieldRef<"User", 'String'>
   readonly twoFactorRecovery: Prisma.FieldRef<"User", 'String'>
+  readonly resetToken: Prisma.FieldRef<"User", 'String'>
+  readonly resetTokenExpires: Prisma.FieldRef<"User", 'DateTime'>
   readonly failedLoginAttempts: Prisma.FieldRef<"User", 'Int'>
   readonly lockedUntil: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>

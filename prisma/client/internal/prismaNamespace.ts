@@ -3556,6 +3556,8 @@ export const UserScalarFieldEnum = {
   twoFactorEnabled: 'twoFactorEnabled',
   twoFactorSecret: 'twoFactorSecret',
   twoFactorRecovery: 'twoFactorRecovery',
+  resetToken: 'resetToken',
+  resetTokenExpires: 'resetTokenExpires',
   failedLoginAttempts: 'failedLoginAttempts',
   lockedUntil: 'lockedUntil',
   lastLoginAt: 'lastLoginAt',
@@ -4309,7 +4311,8 @@ export const UserOrderByRelevanceFieldEnum = {
   address: 'address',
   roleId: 'roleId',
   twoFactorSecret: 'twoFactorSecret',
-  twoFactorRecovery: 'twoFactorRecovery'
+  twoFactorRecovery: 'twoFactorRecovery',
+  resetToken: 'resetToken'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
