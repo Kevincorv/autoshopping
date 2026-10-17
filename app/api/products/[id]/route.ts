@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requirePermission } from "@/lib/auth/middleware";
 import { toHttps } from "@/lib/utils";
 
 export async function GET(
@@ -19,6 +19,14 @@ export async function GET(
         images: { orderBy: { sortOrder: "asc" } },
         specs: true,
         tags: true,
+        vehicles: {
+          select: {
+            modelId: true,
+            yearFrom: true,
+            yearTo: true,
+            model: { select: { name: true, slug: true, make: { select: { name: true, slug: true } } } },
+          },
+        },
         brand: { select: { name: true, slug: true } },
         category: { select: { name: true, slug: true } },
       },
@@ -64,6 +72,14 @@ export async function GET(
         images: product.images.map((i) => toHttps(i.url)).filter(Boolean) as string[],
         specs: product.specs.map((s) => ({ name: s.specName, value: s.specValue })),
         tags: product.tags.map((t) => t.tag),
+        vehicles: product.vehicles.map((v) => ({
+          modelId: v.modelId,
+          modelName: v.model.name,
+          makeName: v.model.make.name,
+          makeSlug: v.model.make.slug,
+          yearFrom: v.yearFrom,
+          yearTo: v.yearTo,
+        })),
         rating: product.rating,
         reviews: product.reviews,
         featured: product.isFeatured,
@@ -97,7 +113,7 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const auth = await requireAuth(request as any);
+  const auth = await requirePermission(request as any, "products.write");
   if (auth.response) return auth.response;
   try {
     const body = await request.json();
@@ -134,6 +150,7 @@ export async function PUT(
       wholesalePrice,
       salePrice,
       unitCost,
+      vehicleModelIds,
     } = body || {};
 
     let brandUpdate: { id: string } | undefined;
@@ -158,6 +175,17 @@ export async function PUT(
     await prisma.productImage.deleteMany({ where: { productId: existing.id } });
     await prisma.productSpec.deleteMany({ where: { productId: existing.id } });
     await prisma.productTag.deleteMany({ where: { productId: existing.id } });
+
+    if (Array.isArray(vehicleModelIds)) {
+      await prisma.productVehicle.deleteMany({ where: { productId: existing.id } });
+      const validIds = vehicleModelIds.filter((id: any) => typeof id === "string" && id);
+      if (validIds.length) {
+        await prisma.productVehicle.createMany({
+          data: validIds.map((modelId: string) => ({ productId: existing.id, modelId })),
+          skipDuplicates: true,
+        });
+      }
+    }
 
     const updated = await prisma.product.update({
       where: { id: existing.id },
@@ -226,7 +254,7 @@ export async function DELETE(
   _request: Request,
   { params }: { params: { id: string } }
 ) {
-  const auth = await requireAuth(_request as any);
+  const auth = await requirePermission(_request as any, "products.delete");
   if (auth.response) return auth.response;
   try {
     const existing = await prisma.product.findFirst({

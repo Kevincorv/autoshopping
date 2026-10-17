@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
+import { requireRole, requirePermission } from "@/lib/auth/middleware";
+import { AUTH_ROLES_SALES_READ } from "@/lib/constants";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireRole(_request as NextRequest, ...AUTH_ROLES_SALES_READ);
+    if (auth.response) return auth.response;
+
     const sale = await prisma.order.findUnique({
       where: { id: params.id },
       include: { items: true, payments: true, customer: { select: { id: true, name: true, lastname: true, phone: true, email: true } } },
@@ -19,9 +25,16 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireRole(request as NextRequest, ...AUTH_ROLES_SALES_READ);
+    if (auth.response) return auth.response;
+
     const body = await request.json();
     const sale = await prisma.order.findUnique({ where: { id: params.id } });
     if (!sale) return NextResponse.json({ error: "Venta no encontrada" }, { status: 404 });
+
+    if (body.action === "cancel" && auth.payload.roleName !== "admin" && auth.payload.roleName !== "accountant") {
+      return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
+    }
 
     if (body.action === "pay") {
       const amount = Math.round(Number(body.amount) * 100) / 100;
@@ -102,6 +115,9 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await requirePermission(request as NextRequest, "sales.void");
+    if (auth.response) return auth.response;
+
     const sale = await prisma.order.findUnique({ where: { id: params.id }, include: { _count: { select: { payments: true } } } });
     if (!sale) return NextResponse.json({ error: "Venta no encontrada" }, { status: 404 });
     if (sale.paymentStatus !== "pending" || sale._count.payments > 0) {

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_STOCK, AUTH_ROLES_ADMIN } from "@/lib/constants";
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const auth = await requireAuth(request as any);
+  const auth = await requireRole(request as any, ...AUTH_ROLES_STOCK);
   if (auth.response) return auth.response;
   try {
     const body = await request.json();
@@ -27,7 +28,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const auth = await requireAuth(request as any);
+  const auth = await requireRole(request as any, ...AUTH_ROLES_ADMIN);
   if (auth.response) return auth.response;
   try {
     const brand = await prisma.brand.findUnique({ where: { id: params.id }, include: { _count: { select: { products: true } } } });

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { slugify, toHttps } from "@/lib/utils";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requirePermission } from "@/lib/auth/middleware";
+import { sanitizeText, sanitizeMultiline } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,8 @@ export async function GET(request: Request) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
     const search = searchParams.get("search");
+    const vehicle = searchParams.get("vehicle");
+    const vehicleYear = searchParams.get("vehicleYear");
     const sort = searchParams.get("sort") || "featured";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
@@ -33,6 +36,23 @@ export async function GET(request: Request) {
       where.price = {};
       if (minPrice) (where.price as Record<string, unknown>).gte = parseFloat(minPrice);
       if (maxPrice) (where.price as Record<string, unknown>).lte = parseFloat(maxPrice);
+    }
+
+    if (vehicle) {
+      const year = vehicleYear ? parseInt(vehicleYear, 10) : undefined;
+      where.vehicles = {
+        some: {
+          model: { slug: vehicle },
+          ...(year && !isNaN(year)
+            ? {
+                AND: [
+                  { OR: [{ yearFrom: null }, { yearFrom: { lte: year } }] },
+                  { OR: [{ yearTo: null }, { yearTo: { gte: year } }] },
+                ],
+              }
+            : {}),
+        },
+      };
     }
 
     if (search) {
@@ -121,7 +141,7 @@ async function generateUniqueSku(base: string): Promise<string> {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(request as any);
+  const auth = await requirePermission(request as any, "products.write");
   if (auth.response) return auth.response;
   try {
     const body = await request.json();
@@ -153,9 +173,14 @@ export async function POST(request: Request) {
       wholesalePrice,
       salePrice,
       unitCost,
+      vehicleModelIds,
     } = body || {};
 
     if (!name || typeof name !== "string" || !name.trim()) {
+      return NextResponse.json({ error: "El nombre es obligatorio" }, { status: 400 });
+    }
+    const cleanName = sanitizeText(String(name), 200);
+    if (!cleanName) {
       return NextResponse.json({ error: "El nombre es obligatorio" }, { status: 400 });
     }
     if (!brandId) return NextResponse.json({ error: "Selecciona una marca" }, { status: 400 });
@@ -182,7 +207,7 @@ export async function POST(request: Request) {
 
     const product = await prisma.product.create({
       data: {
-        name: name.trim(),
+        name: cleanName,
         slug: finalSlug,
         sku: finalSku,
         manufacturerCode: manufacturerCode ? String(manufacturerCode).trim() : null,
@@ -201,8 +226,8 @@ export async function POST(request: Request) {
         stock: stockNum,
         minStock: minStockNum,
         unit: unit || "pieza",
-        description: description ? String(description) : "",
-        shortDescription: shortDescription ? String(shortDescription) : "",
+        description: description ? sanitizeMultiline(String(description), 20000) : "",
+        shortDescription: shortDescription ? sanitizeText(String(shortDescription), 500) : "",
         isActive: isActive !== false,
         isFeatured: !!isFeatured,
         isNew: isNew !== false,
@@ -229,11 +254,19 @@ export async function POST(request: Request) {
         tags: Array.isArray(tags) && tags.length
           ? { create: tags.filter((t: any) => t).map((t: any) => ({ tag: String(t) })) }
           : undefined,
+        vehicles: Array.isArray(vehicleModelIds) && vehicleModelIds.length
+          ? {
+              create: vehicleModelIds
+                .filter((id: any) => typeof id === "string" && id)
+                .map((id: string) => ({ modelId: id })),
+            }
+          : undefined,
       },
       include: {
         images: true,
         specs: true,
         tags: true,
+        vehicles: { select: { modelId: true } },
         brand: { select: { name: true } },
         category: { select: { name: true, slug: true } },
       },

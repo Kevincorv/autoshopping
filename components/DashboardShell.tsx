@@ -11,7 +11,7 @@ import {
   TrendingUp, ClipboardList, Store,
   UserCircle2, Tags as TagsIcon, ArrowLeftRight,
   AlertTriangle, Truck, ShoppingBag, Wallet, Receipt,
-  BadgePercent, Plug,
+  BadgePercent, Plug, Ticket, Newspaper,
 } from "lucide-react";
 
 const NAV_GROUPS = [
@@ -28,6 +28,7 @@ const NAV_GROUPS = [
       { href: "/dashboard/admin/customers", label: "Clientes", icon: UserCircle2 },
       { href: "/dashboard/admin/sales", label: "Ventas", icon: TrendingUp },
       { href: "/dashboard/admin/returns", label: "Devoluciones", icon: ArrowLeftRight },
+      { href: "/dashboard/admin/coupons", label: "Cupones", icon: Ticket },
     ],
   },
   {
@@ -61,6 +62,7 @@ const NAV_GROUPS = [
     items: [
       { href: "/dashboard/admin/reports", label: "Reportes", icon: BarChart3 },
       { href: "/dashboard/admin/audit", label: "Auditoría", icon: ClipboardList },
+      { href: "/dashboard/admin/blog", label: "Blog", icon: Newspaper },
     ],
   },
   {

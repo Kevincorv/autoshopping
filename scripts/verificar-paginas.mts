@@ -1,16 +1,10 @@
 import { PrismaClient } from "../prisma/client/client.js";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import mariadb from "mariadb";
+import "dotenv/config";
+import { poolConfigFromEnv } from "./_db-env.js";
 
-const pool = mariadb.createPool({
-  host: "gateway01.us-east-1.prod.aws.tidbcloud.com",
-  port: 4000,
-  user: "3WsTbVXhshksEUi.root",
-  password: "U4uJqhQsDOJv6dnZ",
-  database: "autoshopping",
-  ssl: { rejectUnauthorized: false },
-  connectTimeout: 60000,
-});
+const pool = mariadb.createPool(poolConfigFromEnv());
 
 const adapter = new PrismaMariaDb(pool as any);
 const prisma = new PrismaClient({ adapter });

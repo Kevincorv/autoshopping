@@ -124,9 +124,8 @@ function buildSearchQueries(name: string): string[] {
   );
 }
 
-const rawUrl =
-  process.env.DATABASE_URL ||
-  "mysql://3WsTbVXhshksEUi.root:U4uJqhQsDOJv6dnZ@gateway01.us-east-1.prod.aws.tidbcloud.com:4000/autoshopping";
+const rawUrl = process.env.DATABASE_URL;
+if (!rawUrl) throw new Error("Falta DATABASE_URL en .env");
 
 function createPool() {
   try {

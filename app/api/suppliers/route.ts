@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_STOCK } from "@/lib/constants";
 import { audit } from "@/lib/audit";
 
 const schema = z.object({
@@ -20,7 +21,7 @@ const schema = z.object({
 
 export async function GET(request: Request) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_STOCK);
     if (auth.response) return auth.response;
     const suppliers = await prisma.supplier.findMany({
       include: {
@@ -38,7 +39,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_STOCK);
     if (auth.response) return auth.response;
     const body = await request.json();
     const parsed = schema.safeParse(body);

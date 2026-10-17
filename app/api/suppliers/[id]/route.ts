@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_STOCK } from "@/lib/constants";
 import { audit } from "@/lib/audit";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
-    const auth = await requireAuth(_request as any);
+    const auth = await requireRole(_request as any, ...AUTH_ROLES_STOCK);
     if (auth.response) return auth.response;
     const supplier = await prisma.supplier.findUnique({
       where: { id: params.id },
@@ -36,7 +37,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_STOCK);
     if (auth.response) return auth.response;
     const body = await request.json();
     const supplier = await prisma.supplier.findUnique({ where: { id: params.id } });
@@ -60,7 +61,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_STOCK);
     if (auth.response) return auth.response;
     const supplier = await prisma.supplier.findUnique({ where: { id: params.id }, include: { _count: { select: { purchases: true } } } });
     if (!supplier) return NextResponse.json({ error: "Proveedor no encontrado" }, { status: 404 });

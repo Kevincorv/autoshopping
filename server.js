@@ -2,10 +2,24 @@ const { createServer } = require("http");
 const { parse } = require("url");
 const next = require("next");
 const { Server } = require("socket.io");
+require("dotenv").config();
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.HOSTNAME || "0.0.0.0";
 const port = parseInt(process.env.PORT || "3000", 10);
+
+const allowedOrigins = [
+  ...new Set(
+    [
+      ...(process.env.TRUSTED_ORIGINS || "").split(","),
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "http://localhost:5000",
+    ]
+      .map((o) => o.trim())
+      .filter(Boolean)
+  ),
+];
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
@@ -29,7 +43,14 @@ app
     });
 
     io = new Server(server, {
-      cors: { origin: "*", methods: ["GET", "POST"] },
+      cors: {
+        origin: (origin, callback) => {
+          if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+          return callback(new Error("Origen no permitido para Socket.IO"));
+        },
+        methods: ["GET", "POST"],
+        credentials: true,
+      },
       transports: ["websocket", "polling"],
     });
 

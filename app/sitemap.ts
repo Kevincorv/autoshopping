@@ -16,9 +16,16 @@ export default async function sitemap() {
     select: { slug: true },
   });
 
+  const posts = await prisma.post.findMany({
+    where: { published: true },
+    select: { slug: true, updatedAt: true },
+  });
+
   const staticPages = [
     { url: BASE_URL, lastModified: new Date(), changeFrequency: "daily" as const, priority: 1 },
     { url: `${BASE_URL}/products`, lastModified: new Date(), changeFrequency: "daily" as const, priority: 0.9 },
+    { url: `${BASE_URL}/vehicles`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.6 },
     { url: `${BASE_URL}/cart`, lastModified: new Date(), changeFrequency: "never" as const, priority: 0.3 },
     { url: `${BASE_URL}/login`, lastModified: new Date(), changeFrequency: "never" as const, priority: 0.2 },
     { url: `${BASE_URL}/register`, lastModified: new Date(), changeFrequency: "never" as const, priority: 0.2 },
@@ -38,5 +45,12 @@ export default async function sitemap() {
     priority: 0.6 as const,
   }));
 
-  return [...staticPages, ...productPages, ...categoryPages];
+  const postPages = posts.map((p) => ({
+    url: `${BASE_URL}/blog/${p.slug}`,
+    lastModified: p.updatedAt,
+    changeFrequency: "monthly" as const,
+    priority: 0.5 as const,
+  }));
+
+  return [...staticPages, ...productPages, ...categoryPages, ...postPages];
 }

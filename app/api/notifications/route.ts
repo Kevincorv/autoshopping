@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { getSessionUser } from "@/lib/auth/session";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_ADMIN } from "@/lib/constants";
 
 export async function GET() {
   try {
@@ -31,7 +32,7 @@ const createSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_ADMIN);
     if (auth.response) return auth.response;
     const body = await request.json();
     const parsed = createSchema.safeParse(body);

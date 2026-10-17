@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import Link from "next/link";
 import { Search, RefreshCw, ChevronDown, CheckCircle, XCircle, Truck, Package } from "lucide-react";
 
 const STATUS_FLOW = ["pending", "confirmed", "preparing", "shipped", "delivered"];
@@ -24,6 +25,20 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: "bg-rose-500/10 text-rose-400 border-rose-500/20",
 };
 
+const PAYMENT_LABELS: Record<string, string> = {
+  pending: "Pendiente",
+  partial: "Parcial",
+  paid: "Pagado",
+  refunded: "Reembolsado",
+};
+
+const PAYMENT_COLORS: Record<string, string> = {
+  pending: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  partial: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+  paid: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  refunded: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+};
+
 function getNextStatus(current: string): string | null {
   const idx = STATUS_FLOW.indexOf(current);
   if (idx >= 0 && idx < STATUS_FLOW.length - 1) return STATUS_FLOW[idx + 1];
@@ -36,6 +51,9 @@ export default function AdminOrders() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [updating, setUpdating] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [courierForm, setCourierForm] = useState({ courier: "", trackingNumber: "" });
+  const [savingCourier, setSavingCourier] = useState(false);
 
   function loadOrders() {
     setLoading(true);
@@ -63,6 +81,56 @@ export default function AdminOrders() {
       }
     } catch {}
     setUpdating(null);
+  }
+
+  async function updatePaymentStatus(orderId: string, paymentStatus: string) {
+    setUpdating(orderId);
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentStatus }),
+      });
+      if (res.ok) {
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, paymentStatus } : o)));
+      }
+    } catch {}
+    setUpdating(null);
+  }
+
+  function toggleExpand(o: any) {
+    if (expandedId === o.id) {
+      setExpandedId(null);
+      return;
+    }
+    setCourierForm({ courier: o.courier || "", trackingNumber: o.trackingNumber || "" });
+    setExpandedId(o.id);
+  }
+
+  async function saveCourier(orderId: string) {
+    setSavingCourier(true);
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          courier: courierForm.courier.trim() || null,
+          trackingNumber: courierForm.trackingNumber.trim() || null,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setOrders((prev) =>
+          prev.map((o) =>
+            o.id === orderId
+              ? { ...o, courier: data.order?.courier ?? courierForm.courier, trackingNumber: data.order?.trackingNumber ?? courierForm.trackingNumber }
+              : o
+          )
+        );
+        setExpandedId(null);
+      }
+    } catch {}
+    setSavingCourier(false);
   }
 
   const statusTabs = [
@@ -132,6 +200,7 @@ export default function AdminOrders() {
                 <th className="text-left px-4 py-3 text-neutral-400 font-medium">Contacto</th>
                 <th className="text-right px-4 py-3 text-neutral-400 font-medium">Total</th>
                 <th className="text-center px-4 py-3 text-neutral-400 font-medium">Estado</th>
+                <th className="text-center px-4 py-3 text-neutral-400 font-medium">Pago</th>
                 <th className="text-center px-4 py-3 text-neutral-400 font-medium">Acción</th>
                 <th className="text-right px-4 py-3 text-neutral-400 font-medium">Fecha</th>
               </tr>
@@ -149,7 +218,7 @@ export default function AdminOrders() {
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-neutral-500">
+                  <td colSpan={8} className="px-4 py-12 text-center text-neutral-500">
                     No se encontraron pedidos
                   </td>
                 </tr>
@@ -157,7 +226,8 @@ export default function AdminOrders() {
                 filtered.map((o) => {
                   const next = getNextStatus(o.status);
                   return (
-                    <tr key={o.id} className="border-b border-neutral-800/50 hover:bg-neutral-800/30 transition-colors">
+                    <Fragment key={o.id}>
+                    <tr onClick={() => toggleExpand(o)} className="border-b border-neutral-800/50 hover:bg-neutral-800/30 transition-colors cursor-pointer">
                       <td className="px-4 py-3">
                         <span className="text-white font-medium">{o.orderNumber || o.id.slice(0, 8)}</span>
                       </td>
@@ -177,6 +247,7 @@ export default function AdminOrders() {
                       <td className="px-4 py-3 text-center">
                         <select
                           value={o.status}
+                          onClick={(e) => e.stopPropagation()}
                           onChange={(e) => updateStatus(o.id, e.target.value)}
                           disabled={updating === o.id}
                           className={`text-xs font-medium px-2 py-1 rounded-lg border appearance-none cursor-pointer ${
@@ -191,9 +262,26 @@ export default function AdminOrders() {
                         </select>
                       </td>
                       <td className="px-4 py-3 text-center">
+                        <select
+                          value={o.paymentStatus || "pending"}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => updatePaymentStatus(o.id, e.target.value)}
+                          disabled={updating === o.id}
+                          className={`text-xs font-medium px-2 py-1 rounded-lg border appearance-none cursor-pointer ${
+                            PAYMENT_COLORS[o.paymentStatus] || PAYMENT_COLORS.pending
+                          }`}
+                        >
+                          {Object.keys(PAYMENT_LABELS).map((s) => (
+                            <option key={s} value={s} className="bg-neutral-900 text-white">
+                              {PAYMENT_LABELS[s]}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="px-4 py-3 text-center">
                         {next ? (
                           <button
-                            onClick={() => updateStatus(o.id, next)}
+                            onClick={(e) => { e.stopPropagation(); updateStatus(o.id, next); }}
                             disabled={updating === o.id}
                             className="text-xs text-brand-400 hover:text-brand-300 disabled:opacity-50 flex items-center gap-1 mx-auto"
                           >
@@ -223,6 +311,69 @@ export default function AdminOrders() {
                         })}
                       </td>
                     </tr>
+                    {expandedId === o.id && (
+                      <tr className="border-b border-neutral-800/50 bg-neutral-900/40">
+                        <td colSpan={8} className="px-4 py-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                            <div className="space-y-2">
+                              <p className="text-neutral-400 font-semibold uppercase tracking-wider text-[10px]">Envío y contacto</p>
+                              <p className="text-neutral-300">{o.customerName} · {o.customerPhone}</p>
+                              <p className="text-neutral-400">{o.customerAddress}{o.customerCity ? `, ${o.customerCity}` : ""}</p>
+                              {o.notes && <p className="text-neutral-500">Nota: {o.notes}</p>}
+                              {o.paymentReference && (
+                                <p className="text-neutral-400">Ref. de pago: <span className="font-mono text-neutral-200">{o.paymentReference}</span></p>
+                              )}
+                              <p className="text-neutral-400">
+                                Pago: <span className="text-neutral-200 capitalize">{o.paymentMethod || "—"}</span>
+                                {o.discount > 0 && <> · Descuento: <span className="text-emerald-400">Gs. {o.discount.toLocaleString("es-PY")}</span></>}
+                              </p>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-neutral-400 font-semibold uppercase tracking-wider text-[10px]">Courier y seguimiento</p>
+                              <div className="flex flex-wrap gap-2 items-end">
+                                <div>
+                                  <label className="block text-[10px] text-neutral-500 mb-1">Courier</label>
+                                  <input
+                                    className="input px-2 py-1.5 text-xs w-40"
+                                    value={courierForm.courier}
+                                    onChange={(e) => setCourierForm((f) => ({ ...f, courier: e.target.value }))}
+                                    placeholder="Ej: Encomendas PY"
+                                    maxLength={80}
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] text-neutral-500 mb-1">N.º de tracking</label>
+                                  <input
+                                    className="input px-2 py-1.5 text-xs w-44 font-mono"
+                                    value={courierForm.trackingNumber}
+                                    onChange={(e) => setCourierForm((f) => ({ ...f, trackingNumber: e.target.value }))}
+                                    placeholder="Ej: PY123456789"
+                                    maxLength={80}
+                                  />
+                                </div>
+                                <button
+                                  onClick={() => saveCourier(o.id)}
+                                  disabled={savingCourier}
+                                  className="btn-primary px-3 py-1.5 text-xs"
+                                >
+                                  {savingCourier ? "Guardando…" : "Guardar envío"}
+                                </button>
+                              </div>
+                              {o.courier || o.trackingNumber ? (
+                                <p className="text-neutral-400">
+                                  {o.courier || "—"} · {o.trackingNumber ? <span className="font-mono text-neutral-200">{o.trackingNumber}</span> : "sin tracking"}
+                                  {["shipped", "delivered"].includes(o.status) && o.trackingNumber && (
+                                    <> · <Link href={`/track/${o.orderNumber}`} target="_blank" className="text-brand-400 hover:underline">ver seguimiento público</Link></>
+                                  )}
+                                </p>
+                              ) : null}
+                              <p className="text-neutral-500">Los cambios de estado del pedido envían email al cliente.</p>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    </Fragment>
                   );
                 })
               )}

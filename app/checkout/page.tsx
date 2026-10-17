@@ -8,9 +8,10 @@ import { useCart, useUI } from "@/lib/store";
 import { useAuth } from "@/lib/auth/store";
 import { formatPYG } from "@/lib/utils";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
+import { BANK_ACCOUNTS, PAYMENT_ALIAS } from "@/lib/payment-info";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Skeleton } from "@/components/Skeleton";
-import { Check, CreditCard, Banknote, Smartphone, ArrowLeft, ArrowRight, MessageCircle, QrCode, Wallet, User, MapPin, ClipboardCheck, Package } from "lucide-react";
+import { Check, CreditCard, Banknote, Smartphone, ArrowLeft, ArrowRight, MessageCircle, QrCode, Wallet, User, MapPin, ClipboardCheck, Package, Ticket, Landmark } from "lucide-react";
 import type { Product } from "@/lib/types";
 
 const STEPS = [
@@ -44,6 +45,12 @@ function CheckoutInner() {
     payment: "cash",
     notes: "",
   });
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
+  const [couponError, setCouponError] = useState("");
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [paymentReference, setPaymentReference] = useState("");
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -83,7 +90,40 @@ function CheckoutInner() {
     return s + (p ? p.price * i.quantity : 0);
   }, 0);
   const shipping = subtotal > 0 ? (subtotal > 2000000 ? 0 : 50000) : 0;
-  const total = subtotal + shipping;
+  const discount = appliedCoupon ? Math.min(appliedCoupon.discount, subtotal) : 0;
+  const total = Math.max(0, subtotal + shipping - discount);
+
+  async function applyCoupon() {
+    const code = couponInput.trim();
+    if (!code) return;
+    setApplyingCoupon(true);
+    setCouponError("");
+    try {
+      const res = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, subtotal }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setAppliedCoupon(null);
+        setCouponError(data.error || "Cupón inválido");
+        return;
+      }
+      setAppliedCoupon({ code: data.coupon.code, discount: data.discount });
+      setCouponInput("");
+      showToast(`Cupón ${data.coupon.code} aplicado: -Gs. ${data.discount.toLocaleString("es-PY")}`, "success");
+    } catch {
+      setCouponError("Error al validar el cupón");
+    } finally {
+      setApplyingCoupon(false);
+    }
+  }
+
+  function removeCoupon() {
+    setAppliedCoupon(null);
+    setCouponError("");
+  }
 
   const nextStep = () => {
     if (step === 0 && (!form.name.trim() || !form.email.trim())) {
@@ -116,8 +156,11 @@ function CheckoutInner() {
           address: `${form.address}, ${form.city}, ${form.department}${form.reference ? ` (${form.reference})` : ""}`,
         },
         paymentMethod: form.payment,
+        paymentReference: paymentReference.trim() || undefined,
+        couponCode: appliedCoupon?.code,
         notes: form.notes,
       });
+      setOrderNumber(r.orderNumber || r.order?.orderNumber || null);
       setDone(r.order.id);
       clear();
       showToast("¡Pedido confirmado!", "success");
@@ -130,7 +173,7 @@ function CheckoutInner() {
   };
 
   if (done) {
-    const orderNum = done.length <= 8 ? `AS-${done.slice(0, 6).toUpperCase().padStart(6, "0")}` : `AS-${done.slice(-6).toUpperCase().padStart(6, "0")}`;
+    const displayNum = orderNumber || `AS-${done.slice(-6).toUpperCase().padStart(6, "0")}`;
     const productList = items
       .map((it) => {
         const p = map.get(it.productId);
@@ -138,8 +181,9 @@ function CheckoutInner() {
       })
       .join("\n");
 
+    const isTransfer = /transferencia/i.test(form.payment);
     const whatsappMessage = encodeURIComponent(
-      `Hola, quiero realizar un pedido.\n\nPedido #${orderNum}\n\nProductos:\n${productList}\n\nCliente:\n${form.name} ${form.lastname}\n${form.email}\n${form.phone}\n\nDirección:\n${form.address}, ${form.city}\n\nTotal:\n${formatPYG(total)}`
+      `Hola, quiero confirmar mi pedido${isTransfer ? " y adjunto la foto de mi transferencia" : ""}.\n\nPedido #${displayNum}\n\nProductos:\n${productList}\n\nCliente:\n${form.name} ${form.lastname}\n${form.email}\n${form.phone}\n\nDirección:\n${form.address}, ${form.city}\n\nTotal:\n${formatPYG(total)}${appliedCoupon ? `\nCupón: ${appliedCoupon.code}` : ""}${isTransfer ? `\nMétodo de pago: Transferencia${paymentReference ? `\nN.º de operación: ${paymentReference}` : ""}` : ""}`
     );
 
     return (
@@ -149,9 +193,18 @@ function CheckoutInner() {
             <Check className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-extrabold">¡Pedido confirmado!</h1>
-          <p className="text-lg text-brand-400 font-mono font-bold mt-2">{orderNum}</p>
-          <p className="text-sm text-neutral-400 mt-2">Te enviamos un email con los detalles.</p>
+          <p className="text-lg text-brand-400 font-mono font-bold mt-2">{displayNum}</p>
+          <p className="text-sm text-neutral-400 mt-2">
+            {isTransfer
+              ? "Para confirmar, enviá la foto del comprobante por WhatsApp."
+              : "Te enviamos un email con los detalles y el link de seguimiento."}
+          </p>
           <div className="mt-6 space-y-3">
+            {orderNumber && (
+              <Link href={`/track/${orderNumber}`} className="btn-ghost flex items-center justify-center gap-2 w-full">
+                <Package className="w-5 h-5" /> Seguir mi pedido
+              </Link>
+            )}
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`}
               target="_blank"
@@ -159,7 +212,7 @@ function CheckoutInner() {
               className="btn bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center gap-2 w-full"
             >
               <MessageCircle className="w-5 h-5" />
-              Confirmar por WhatsApp
+              {isTransfer ? "Enviar comprobante por WhatsApp" : "Confirmar por WhatsApp"}
             </a>
             <div className="flex gap-2">
               <Link href="/products" className="btn-ghost flex-1">Seguir comprando</Link>
@@ -278,7 +331,7 @@ function CheckoutInner() {
               <h3 className="font-semibold mb-4 flex items-center gap-2"><CreditCard className="w-4 h-4 text-brand-400" /> Método de pago</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {paymentMethods.map((m: any) => {
-                  const Icon = m.icon === "card" ? CreditCard : m.icon === "wallet" ? Wallet : m.icon === "mobile" ? Smartphone : m.icon === "qr" ? QrCode : Banknote;
+                  const Icon = m.icon === "card" ? CreditCard : m.icon === "wallet" ? Wallet : m.icon === "mobile" ? Smartphone : m.icon === "qr" ? QrCode : m.icon === "bank" ? Landmark : Banknote;
                   const shortName = m.name.replace("Bancard - ", "").replace(" - Tarjetas de crédito", " (TC/TD)").replace("Pago Express", "Pago Express (QR)").replace("Billetera Personal", "Personal Pay").replace("Pago Móvil", "Pago Móvil");
                   return (
                     <label key={m.name} className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition ${form.payment === m.name ? "border-brand-500 bg-brand-500/10" : "border-neutral-800 hover:border-neutral-700"}`}>
@@ -292,6 +345,44 @@ function CheckoutInner() {
                   );
                 })}
               </div>
+
+              {/transferencia/i.test(form.payment) && (
+                <div className="mt-3 bg-neutral-800/50 border border-neutral-800 rounded-lg p-3 text-xs text-neutral-400 space-y-3">
+                  <p className="text-neutral-200 font-medium">Datos para transferir (podés usar cualquiera):</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {BANK_ACCOUNTS.map((acc) => (
+                      <div key={acc.bank + acc.account} className="bg-neutral-900 border border-neutral-800 rounded-lg p-2.5">
+                        <p className="text-[10px] uppercase tracking-wider text-brand-400 font-semibold">{acc.bank}</p>
+                        <p className="font-mono text-sm text-white mt-0.5">{acc.account}</p>
+                        <p className="mt-1 text-neutral-300">{acc.holder}</p>
+                        <p className="text-neutral-500">CI {acc.idNumber}</p>
+                        {acc.note && <p className="text-[10px] text-amber-400/80 mt-1">{acc.note}</p>}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-2.5">
+                    <p className="text-[10px] uppercase tracking-wider text-brand-400 font-semibold">Alias / Celular</p>
+                    <p className="font-mono text-sm text-white mt-0.5">{PAYMENT_ALIAS}</p>
+                  </div>
+                  <p className="text-amber-400">Importante: después de transferir, enviá una foto del comprobante por WhatsApp para confirmar tu pedido.</p>
+                  <div className="pt-1">
+                    <label className="block text-xs text-neutral-400 mb-1">N.º de operación / referencia (opcional)</label>
+                    <input className="input px-3 py-1.5 text-sm" value={paymentReference} onChange={(e) => setPaymentReference(e.target.value)} placeholder="Ej: 123456789" maxLength={120} />
+                  </div>
+                </div>
+              )}
+
+              {/pago express/i.test(form.payment) && (
+                <div className="mt-3 bg-neutral-800/50 border border-neutral-800 rounded-lg p-3 text-xs text-neutral-400 space-y-1">
+                  <p className="text-neutral-200 font-medium">¿Cómo pagar?</p>
+                  <p>Al confirmar el pedido te enviamos el QR de Pago Express por WhatsApp. Pagás desde tu app y nos mandás el comprobante.</p>
+                  <div className="pt-2">
+                    <label className="block text-xs text-neutral-400 mb-1">N.º de operación / referencia (opcional)</label>
+                    <input className="input px-3 py-1.5 text-sm" value={paymentReference} onChange={(e) => setPaymentReference(e.target.value)} placeholder="Ej: 123456789" maxLength={120} />
+                  </div>
+                </div>
+              )}
+
               <textarea className="input px-3 mt-3" rows={2} placeholder="Notas para el envío (opcional)" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} />
             </div>
           )}
@@ -307,6 +398,10 @@ function CheckoutInner() {
                 <div className="flex justify-between"><span className="text-neutral-400">Entrega</span><span className="text-neutral-200">{form.address}, {form.city}, {form.department}</span></div>
                 {form.reference && <div className="flex justify-between"><span className="text-neutral-400">Referencia</span><span className="text-neutral-200">{form.reference}</span></div>}
                 <div className="flex justify-between"><span className="text-neutral-400">Pago</span><span className="text-neutral-200">{form.payment}</span></div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-emerald-400"><span>Cupón {appliedCoupon.code}</span><span>-{formatPYG(discount)}</span></div>
+                )}
+                <div className="flex justify-between font-semibold border-t border-neutral-800 pt-2 mt-2"><span>Total a pagar</span><span className="text-brand-400">{formatPYG(total)}</span></div>
               </div>
             </div>
           )}
@@ -343,7 +438,40 @@ function CheckoutInner() {
           <div className="border-t border-neutral-800 mt-3 pt-3 space-y-1 text-sm">
             <div className="flex justify-between text-neutral-400"><span>Subtotal</span><span>{formatPYG(subtotal)}</span></div>
             <div className="flex justify-between text-neutral-400"><span>Envío</span><span>{shipping === 0 ? "Gratis" : formatPYG(shipping)}</span></div>
+            {appliedCoupon && (
+              <div className="flex justify-between text-emerald-400">
+                <span>Cupón {appliedCoupon.code}</span>
+                <span>-{formatPYG(discount)}</span>
+              </div>
+            )}
             <div className="flex justify-between font-bold text-base pt-2"><span>Total</span><span className="text-brand-400">{formatPYG(total)}</span></div>
+          </div>
+
+          {/* Cupón */}
+          <div className="mt-4">
+            {appliedCoupon ? (
+              <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2 text-sm">
+                <span className="text-emerald-400 flex items-center gap-1.5">
+                  <Ticket className="w-4 h-4" /> {appliedCoupon.code} (-{formatPYG(appliedCoupon.discount)})
+                </span>
+                <button type="button" onClick={removeCoupon} className="text-neutral-400 hover:text-red-400 text-xs">Quitar</button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  className="input px-3 py-1.5 text-sm flex-1 uppercase"
+                  placeholder="Cupón"
+                  value={couponInput}
+                  onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyCoupon(); } }}
+                  maxLength={40}
+                />
+                <button type="button" onClick={applyCoupon} disabled={applyingCoupon || !couponInput.trim()} className="btn-ghost px-3 py-1.5 text-sm">
+                  {applyingCoupon ? "…" : "Aplicar"}
+                </button>
+              </div>
+            )}
+            {couponError && <p className="text-red-400 text-xs mt-1">{couponError}</p>}
           </div>
 
           <div className="flex gap-2 mt-4">

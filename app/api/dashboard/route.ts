@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { can, canView } from "@/lib/auth/permissions";
+import { AUTH_ROLES_ERP } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
-  const auth = await requireAdmin(request as any);
+  const auth = await requireRole(request as any, ...AUTH_ROLES_ERP);
   if (auth.response) return auth.response;
+
+  const role = auth.payload.roleName;
+  const showInventoryValue = canView(role, "inventoryValue");
+  const showCash = canView(role, "cashBalance");
+  const showReceivables = canView(role, "receivables");
+  const showPurchases = can(role, "purchases.read");
+  const hiddenFields: string[] = [];
+  if (!showInventoryValue) hiddenFields.push("inventoryValue");
+  if (!showCash) hiddenFields.push("cash");
+  if (!showReceivables) hiddenFields.push("receivables");
+  if (!showPurchases) hiddenFields.push("purchases");
+
   try {
     const now = new Date();
     const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -99,10 +113,12 @@ export async function GET(request: NextRequest) {
     });
     const totalUnits = inventoryAgg._sum.stock || 0;
 
-    const inventoryProducts = await prisma.product.findMany({
-      where: { isActive: true },
-      select: { price: true, stock: true },
-    });
+    const inventoryProducts = showInventoryValue
+      ? await prisma.product.findMany({
+          where: { isActive: true },
+          select: { price: true, stock: true },
+        })
+      : [];
     const totalInventoryValue = inventoryProducts.reduce((s, p) => s + p.price * p.stock, 0);
 
     const highRotation = await prisma.product.findMany({
@@ -210,14 +226,16 @@ export async function GET(request: NextRequest) {
     const recentActivity: any[] = [];
 
     const [purchasesMonth, supplierDebt, receivablesTotal, cashOpen, stockMovesToday] = await Promise.all([
-      prisma.purchase.aggregate({
-        where: { createdAt: { gte: startMonth }, status: { not: "cancelled" } },
-        _sum: { total: true, amountPaid: true },
-        _count: true,
-      }),
-      prisma.supplier.aggregate({ _sum: { balance: true } }),
-      prisma.customer.aggregate({ _sum: { balance: true } }),
-      prisma.cashSession.findFirst({ where: { status: "open" }, include: { movements: true } }),
+      showPurchases
+        ? prisma.purchase.aggregate({
+            where: { createdAt: { gte: startMonth }, status: { not: "cancelled" } },
+            _sum: { total: true, amountPaid: true },
+            _count: true,
+          })
+        : Promise.resolve(null),
+      showPurchases ? prisma.supplier.aggregate({ _sum: { balance: true } }) : Promise.resolve(null),
+      showReceivables ? prisma.customer.aggregate({ _sum: { balance: true } }) : Promise.resolve(null),
+      showCash ? prisma.cashSession.findFirst({ where: { status: "open" }, include: { movements: true } }) : Promise.resolve(null),
       prisma.stockMovement.count({ where: { createdAt: { gte: startToday } } }),
     ]);
 
@@ -225,14 +243,14 @@ export async function GET(request: NextRequest) {
     const cashExpense = (cashOpen?.movements || []).filter((m) => m.type === "EGRESO").reduce((s, m) => s + m.amount, 0);
 
     const financialMetrics = {
-      purchasesThisMonth: purchasesMonth._sum.total || 0,
-      purchasesPaidThisMonth: purchasesMonth._sum.amountPaid || 0,
-      purchasesCount: purchasesMonth._count,
-      supplierDebt: supplierDebt._sum.balance || 0,
-      receivables: receivablesTotal._sum.balance || 0,
-      cashStatus: cashOpen ? "open" : "closed",
-      cashInDrawer: cashOpen ? Math.round((cashOpen.openingAmount + cashIncome - cashExpense) * 100) / 100 : 0,
-      cashOpenSince: cashOpen?.openedAt?.toISOString() || null,
+      purchasesThisMonth: showPurchases ? purchasesMonth?._sum.total || 0 : null,
+      purchasesPaidThisMonth: showPurchases ? purchasesMonth?._sum.amountPaid || 0 : null,
+      purchasesCount: showPurchases ? purchasesMonth?._count || 0 : null,
+      supplierDebt: showPurchases ? supplierDebt?._sum.balance || 0 : null,
+      receivables: showReceivables ? receivablesTotal?._sum.balance || 0 : null,
+      cashStatus: showCash ? (cashOpen ? "open" : "closed") : null,
+      cashInDrawer: showCash && cashOpen ? Math.round((cashOpen.openingAmount + cashIncome - cashExpense) * 100) / 100 : null,
+      cashOpenSince: showCash && cashOpen ? cashOpen.openedAt?.toISOString() || null : null,
       stockMovementsToday: stockMovesToday,
     };
 
@@ -334,7 +352,8 @@ export async function GET(request: NextRequest) {
         })),
       },
       inventoryMetrics: {
-        totalValue: totalInventoryValue,
+        totalValue: showInventoryValue ? totalInventoryValue : null,
+        totalValueVisible: showInventoryValue,
         totalUnits,
         highRotation: highRotation.map((p) => ({ id: p.id, name: p.name, sold: p.sold, stock: p.stock })),
         noMovement: noMovement.map((p) => ({ id: p.id, name: p.name, stock: p.stock, updatedAt: p.updatedAt.toISOString() })),
@@ -366,6 +385,8 @@ export async function GET(request: NextRequest) {
       alerts,
       averageTicket,
       financialMetrics,
+      role,
+      hiddenFields,
     });
   } catch (error) {
     console.error("Dashboard error:", error);

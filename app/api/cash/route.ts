@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_CASH } from "@/lib/constants";
 
 export async function GET(request: Request) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_CASH);
     if (auth.response) return auth.response;
     const open = await prisma.cashSession.findFirst({ where: { status: "open" }, include: { movements: { orderBy: { createdAt: "desc" }, take: 100 } } });
     const sessions = await prisma.cashSession.findMany({ orderBy: { openedAt: "desc" }, take: 10, include: { _count: { select: { movements: true } } } });
@@ -21,7 +22,7 @@ const openSchema = z.object({ openingAmount: z.number().nonnegative().default(0)
 
 export async function POST(request: Request) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_CASH);
     if (auth.response) return auth.response;
     const body = await request.json();
     if (body.action === "open") {

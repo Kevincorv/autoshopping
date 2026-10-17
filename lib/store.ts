@@ -153,6 +153,40 @@ export const useWishlist = create<WishlistState>()(
   )
 );
 
+interface CompareState {
+  ids: string[];
+  toggle: (id: string) => boolean;
+  has: (id: string) => boolean;
+  remove: (id: string) => void;
+  clear: () => void;
+}
+
+export const useCompare = create<CompareState>()(
+  persist(
+    (set, get) => ({
+      ids: [],
+      toggle: (id) => {
+        const ids = get().ids;
+        if (ids.includes(id)) {
+          set({ ids: ids.filter((x) => x !== id) });
+          return true;
+        }
+        if (ids.length >= 3) return false;
+        set({ ids: [...ids, id] });
+        return true;
+      },
+      has: (id) => get().ids.includes(id),
+      remove: (id) => set({ ids: get().ids.filter((x) => x !== id) }),
+      clear: () => set({ ids: [] }),
+    }),
+    {
+      name: "as_compare",
+      storage: createJSONStorage(() => (typeof window === "undefined" ? (undefined as any) : localStorage)),
+      partialize: (s) => ({ ids: s.ids }),
+    }
+  )
+);
+
 interface UIState {
   theme: "light" | "dark";
   toggleTheme: () => void;

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Star, Package, MessageCircle, Check } from "lucide-react";
-import { useCart, useUI } from "@/lib/store";
+import { ShoppingCart, Star, Package, MessageCircle, Check, Scale } from "lucide-react";
+import { useCart, useUI, useCompare } from "@/lib/store";
 import { useSocketEvents } from "@/lib/socket";
 import { formatPYG } from "@/lib/utils";
 import { WishlistButton } from "./WishlistButton";
@@ -23,6 +23,9 @@ function getStockInfo(stock: number) {
 export function ProductCard({ product }: Props) {
   const add = useCart((s) => s.add);
   const showToast = useUI((s) => s.showToast);
+  const compareIds = useCompare((s) => s.ids);
+  const toggleCompare = useCompare((s) => s.toggle);
+  const inCompare = compareIds.includes(product.id);
   const [liveStock, setLiveStock] = useState<number | null>(null);
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -45,6 +48,17 @@ export function ProductCard({ product }: Props) {
     setAdded(true);
     showToast(`${product.name} agregado al carrito`, "success");
     setTimeout(() => setAdded(false), 1500);
+  };
+
+  const handleCompare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const ok = toggleCompare(product.id);
+    if (!ok) {
+      showToast("Máximo 3 productos para comparar", "error");
+      return;
+    }
+    showToast(inCompare ? "Quitado del comparador" : "Agregado al comparador", "success");
   };
 
   const whatsappMsg = encodeURIComponent(
@@ -82,7 +96,18 @@ export function ProductCard({ product }: Props) {
           )}
         </div>
 
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 flex flex-col gap-1">
+          <button
+            type="button"
+            onClick={handleCompare}
+            title={inCompare ? "Quitar del comparador" : "Comparar"}
+            aria-label={inCompare ? "Quitar del comparador" : "Comparar producto"}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+              inCompare ? "bg-brand-500 text-white" : "bg-neutral-900/80 backdrop-blur text-neutral-300 hover:text-white"
+            }`}
+          >
+            <Scale className="w-4 h-4" />
+          </button>
           <div className="bg-neutral-900/80 backdrop-blur rounded-full">
             <WishlistButton productId={product.id} size="sm" />
           </div>

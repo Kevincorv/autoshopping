@@ -42,7 +42,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getProducts: (params?: { category?: string; brand?: string; min?: number; max?: number; q?: string; sort?: string; page?: number; limit?: number }) => {
+  getProducts: (params?: { category?: string; brand?: string; min?: number; max?: number; q?: string; sort?: string; page?: number; limit?: number; vehicle?: string; vehicleYear?: number }) => {
     const sp = new URLSearchParams();
     if (params?.category) sp.set("category", params.category);
     if (params?.brand) sp.set("brand", params.brand);
@@ -52,6 +52,8 @@ export const api = {
     if (params?.sort) sp.set("sort", params.sort);
     if (params?.page) sp.set("page", String(params.page));
     if (params?.limit) sp.set("limit", String(params.limit));
+    if (params?.vehicle) sp.set("vehicle", params.vehicle);
+    if (params?.vehicleYear) sp.set("vehicleYear", String(params.vehicleYear));
     const q = sp.toString();
     return request<{ products: Product[]; total: number }>(`/products${q ? "?" + q : ""}`);
   },
@@ -62,7 +64,7 @@ export const api = {
   getDashboard: () => request<DashboardStats>(`/dashboard`),
   getOrders: () => request<{ orders: Order[] }>(`/orders`),
   createOrder: (data: any) =>
-    request<{ order: Order }>(`/orders`, {
+    request<{ order: Order; orderNumber?: string }>(`/orders`, {
       method: "POST",
       body: JSON.stringify(data),
     }),

@@ -63,6 +63,31 @@ export type Brand = Prisma.BrandModel
  */
 export type Product = Prisma.ProductModel
 /**
+ * Model VehicleMake
+ * 
+ */
+export type VehicleMake = Prisma.VehicleMakeModel
+/**
+ * Model VehicleModel
+ * 
+ */
+export type VehicleModel = Prisma.VehicleModelModel
+/**
+ * Model ProductVehicle
+ * 
+ */
+export type ProductVehicle = Prisma.ProductVehicleModel
+/**
+ * Model Post
+ * 
+ */
+export type Post = Prisma.PostModel
+/**
+ * Model PushSubscription
+ * 
+ */
+export type PushSubscription = Prisma.PushSubscriptionModel
+/**
  * Model ProductImage
  * 
  */
@@ -113,6 +138,11 @@ export type Payment = Prisma.PaymentModel
  */
 export type Coupon = Prisma.CouponModel
 /**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
+/**
  * Model AuditLog
  * 
  */
@@ -132,6 +162,11 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type Session = Prisma.SessionModel
+/**
+ * Model LoginAttempt
+ * 
+ */
+export type LoginAttempt = Prisma.LoginAttemptModel
 /**
  * Model Supplier
  * 

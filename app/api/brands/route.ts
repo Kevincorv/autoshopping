@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_STOCK } from "@/lib/constants";
 
 const schema = z.object({
   name: z.string().min(1),
@@ -30,7 +31,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(request as any);
+  const auth = await requireRole(request as any, ...AUTH_ROLES_STOCK);
   if (auth.response) return auth.response;
   try {
     const body = await request.json();

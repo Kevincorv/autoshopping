@@ -1,29 +1,7 @@
 import "dotenv/config";
-import { PrismaClient } from "./client/client.js";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
-
-const SUPPORTED_QUERY_KEYS = new Set(["tls", "authToken", "cache"]);
-function sanitizeLibsqlUrl(rawUrl: string): string {
-  if (!rawUrl || !rawUrl.includes("?")) return rawUrl;
-  const qIdx = rawUrl.indexOf("?");
-  const hashIdx = rawUrl.indexOf("#", qIdx);
-  const queryEnd = hashIdx === -1 ? rawUrl.length : hashIdx;
-  const queryStr = rawUrl.substring(qIdx + 1, queryEnd);
-  const tail = hashIdx === -1 ? "" : rawUrl.substring(hashIdx);
-  const kept: string[] = [];
-  for (const pair of queryStr.split("&")) {
-    if (!pair) continue;
-    const key = pair.split("=")[0];
-    if (SUPPORTED_QUERY_KEYS.has(key)) kept.push(pair);
-  }
-  return kept.length
-    ? rawUrl.substring(0, qIdx + 1) + kept.join("&") + tail
-    : rawUrl.substring(0, qIdx) + tail;
-}
-
-const url = sanitizeLibsqlUrl(process.env.DATABASE_URL || "file:./dev.db");
-const prisma = new PrismaClient({ adapter: new PrismaLibSql({ url }) });
+import { prisma } from "../lib/prisma";
 
 const ROLES = [
   { name: "admin", description: "Acceso total al sistema" },
@@ -56,10 +34,15 @@ const PERMISSIONS: Record<string, { resources: string[]; actions: string[] }> = 
   },
 };
 
-async function main() {
-  console.log("Using database URL:", url);
-  const adminPassword = await bcrypt.hash("admin123", 12);
+function generateStrongPassword(): string {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*-_";
+  const bytes = crypto.randomBytes(24);
+  let out = "";
+  for (const b of bytes) out += alphabet[b % alphabet.length];
+  return out;
+}
 
+async function main() {
   for (const roleData of ROLES) {
     const role = await prisma.role.upsert({
       where: { name: roleData.name },
@@ -87,19 +70,35 @@ async function main() {
 
   const adminRole = await prisma.role.findUniqueOrThrow({ where: { name: "admin" } });
 
-  await prisma.user.upsert({
-    where: { email: "admin@autoshopping.com" },
-    update: {},
-    create: {
-      name: "Admin",
-      lastname: "Sistema",
-      document: "0000000",
-      phone: "000000000",
-      email: "admin@autoshopping.com",
-      passwordHash: adminPassword,
-      roleId: adminRole.id,
-    },
+  const existingAdmin = await prisma.user.findUnique({ where: { email: "admin@autoshopping.com" } });
+  const envPassword = process.env.ADMIN_INITIAL_PASSWORD?.trim() || null;
+  let generatedPassword: string | null = null;
+
+  if (!existingAdmin) {
+    const plain = envPassword || generateStrongPassword();
+    if (!envPassword) generatedPassword = plain;
+    await prisma.user.create({
+      data: {
+        name: "Admin",
+        lastname: "Sistema",
+        document: "0000000",
+        phone: "000000000",
+        email: "admin@autoshopping.com",
+        passwordHash: await bcrypt.hash(plain, 12),
+        roleId: adminRole.id,
+        mustChangePassword: true,
+      },
+    });
+    console.log("Admin creado: admin@autoshopping.com");
+  }
+
+  const forced = await prisma.user.updateMany({
+    where: { passwordChangedAt: null, mustChangePassword: false },
+    data: { mustChangePassword: true },
   });
+  if (forced.count > 0) {
+    console.log(`${forced.count} usuario(s) marcados para cambio obligatorio de contraseña.`);
+  }
 
   const settings = [
     { key: "company_name", value: "AutoShopping Paraguay" },
@@ -135,29 +134,33 @@ async function main() {
     });
   }
 
-  const vehicles = [
-    { make: "Toyota", model: "Hilux", yearStart: 2015, yearEnd: 2019, engine: "2.8L Diesel", fuel: "Diésel", displacement: "2755cc", generation: "VIII (AN120/AN130)" },
-    { make: "Toyota", model: "Corolla", yearStart: 2015, yearEnd: 2019, engine: "1.8L", fuel: "Nafta", displacement: "1794cc", generation: "XI (E170)" },
-    { make: "Toyota", model: "Corolla", yearStart: 2020, yearEnd: 2026, engine: "2.0L", fuel: "Nafta", displacement: "1987cc", generation: "XII (E210)" },
-    { make: "Chevrolet", model: "Onix", yearStart: 2019, yearEnd: 2026, engine: "1.2L Turbo", fuel: "Nafta", displacement: "1199cc", generation: "II (RS)" },
-    { make: "Hyundai", model: "Tucson", yearStart: 2016, yearEnd: 2020, engine: "2.0L", fuel: "Nafta", displacement: "1999cc", generation: "III (TL)" },
-    { make: "Kia", model: "Sportage", yearStart: 2016, yearEnd: 2021, engine: "2.0L", fuel: "Nafta", displacement: "1999cc", generation: "IV (QL)" },
-    { make: "Volkswagen", model: "Amarok", yearStart: 2017, yearEnd: 2023, engine: "3.0L V6", fuel: "Diésel", displacement: "2967cc", generation: "I (facelift)" },
-    { make: "Nissan", model: "Frontier", yearStart: 2016, yearEnd: 2021, engine: "2.3L", fuel: "Diésel", displacement: "2298cc", generation: "D23" },
-  ];
+  const pending = await prisma.user.findMany({
+    where: { mustChangePassword: true },
+    select: { email: true, role: { select: { name: true } } },
+  });
 
-  for (const v of vehicles) {
-    const exist = await prisma.vehicle.findFirst({ where: { make: v.make, model: v.model, engine: v.engine } });
-    if (!exist) await prisma.vehicle.create({ data: v });
+  console.log("Seed completado.");
+  if (generatedPassword) {
+    console.log("=====================================================");
+    console.log("  CREDENCIAL INICIAL DEL ADMIN (guardala ahora):");
+    console.log("  email:    admin@autoshopping.com");
+    console.log(`  password: ${generatedPassword}`);
+    console.log("  Se pedirá cambiarla en el primer ingreso.");
+    console.log("=====================================================");
+  } else {
+    console.log("Admin existente intacto (no se regeneró la contraseña).");
   }
-
-  console.log("Seed completed successfully");
-  console.log("Admin credentials: admin@autoshopping.com / admin123");
+  if (pending.length) {
+    console.log(`Usuarios con cambio de contraseña obligatorio (${pending.length}):`);
+    for (const u of pending) console.log(`  - ${u.email} (${u.role.name})`);
+  }
 }
 
 main()
+  .then(() => {
+    process.exit(0);
+  })
   .catch((e) => {
     console.error(e);
     process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+  });

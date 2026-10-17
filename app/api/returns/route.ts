@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_RETURNS } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 import { z } from "zod";
@@ -21,7 +22,7 @@ const returnSchema = z.object({
 });
 
 export async function GET(request: Request) {
-  const auth = await requireAuth(request as any);
+  const auth = await requireRole(request as any, ...AUTH_ROLES_RETURNS);
   if (auth.response) return auth.response;
   try {
     const url = new URL(request.url);
@@ -50,7 +51,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(request as any);
+  const auth = await requireRole(request as any, ...AUTH_ROLES_RETURNS);
   if (auth.response) return auth.response;
   try {
     const body = await request.json();

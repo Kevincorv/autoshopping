@@ -29,12 +29,14 @@ export type AggregateOrderItem = {
 export type OrderItemAvgAggregateOutputType = {
   quantity: number | null
   unitPrice: number | null
+  unitCost: number | null
   subtotal: number | null
 }
 
 export type OrderItemSumAggregateOutputType = {
   quantity: number | null
   unitPrice: number | null
+  unitCost: number | null
   subtotal: number | null
 }
 
@@ -46,6 +48,7 @@ export type OrderItemMinAggregateOutputType = {
   productSku: string | null
   quantity: number | null
   unitPrice: number | null
+  unitCost: number | null
   subtotal: number | null
   createdAt: Date | null
 }
@@ -58,6 +61,7 @@ export type OrderItemMaxAggregateOutputType = {
   productSku: string | null
   quantity: number | null
   unitPrice: number | null
+  unitCost: number | null
   subtotal: number | null
   createdAt: Date | null
 }
@@ -70,6 +74,7 @@ export type OrderItemCountAggregateOutputType = {
   productSku: number
   quantity: number
   unitPrice: number
+  unitCost: number
   subtotal: number
   createdAt: number
   _all: number
@@ -79,12 +84,14 @@ export type OrderItemCountAggregateOutputType = {
 export type OrderItemAvgAggregateInputType = {
   quantity?: true
   unitPrice?: true
+  unitCost?: true
   subtotal?: true
 }
 
 export type OrderItemSumAggregateInputType = {
   quantity?: true
   unitPrice?: true
+  unitCost?: true
   subtotal?: true
 }
 
@@ -96,6 +103,7 @@ export type OrderItemMinAggregateInputType = {
   productSku?: true
   quantity?: true
   unitPrice?: true
+  unitCost?: true
   subtotal?: true
   createdAt?: true
 }
@@ -108,6 +116,7 @@ export type OrderItemMaxAggregateInputType = {
   productSku?: true
   quantity?: true
   unitPrice?: true
+  unitCost?: true
   subtotal?: true
   createdAt?: true
 }
@@ -120,6 +129,7 @@ export type OrderItemCountAggregateInputType = {
   productSku?: true
   quantity?: true
   unitPrice?: true
+  unitCost?: true
   subtotal?: true
   createdAt?: true
   _all?: true
@@ -219,6 +229,7 @@ export type OrderItemGroupByOutputType = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost: number | null
   subtotal: number
   createdAt: Date
   _count: OrderItemCountAggregateOutputType | null
@@ -254,6 +265,7 @@ export type OrderItemWhereInput = {
   productSku?: Prisma.StringFilter<"OrderItem"> | string
   quantity?: Prisma.FloatFilter<"OrderItem"> | number
   unitPrice?: Prisma.FloatFilter<"OrderItem"> | number
+  unitCost?: Prisma.FloatNullableFilter<"OrderItem"> | number | null
   subtotal?: Prisma.FloatFilter<"OrderItem"> | number
   createdAt?: Prisma.DateTimeFilter<"OrderItem"> | Date | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
@@ -268,6 +280,7 @@ export type OrderItemOrderByWithRelationInput = {
   productSku?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
+  unitCost?: Prisma.SortOrderInput | Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
@@ -286,6 +299,7 @@ export type OrderItemWhereUniqueInput = Prisma.AtLeast<{
   productSku?: Prisma.StringFilter<"OrderItem"> | string
   quantity?: Prisma.FloatFilter<"OrderItem"> | number
   unitPrice?: Prisma.FloatFilter<"OrderItem"> | number
+  unitCost?: Prisma.FloatNullableFilter<"OrderItem"> | number | null
   subtotal?: Prisma.FloatFilter<"OrderItem"> | number
   createdAt?: Prisma.DateTimeFilter<"OrderItem"> | Date | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
@@ -300,6 +314,7 @@ export type OrderItemOrderByWithAggregationInput = {
   productSku?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
+  unitCost?: Prisma.SortOrderInput | Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OrderItemCountOrderByAggregateInput
@@ -320,6 +335,7 @@ export type OrderItemScalarWhereWithAggregatesInput = {
   productSku?: Prisma.StringWithAggregatesFilter<"OrderItem"> | string
   quantity?: Prisma.FloatWithAggregatesFilter<"OrderItem"> | number
   unitPrice?: Prisma.FloatWithAggregatesFilter<"OrderItem"> | number
+  unitCost?: Prisma.FloatNullableWithAggregatesFilter<"OrderItem"> | number | null
   subtotal?: Prisma.FloatWithAggregatesFilter<"OrderItem"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OrderItem"> | Date | string
 }
@@ -330,6 +346,7 @@ export type OrderItemCreateInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
   order: Prisma.OrderCreateNestedOneWithoutItemsInput
@@ -344,6 +361,7 @@ export type OrderItemUncheckedCreateInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
 }
@@ -354,6 +372,7 @@ export type OrderItemUpdateInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderUpdateOneRequiredWithoutItemsNestedInput
@@ -368,6 +387,7 @@ export type OrderItemUncheckedUpdateInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -380,6 +400,7 @@ export type OrderItemCreateManyInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
 }
@@ -390,6 +411,7 @@ export type OrderItemUpdateManyMutationInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -402,6 +424,7 @@ export type OrderItemUncheckedUpdateManyInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -430,6 +453,7 @@ export type OrderItemCountOrderByAggregateInput = {
   productSku?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
+  unitCost?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -437,6 +461,7 @@ export type OrderItemCountOrderByAggregateInput = {
 export type OrderItemAvgOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
+  unitCost?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
 }
 
@@ -448,6 +473,7 @@ export type OrderItemMaxOrderByAggregateInput = {
   productSku?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
+  unitCost?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -460,6 +486,7 @@ export type OrderItemMinOrderByAggregateInput = {
   productSku?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
+  unitCost?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -467,6 +494,7 @@ export type OrderItemMinOrderByAggregateInput = {
 export type OrderItemSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
+  unitCost?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
 }
 
@@ -560,6 +588,7 @@ export type OrderItemCreateWithoutProductInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
   order: Prisma.OrderCreateNestedOneWithoutItemsInput
@@ -572,6 +601,7 @@ export type OrderItemUncheckedCreateWithoutProductInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
 }
@@ -613,6 +643,7 @@ export type OrderItemScalarWhereInput = {
   productSku?: Prisma.StringFilter<"OrderItem"> | string
   quantity?: Prisma.FloatFilter<"OrderItem"> | number
   unitPrice?: Prisma.FloatFilter<"OrderItem"> | number
+  unitCost?: Prisma.FloatNullableFilter<"OrderItem"> | number | null
   subtotal?: Prisma.FloatFilter<"OrderItem"> | number
   createdAt?: Prisma.DateTimeFilter<"OrderItem"> | Date | string
 }
@@ -623,6 +654,7 @@ export type OrderItemCreateWithoutOrderInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
   product?: Prisma.ProductCreateNestedOneWithoutOrderItemsInput
@@ -635,6 +667,7 @@ export type OrderItemUncheckedCreateWithoutOrderInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
 }
@@ -672,6 +705,7 @@ export type OrderItemCreateManyProductInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
 }
@@ -682,6 +716,7 @@ export type OrderItemUpdateWithoutProductInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderUpdateOneRequiredWithoutItemsNestedInput
@@ -694,6 +729,7 @@ export type OrderItemUncheckedUpdateWithoutProductInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -705,6 +741,7 @@ export type OrderItemUncheckedUpdateManyWithoutProductInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -716,6 +753,7 @@ export type OrderItemCreateManyOrderInput = {
   productSku: string
   quantity: number
   unitPrice: number
+  unitCost?: number | null
   subtotal: number
   createdAt?: Date | string
 }
@@ -726,6 +764,7 @@ export type OrderItemUpdateWithoutOrderInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   product?: Prisma.ProductUpdateOneWithoutOrderItemsNestedInput
@@ -738,6 +777,7 @@ export type OrderItemUncheckedUpdateWithoutOrderInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -749,6 +789,7 @@ export type OrderItemUncheckedUpdateManyWithoutOrderInput = {
   productSku?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  unitCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -763,6 +804,7 @@ export type OrderItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   productSku?: boolean
   quantity?: boolean
   unitPrice?: boolean
+  unitCost?: boolean
   subtotal?: boolean
   createdAt?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
@@ -779,11 +821,12 @@ export type OrderItemSelectScalar = {
   productSku?: boolean
   quantity?: boolean
   unitPrice?: boolean
+  unitCost?: boolean
   subtotal?: boolean
   createdAt?: boolean
 }
 
-export type OrderItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "productId" | "productName" | "productSku" | "quantity" | "unitPrice" | "subtotal" | "createdAt", ExtArgs["result"]["orderItem"]>
+export type OrderItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "productId" | "productName" | "productSku" | "quantity" | "unitPrice" | "unitCost" | "subtotal" | "createdAt", ExtArgs["result"]["orderItem"]>
 export type OrderItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   product?: boolean | Prisma.OrderItem$productArgs<ExtArgs>
@@ -803,6 +846,7 @@ export type $OrderItemPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     productSku: string
     quantity: number
     unitPrice: number
+    unitCost: number | null
     subtotal: number
     createdAt: Date
   }, ExtArgs["result"]["orderItem"]>
@@ -1183,6 +1227,7 @@ export interface OrderItemFieldRefs {
   readonly productSku: Prisma.FieldRef<"OrderItem", 'String'>
   readonly quantity: Prisma.FieldRef<"OrderItem", 'Float'>
   readonly unitPrice: Prisma.FieldRef<"OrderItem", 'Float'>
+  readonly unitCost: Prisma.FieldRef<"OrderItem", 'Float'>
   readonly subtotal: Prisma.FieldRef<"OrderItem", 'Float'>
   readonly createdAt: Prisma.FieldRef<"OrderItem", 'DateTime'>
 }

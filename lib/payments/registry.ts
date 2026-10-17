@@ -47,14 +47,12 @@ export async function getPaymentMethods(): Promise<{
   commerceData?: any;
 }> {
   const fallback = {
-    provider: "pagopar",
+    provider: "manual",
     commission: null,
     methods: [
-      { name: "Bancard - Tarjetas de crédito", minAmount: 1000, commission: 0, icon: "card", type: "Defecto" },
-      { name: "Tigo Money", minAmount: 1000, commission: 0, icon: "wallet", type: "Defecto" },
-      { name: "Billetera Personal", minAmount: 1000, commission: 0, icon: "mobile", type: "Defecto" },
-      { name: "Pago Express (QR)", minAmount: 1000, commission: 0, icon: "qr", type: "Defecto" },
-      { name: "Contra Entrega", minAmount: 1000, commission: 0, icon: "cash", type: "Defecto" },
+      { name: "Transferencia bancaria", minAmount: 0, commission: 0, icon: "bank", type: "Manual" },
+      { name: "Pago Express (QR)", minAmount: 0, commission: 0, icon: "qr", type: "Manual" },
+      { name: "Contra Entrega", minAmount: 0, commission: 0, icon: "cash", type: "Manual" },
     ],
   };
 

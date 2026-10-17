@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_CASH } from "@/lib/constants";
 import { audit } from "@/lib/audit";
 
 const moveSchema = z.object({ type: z.enum(["INGRESO", "EGRESO"]), amount: z.number().positive(), category: z.string().optional(), description: z.string().optional() });
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_CASH);
     if (auth.response) return auth.response;
     const body = await request.json();
     const session = await prisma.cashSession.findUnique({ where: { id: params.id }, include: { movements: true } });

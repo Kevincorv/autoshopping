@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { getSessionUser } from "@/lib/auth/session";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireRole } from "@/lib/auth/middleware";
+import { AUTH_ROLES_CASH } from "@/lib/constants";
 import { audit } from "@/lib/audit";
 
 const schema = z.object({
@@ -15,7 +16,7 @@ const schema = z.object({
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
-    const auth = await requireAuth(request as any);
+    const auth = await requireRole(request as any, ...AUTH_ROLES_CASH);
     if (auth.response) return auth.response;
     const body = await request.json();
     const parsed = schema.safeParse(body);

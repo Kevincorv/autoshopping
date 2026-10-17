@@ -1,20 +1,29 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verifyToken } from "@/lib/auth/jwt";
-import { prisma } from "@/lib/prisma";
+import { verifySessionToken } from "@/lib/auth/jwt";
 import { AUTH_CONFIG } from "@/lib/auth/config";
+import { validateSession } from "@/lib/auth/session-store";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
     const cookieStore = cookies();
     const token = cookieStore.get(AUTH_CONFIG.cookieName)?.value;
-    if (!token) {
-      return NextResponse.json({ user: null });
-    }
+    if (!token) return NextResponse.json({ user: null });
 
-    const payload = await verifyToken(token);
-    if (!payload) {
-      return NextResponse.json({ user: null });
+    const payload = await verifySessionToken(token);
+    if (!payload) return NextResponse.json({ user: null });
+
+    if (payload.sid) {
+      const validation = await validateSession(payload.sid);
+      if (!validation.ok) {
+        return NextResponse.json({
+          user: null,
+          sessionState: validation.reason,
+        });
+      }
+    } else {
+      return NextResponse.json({ user: null, sessionState: "missing" });
     }
 
     const user = await prisma.user.findUnique({
@@ -29,11 +38,14 @@ export async function GET() {
         city: true,
         department: true,
         address: true,
+        mustChangePassword: true,
+        twoFactorEnabled: true,
+        isActive: true,
         role: { select: { name: true } },
       },
     });
 
-    if (!user) {
+    if (!user || !user.isActive) {
       return NextResponse.json({ user: null });
     }
 

@@ -7,14 +7,12 @@ export async function GET() {
     return NextResponse.json(data);
   } catch {
     return NextResponse.json({
-      provider: "pagopar",
+      provider: "manual",
       commission: null,
       methods: [
-        { name: "Tarjetas de crédito/débito", minAmount: 1000, commission: 0, icon: "card" },
-        { name: "Tigo Money", minAmount: 1000, commission: 0, icon: "wallet" },
-        { name: "Billetera Personal", minAmount: 1000, commission: 0, icon: "mobile" },
-        { name: "Pago Express (QR)", minAmount: 1000, commission: 0, icon: "qr" },
-        { name: "Contra Entrega", minAmount: 1000, commission: 0, icon: "cash" },
+        { name: "Transferencia bancaria", minAmount: 0, commission: 0, icon: "bank" },
+        { name: "Pago Express (QR)", minAmount: 0, commission: 0, icon: "qr" },
+        { name: "Contra Entrega", minAmount: 0, commission: 0, icon: "cash" },
       ],
     });
   }

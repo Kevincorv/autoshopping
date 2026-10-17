@@ -7,13 +7,21 @@ export async function audit(opts: {
   resourceId?: string;
   details?: string;
   request?: Request;
+  userId?: string | null;
 }) {
   try {
-    const user = await getSessionUser();
-    const ip = opts.request?.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || undefined;
+    let userId: string | null = opts.userId ?? null;
+    if (userId === null || userId === undefined) {
+      const user = await getSessionUser();
+      userId = user?.userId || null;
+    }
+    const ip =
+      opts.request?.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      opts.request?.headers.get("x-real-ip") ||
+      undefined;
     await prisma.auditLog.create({
       data: {
-        userId: user?.userId || null,
+        userId,
         action: opts.action,
         resource: opts.resource,
         resourceId: opts.resourceId || null,

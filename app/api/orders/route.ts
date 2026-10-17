@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { requireAuth } from "@/lib/auth/middleware";
+import { requireAuth, getClientIp } from "@/lib/auth/middleware";
+import { isErpRole } from "@/lib/auth/permissions";
+import { sanitizeText } from "@/lib/validation";
+import { validateCoupon, consumeCoupon } from "@/lib/coupons";
+import { rateLimit } from "@/lib/auth/rate-limit";
+import { verifySessionToken } from "@/lib/auth/jwt";
+import { AUTH_CONFIG } from "@/lib/auth/config";
+import { cookies } from "next/headers";
+import { notifyAdmins, checkLowStock } from "@/lib/notify";
+import { sendEmail, orderCreatedEmail } from "@/lib/email";
 
 const createOrderSchema = z.object({
   items: z.array(z.object({
@@ -18,6 +27,8 @@ const createOrderSchema = z.object({
     city: z.string().max(100).optional(),
   }),
   paymentMethod: z.string().optional(),
+  paymentReference: z.string().max(120).optional(),
+  couponCode: z.string().max(40).optional(),
   notes: z.string().max(500).optional(),
 });
 
@@ -25,7 +36,16 @@ export async function GET(request: Request) {
   const auth = await requireAuth(request as any);
   if (auth.response) return auth.response;
   try {
+    const isErp = isErpRole(auth.payload.roleName);
     const orders = await prisma.order.findMany({
+      where: isErp
+        ? {}
+        : {
+            OR: [
+              { userId: auth.payload.userId },
+              { customerEmail: auth.payload.email },
+            ],
+          },
       include: {
         items: true,
         statusHistory: { orderBy: { createdAt: "desc" }, take: 1 },
@@ -41,8 +61,19 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(request as any);
-  if (auth.response) return auth.response;
+  const ip = getClientIp(request);
+  const limiter = rateLimit(`order-create:${ip || "unknown"}`, 10, 60_000);
+  if (!limiter.ok) {
+    return NextResponse.json({ error: "Demasiados pedidos desde esta conexión. Esperá un minuto." }, { status: 429 });
+  }
+
+  let sessionUserId: string | null = null;
+  try {
+    const token = cookies().get(AUTH_CONFIG.cookieName)?.value;
+    const payload = token ? await verifySessionToken(token) : null;
+    if (payload?.userId) sessionUserId = payload.userId;
+  } catch {}
+
   try {
     const body = await request.json();
     const parsed = createOrderSchema.safeParse(body);
@@ -50,10 +81,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Datos inválidos", details: parsed.error.flatten() }, { status: 400 });
     }
 
-    const { items, customer, paymentMethod, notes } = parsed.data;
+    const { items, customer, paymentMethod, paymentReference, couponCode, notes } = parsed.data;
 
+    const products = await prisma.product.findMany({ where: { id: { in: items.map((i) => i.productId) } } });
+    const productMap = new Map(products.map((p) => [p.id, p]));
     for (const item of items) {
-      const product = await prisma.product.findUnique({ where: { id: item.productId } });
+      const product = productMap.get(item.productId);
       if (!product) {
         return NextResponse.json({ error: `Producto no encontrado: ${item.productId}` }, { status: 404 });
       }
@@ -64,42 +97,67 @@ export async function POST(request: Request) {
       }
     }
 
-    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}`;
-
-    const orderItems = await Promise.all(items.map(async (item) => {
-      const product = await prisma.product.findUnique({ where: { id: item.productId } });
-      const unitPrice = item.price || product!.price;
+    const orderItems = items.map((item) => {
+      const product = productMap.get(item.productId)!;
+      const unitPrice = item.price || product.price;
       return {
         productId: item.productId,
-        productName: item.name || product!.name,
-        productSku: product!.sku,
+        productName: item.name || product.name,
+        productSku: product.sku,
         quantity: item.quantity,
         unitPrice,
+        unitCost: product.unitCost ?? product.lastPurchaseCost ?? product.costPrice ?? null,
         subtotal: unitPrice * item.quantity,
       };
-    }));
+    });
 
-    const subtotal = orderItems.reduce((s, i) => s + i.subtotal, 0);
+    const subtotal = Math.round(orderItems.reduce((s, i) => s + i.subtotal, 0));
 
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        status: "pending",
-        subtotal,
-        total: subtotal,
-        paymentMethod: paymentMethod || null,
-        notes: notes || null,
-        customerName: customer.name,
-        customerPhone: customer.phone,
-        customerEmail: customer.email,
-        customerAddress: customer.address,
-        customerCity: customer.city || "",
-        items: { create: orderItems },
-        statusHistory: {
-          create: { status: "pending", notes: "Pedido creado" },
+    let discount = 0;
+    let couponId: string | null = null;
+    if (couponCode) {
+      const check = await validateCoupon(couponCode, subtotal);
+      if (!check.ok || !check.coupon) {
+        return NextResponse.json({ error: check.error || "Cupón inválido" }, { status: 400 });
+      }
+      discount = check.discount!;
+      couponId = check.coupon.id;
+    }
+
+    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}`;
+    const total = Math.max(0, subtotal - discount);
+
+    const order = await prisma.$transaction(async (tx) => {
+      if (couponId) {
+        const consumed = await consumeCoupon(couponId);
+        if (!consumed) {
+          throw new Error("COUPON_UNAVAILABLE");
+        }
+      }
+      return tx.order.create({
+        data: {
+          orderNumber,
+          userId: sessionUserId,
+          status: "pending",
+          subtotal,
+          discount,
+          total,
+          paymentMethod: paymentMethod || null,
+          paymentReference: paymentReference ? sanitizeText(paymentReference, 120) : null,
+          couponId,
+          notes: notes ? sanitizeText(notes, 500) : null,
+          customerName: sanitizeText(customer.name, 100),
+          customerPhone: sanitizeText(customer.phone, 30),
+          customerEmail: sanitizeText(customer.email, 100).toLowerCase(),
+          customerAddress: sanitizeText(customer.address, 200),
+          customerCity: sanitizeText(customer.city || "", 100),
+          items: { create: orderItems },
+          statusHistory: {
+            create: { status: "pending", notes: "Pedido creado" },
+          },
         },
-      },
-      include: { items: true },
+        include: { items: true },
+      });
     });
 
     for (const item of items) {
@@ -107,16 +165,38 @@ export async function POST(request: Request) {
         where: { id: item.productId },
         data: { stock: { decrement: item.quantity }, sold: { increment: item.quantity } },
       });
+      checkLowStock(item.productId).catch(() => {});
     }
+
+    notifyAdmins({
+      type: "order",
+      title: "Nuevo pedido",
+      message: `${orderNumber} de ${customer.name} — Gs. ${total.toLocaleString("es-PY")}`,
+      link: "/dashboard/admin/orders",
+    }).catch(() => {});
+
+    sendEmail(
+      orderCreatedEmail({
+        to: order.customerEmail,
+        customerName: order.customerName,
+        orderNumber,
+        total,
+        paymentMethod: order.paymentMethod,
+        trackingUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/track/${orderNumber}`,
+      })
+    ).catch(() => {});
 
     try {
       if (typeof globalThis.__emit === "function") {
-        globalThis.__emit("order:new", { orderNumber, customer: customer.name, total: subtotal });
+        globalThis.__emit("order:new", { orderNumber, customer: customer.name, total });
       }
     } catch {}
 
-    return NextResponse.json({ order }, { status: 201 });
-  } catch (error) {
+    return NextResponse.json({ order, orderNumber }, { status: 201 });
+  } catch (error: any) {
+    if (error?.message === "COUPON_UNAVAILABLE") {
+      return NextResponse.json({ error: "El cupón ya no está disponible. Probá con otro." }, { status: 409 });
+    }
     console.error("Create order error:", error);
     return NextResponse.json({ error: "Error al crear pedido" }, { status: 500 });
   }

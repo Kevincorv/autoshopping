@@ -7,6 +7,8 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { Toast } from "@/components/Toast";
 import { LiveStatus } from "@/components/LiveStatus";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { CompareBar } from "@/components/CompareBar";
+import { PwaRegister } from "@/components/PwaRegister";
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -24,6 +26,8 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <Toast />
       <LiveStatus />
       <WhatsAppButton />
+      <CompareBar />
+      <PwaRegister />
     </div>
   );
 }

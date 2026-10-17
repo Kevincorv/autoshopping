@@ -5,11 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, LogIn, Mail, Lock } from "lucide-react";
 import { useAuth } from "@/lib/auth/store";
+import { sanitizeRedirect } from "@/lib/auth/redirect";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/dashboard/admin";
+  const rawRedirect = searchParams.get("redirect");
   const setUser = useAuth((s) => s.setUser);
 
   const [email, setEmail] = useState("");
@@ -33,12 +34,32 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Error al iniciar sesión");
+        const suffix =
+          data.retryAfterSec && data.code
+            ? ` (${data.code}, reintentá en ${data.retryAfterSec}s)`
+            : "";
+        setError((data.error || "Error al iniciar sesión") + suffix);
+        return;
+      }
+
+      const roleName: string | undefined = data.user?.role?.name;
+      const target = sanitizeRedirect(rawRedirect, roleName);
+
+      if (data.requires2FA) {
+        router.push(`/login/2fa?redirect=${encodeURIComponent(target)}`);
+        return;
+      }
+      if (data.mustChangePassword) {
+        router.push(`/change-password?redirect=${encodeURIComponent(target)}`);
+        return;
+      }
+      if (data.requires2FASetup) {
+        router.push("/2fa-setup");
         return;
       }
 
       setUser(data.user);
-      router.push(redirect);
+      router.push(target);
       router.refresh();
     } catch {
       setError("Error de conexión");

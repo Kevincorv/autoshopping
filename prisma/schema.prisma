@@ -8,30 +8,41 @@ datasource db {
 }
 
 model User {
-  id              String          @id @default(cuid())
-  name            String
-  lastname        String
-  document        String          @unique
-  phone           String
-  whatsapp        String?
-  email           String          @unique
-  passwordHash    String
-  city            String?
-  department      String?
-  address         String?
-  roleId          String
-  isActive        Boolean         @default(true)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  addresses       Address[]
-  auditLogs       AuditLog[]
-  cartItems       CartItem[]
-  customerProfile Customer?
-  notifications   Notification[]
-  orders          Order[]
-  stockMovements  StockMovement[]
-  role            Role            @relation(fields: [roleId], references: [id])
-  wishlistItems   WishlistItem[]
+  id                   String          @id @default(cuid())
+  name                 String
+  lastname             String
+  document             String          @unique
+  phone                String
+  whatsapp             String?
+  email                String          @unique
+  passwordHash         String
+  city                 String?
+  department           String?
+  address              String?
+  roleId               String
+  isActive             Boolean         @default(true)
+  mustChangePassword   Boolean         @default(false)
+  passwordChangedAt    DateTime?
+  twoFactorEnabled     Boolean         @default(false)
+  twoFactorSecret      String?
+  twoFactorRecovery    String?         @db.Text
+  failedLoginAttempts  Int             @default(0)
+  lockedUntil          DateTime?
+  lastLoginAt          DateTime?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  addresses            Address[]
+  auditLogs            AuditLog[]
+  cartItems            CartItem[]
+  customerProfile      Customer?
+  notifications        Notification[]
+  orders               Order[]
+  stockMovements       StockMovement[]
+  role                Role            @relation(fields: [roleId], references: [id])
+  wishlistItems       WishlistItem[]
+  sessions            Session[]
+  loginAttempts       LoginAttempt[]
+  reviews             Review[]
 
   @@index([roleId], map: "User_roleId_fkey")
 }
@@ -186,9 +197,86 @@ model Product {
   returnItems      ReturnItem[]
   stockMovements   StockMovement[]
   wishlistItems    WishlistItem[]
+  reviewsList      Review[]
+  vehicles         ProductVehicle[]
 
   @@index([brandId], map: "Product_brandId_fkey")
   @@index([categoryId], map: "Product_categoryId_fkey")
+}
+
+model VehicleMake {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  slug      String         @unique
+  logo      String?
+  sortOrder Int            @default(0)
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  models    VehicleModel[]
+}
+
+model VehicleModel {
+  id        String            @id @default(cuid())
+  makeId    String
+  name      String
+  slug      String            @unique
+  yearFrom  Int?
+  yearTo    Int?
+  isActive  Boolean           @default(true)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  make      VehicleMake       @relation(fields: [makeId], references: [id])
+  products  ProductVehicle[]
+
+  @@unique([makeId, name])
+  @@index([makeId])
+}
+
+model ProductVehicle {
+  id        String        @id @default(cuid())
+  productId String
+  modelId   String
+  yearFrom  Int?
+  yearTo    Int?
+  createdAt DateTime      @default(now())
+  product   Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  model     VehicleModel  @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, modelId])
+  @@index([modelId])
+  @@index([productId])
+}
+
+model Post {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  excerpt         String    @default("")
+  content         String    @default("")
+  coverImage      String?
+  authorName      String    @default("AutoShopping")
+  tags            String    @default("")
+  published       Boolean   @default(false)
+  publishedAt     DateTime?
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([published, publishedAt])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userId    String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model ProductImage {
@@ -266,7 +354,10 @@ model Order {
   total           Float
   paymentMethod   String?
   paymentStatus   String               @default("pending")
+  paymentReference String?
   couponId        String?
+  trackingNumber  String?
+  courier         String?
   notes           String?
   customerName    String
   customerPhone   String
@@ -281,6 +372,7 @@ model Order {
   updatedAt       DateTime             @updatedAt
   customer        Customer?            @relation(fields: [customerId], references: [id])
   user            User?                @relation(fields: [userId], references: [id])
+  coupon          Coupon?              @relation(fields: [couponId], references: [id])
   items           OrderItem[]
   statusHistory   OrderStatusHistory[]
   payments        Payment[]
@@ -298,6 +390,7 @@ model OrderItem {
   productSku  String
   quantity    Float
   unitPrice   Float
+  unitCost    Float?
   subtotal    Float
   createdAt   DateTime @default(now())
   order       Order    @relation(fields: [orderId], references: [id])
@@ -340,6 +433,7 @@ model Coupon {
   code        String    @unique
   type        String
   value       Float
+  description String?
   minPurchase Float?
   maxUses     Int?
   usedCount   Int       @default(0)
@@ -347,6 +441,24 @@ model Coupon {
   expiresAt   DateTime?
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
+  orders      Order[]
+}
+
+model Review {
+  id                String   @id @default(cuid())
+  productId         String
+  userId            String
+  rating            Int
+  title             String?
+  comment           String
+  verifiedPurchase  Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  product           Product  @relation(fields: [productId], references: [id])
+  user              User     @relation(fields: [userId], references: [id])
+
+  @@unique([productId, userId])
+  @@index([productId])
 }
 
 model AuditLog {
@@ -386,11 +498,32 @@ model Notification {
 }
 
 model Session {
+  id         String    @id @default(cuid())
+  userId     String
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime  @default(now())
+  lastSeenAt DateTime  @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  user       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model LoginAttempt {
   id        String   @id @default(cuid())
-  sessionId String   @unique
-  data      String?
+  userId    String?
+  email     String?
+  ipAddress String?
+  success   Boolean  @default(false)
+  reason    String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email, createdAt])
+  @@index([ipAddress, createdAt])
 }
 
 model Supplier {

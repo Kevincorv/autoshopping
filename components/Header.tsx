@@ -74,6 +74,7 @@ export function Header() {
         <nav className="hidden lg:flex items-center gap-0.5 ml-2">
           <Link href="/" className="btn-ghost text-sm px-2.5">Inicio</Link>
           <Link href="/products" className="btn-ghost text-sm px-2.5">Productos</Link>
+          <Link href="/vehicles" className="btn-ghost text-sm px-2.5">Por vehículo</Link>
           {mounted && showDashboard && (
             <Link href="/dashboard" className="btn-ghost text-sm px-2.5 flex items-center gap-1">
               Dashboard
@@ -170,6 +171,9 @@ export function Header() {
           </Link>
           <Link href="/products" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-800 text-sm">
             <Package className="w-4 h-4" /> Productos
+          </Link>
+          <Link href="/vehicles" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-800 text-sm">
+            <Car className="w-4 h-4" /> Buscar por vehículo
           </Link>
           {showDashboard && (
             <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-800 text-sm">
