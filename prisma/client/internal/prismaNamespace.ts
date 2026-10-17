@@ -435,7 +435,14 @@ export const ModelName = {
   ReturnItem: 'ReturnItem',
   CashSession: 'CashSession',
   CashMovement: 'CashMovement',
-  PaymentMethod: 'PaymentMethod'
+  PaymentMethod: 'PaymentMethod',
+  CustomerTag: 'CustomerTag',
+  Campaign: 'Campaign',
+  LoyaltyRule: 'LoyaltyRule',
+  LoyaltyPoint: 'LoyaltyPoint',
+  ChatSession: 'ChatSession',
+  ChatMessage: 'ChatMessage',
+  Vendor: 'Vendor'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -451,7 +458,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "role" | "permission" | "customer" | "receivablePayment" | "address" | "category" | "brand" | "product" | "vehicleMake" | "vehicleModel" | "productVehicle" | "post" | "pushSubscription" | "productImage" | "productSpec" | "productTag" | "cartItem" | "wishlistItem" | "order" | "orderItem" | "orderStatusHistory" | "payment" | "coupon" | "review" | "auditLog" | "setting" | "notification" | "session" | "loginAttempt" | "supplier" | "purchase" | "purchaseItem" | "stockMovement" | "returnOrder" | "returnItem" | "cashSession" | "cashMovement" | "paymentMethod"
+    modelProps: "user" | "role" | "permission" | "customer" | "receivablePayment" | "address" | "category" | "brand" | "product" | "vehicleMake" | "vehicleModel" | "productVehicle" | "post" | "pushSubscription" | "productImage" | "productSpec" | "productTag" | "cartItem" | "wishlistItem" | "order" | "orderItem" | "orderStatusHistory" | "payment" | "coupon" | "review" | "auditLog" | "setting" | "notification" | "session" | "loginAttempt" | "supplier" | "purchase" | "purchaseItem" | "stockMovement" | "returnOrder" | "returnItem" | "cashSession" | "cashMovement" | "paymentMethod" | "customerTag" | "campaign" | "loyaltyRule" | "loyaltyPoint" | "chatSession" | "chatMessage" | "vendor"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3029,6 +3036,468 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CustomerTag: {
+      payload: Prisma.$CustomerTagPayload<ExtArgs>
+      fields: Prisma.CustomerTagFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CustomerTagFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CustomerTagFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload>
+        }
+        findFirst: {
+          args: Prisma.CustomerTagFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CustomerTagFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload>
+        }
+        findMany: {
+          args: Prisma.CustomerTagFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload>[]
+        }
+        create: {
+          args: Prisma.CustomerTagCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload>
+        }
+        createMany: {
+          args: Prisma.CustomerTagCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CustomerTagDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload>
+        }
+        update: {
+          args: Prisma.CustomerTagUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload>
+        }
+        deleteMany: {
+          args: Prisma.CustomerTagDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CustomerTagUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CustomerTagUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerTagPayload>
+        }
+        aggregate: {
+          args: Prisma.CustomerTagAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCustomerTag>
+        }
+        groupBy: {
+          args: Prisma.CustomerTagGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerTagGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CustomerTagCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerTagCountAggregateOutputType> | number
+        }
+      }
+    }
+    Campaign: {
+      payload: Prisma.$CampaignPayload<ExtArgs>
+      fields: Prisma.CampaignFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CampaignFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CampaignFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        findFirst: {
+          args: Prisma.CampaignFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CampaignFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        findMany: {
+          args: Prisma.CampaignFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>[]
+        }
+        create: {
+          args: Prisma.CampaignCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        createMany: {
+          args: Prisma.CampaignCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CampaignDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        update: {
+          args: Prisma.CampaignUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        deleteMany: {
+          args: Prisma.CampaignDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CampaignUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CampaignUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        aggregate: {
+          args: Prisma.CampaignAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCampaign>
+        }
+        groupBy: {
+          args: Prisma.CampaignGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CampaignCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignCountAggregateOutputType> | number
+        }
+      }
+    }
+    LoyaltyRule: {
+      payload: Prisma.$LoyaltyRulePayload<ExtArgs>
+      fields: Prisma.LoyaltyRuleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LoyaltyRuleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LoyaltyRuleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload>
+        }
+        findFirst: {
+          args: Prisma.LoyaltyRuleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LoyaltyRuleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload>
+        }
+        findMany: {
+          args: Prisma.LoyaltyRuleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload>[]
+        }
+        create: {
+          args: Prisma.LoyaltyRuleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload>
+        }
+        createMany: {
+          args: Prisma.LoyaltyRuleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.LoyaltyRuleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload>
+        }
+        update: {
+          args: Prisma.LoyaltyRuleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload>
+        }
+        deleteMany: {
+          args: Prisma.LoyaltyRuleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LoyaltyRuleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.LoyaltyRuleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyRulePayload>
+        }
+        aggregate: {
+          args: Prisma.LoyaltyRuleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLoyaltyRule>
+        }
+        groupBy: {
+          args: Prisma.LoyaltyRuleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoyaltyRuleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LoyaltyRuleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoyaltyRuleCountAggregateOutputType> | number
+        }
+      }
+    }
+    LoyaltyPoint: {
+      payload: Prisma.$LoyaltyPointPayload<ExtArgs>
+      fields: Prisma.LoyaltyPointFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LoyaltyPointFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LoyaltyPointFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload>
+        }
+        findFirst: {
+          args: Prisma.LoyaltyPointFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LoyaltyPointFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload>
+        }
+        findMany: {
+          args: Prisma.LoyaltyPointFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload>[]
+        }
+        create: {
+          args: Prisma.LoyaltyPointCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload>
+        }
+        createMany: {
+          args: Prisma.LoyaltyPointCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.LoyaltyPointDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload>
+        }
+        update: {
+          args: Prisma.LoyaltyPointUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload>
+        }
+        deleteMany: {
+          args: Prisma.LoyaltyPointDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LoyaltyPointUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.LoyaltyPointUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyPointPayload>
+        }
+        aggregate: {
+          args: Prisma.LoyaltyPointAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLoyaltyPoint>
+        }
+        groupBy: {
+          args: Prisma.LoyaltyPointGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoyaltyPointGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LoyaltyPointCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoyaltyPointCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChatSession: {
+      payload: Prisma.$ChatSessionPayload<ExtArgs>
+      fields: Prisma.ChatSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChatSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChatSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.ChatSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChatSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+        }
+        findMany: {
+          args: Prisma.ChatSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload>[]
+        }
+        create: {
+          args: Prisma.ChatSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+        }
+        createMany: {
+          args: Prisma.ChatSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ChatSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+        }
+        update: {
+          args: Prisma.ChatSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChatSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChatSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ChatSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.ChatSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChatSession>
+        }
+        groupBy: {
+          args: Prisma.ChatSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChatSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChatMessage: {
+      payload: Prisma.$ChatMessagePayload<ExtArgs>
+      fields: Prisma.ChatMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChatMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChatMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.ChatMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChatMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        findMany: {
+          args: Prisma.ChatMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+        }
+        create: {
+          args: Prisma.ChatMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        createMany: {
+          args: Prisma.ChatMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ChatMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        update: {
+          args: Prisma.ChatMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChatMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChatMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ChatMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.ChatMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChatMessage>
+        }
+        groupBy: {
+          args: Prisma.ChatMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChatMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatMessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    Vendor: {
+      payload: Prisma.$VendorPayload<ExtArgs>
+      fields: Prisma.VendorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload>
+        }
+        findFirst: {
+          args: Prisma.VendorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload>
+        }
+        findMany: {
+          args: Prisma.VendorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload>[]
+        }
+        create: {
+          args: Prisma.VendorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload>
+        }
+        createMany: {
+          args: Prisma.VendorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.VendorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload>
+        }
+        update: {
+          args: Prisma.VendorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.VendorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorPayload>
+        }
+        aggregate: {
+          args: Prisma.VendorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendor>
+        }
+        groupBy: {
+          args: Prisma.VendorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3226,6 +3695,7 @@ export const ProductScalarFieldEnum = {
   lastPurchaseCost: 'lastPurchaseCost',
   brandName: 'brandName',
   weight: 'weight',
+  vendorId: 'vendorId',
   isActive: 'isActive',
   isFeatured: 'isFeatured',
   isNew: 'isNew',
@@ -3399,6 +3869,9 @@ export const OrderScalarFieldEnum = {
   amountPaid: 'amountPaid',
   paidAt: 'paidAt',
   deliveredAt: 'deliveredAt',
+  loyaltyPointsEarned: 'loyaltyPointsEarned',
+  loyaltyPointsRedeemed: 'loyaltyPointsRedeemed',
+  pointsDiscount: 'pointsDiscount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3416,6 +3889,7 @@ export const OrderItemScalarFieldEnum = {
   unitPrice: 'unitPrice',
   unitCost: 'unitCost',
   subtotal: 'subtotal',
+  vendorId: 'vendorId',
   createdAt: 'createdAt'
 } as const
 
@@ -3708,6 +4182,103 @@ export const PaymentMethodScalarFieldEnum = {
 export type PaymentMethodScalarFieldEnum = (typeof PaymentMethodScalarFieldEnum)[keyof typeof PaymentMethodScalarFieldEnum]
 
 
+export const CustomerTagScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  color: 'color',
+  createdAt: 'createdAt'
+} as const
+
+export type CustomerTagScalarFieldEnum = (typeof CustomerTagScalarFieldEnum)[keyof typeof CustomerTagScalarFieldEnum]
+
+
+export const CampaignScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  status: 'status',
+  subject: 'subject',
+  body: 'body',
+  audience: 'audience',
+  sentAt: 'sentAt',
+  sentCount: 'sentCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
+
+
+export const LoyaltyRuleScalarFieldEnum = {
+  id: 'id',
+  pointsPer1000Gs: 'pointsPer1000Gs',
+  valuePerPointGs: 'valuePerPointGs',
+  minRedeemPoints: 'minRedeemPoints',
+  maxRedeemPercent: 'maxRedeemPercent',
+  active: 'active'
+} as const
+
+export type LoyaltyRuleScalarFieldEnum = (typeof LoyaltyRuleScalarFieldEnum)[keyof typeof LoyaltyRuleScalarFieldEnum]
+
+
+export const LoyaltyPointScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  orderId: 'orderId',
+  type: 'type',
+  points: 'points',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type LoyaltyPointScalarFieldEnum = (typeof LoyaltyPointScalarFieldEnum)[keyof typeof LoyaltyPointScalarFieldEnum]
+
+
+export const ChatSessionScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  userId: 'userId',
+  guestName: 'guestName',
+  guestEmail: 'guestEmail',
+  status: 'status',
+  unreadAdmin: 'unreadAdmin',
+  unreadCustomer: 'unreadCustomer',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChatSessionScalarFieldEnum = (typeof ChatSessionScalarFieldEnum)[keyof typeof ChatSessionScalarFieldEnum]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  sender: 'sender',
+  body: 'body',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
+export const VendorScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  contactName: 'contactName',
+  email: 'email',
+  phone: 'phone',
+  commissionPct: 'commissionPct',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorScalarFieldEnum = (typeof VendorScalarFieldEnum)[keyof typeof VendorScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3845,6 +4416,7 @@ export const ProductOrderByRelevanceFieldEnum = {
   barcode: 'barcode',
   secondaryBarcode: 'secondaryBarcode',
   brandName: 'brandName',
+  vendorId: 'vendorId',
   metaTitle: 'metaTitle',
   metaDescription: 'metaDescription'
 } as const
@@ -3987,7 +4559,8 @@ export const OrderItemOrderByRelevanceFieldEnum = {
   orderId: 'orderId',
   productId: 'productId',
   productName: 'productName',
-  productSku: 'productSku'
+  productSku: 'productSku',
+  vendorId: 'vendorId'
 } as const
 
 export type OrderItemOrderByRelevanceFieldEnum = (typeof OrderItemOrderByRelevanceFieldEnum)[keyof typeof OrderItemOrderByRelevanceFieldEnum]
@@ -4208,6 +4781,81 @@ export const PaymentMethodOrderByRelevanceFieldEnum = {
 } as const
 
 export type PaymentMethodOrderByRelevanceFieldEnum = (typeof PaymentMethodOrderByRelevanceFieldEnum)[keyof typeof PaymentMethodOrderByRelevanceFieldEnum]
+
+
+export const CustomerTagOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  color: 'color'
+} as const
+
+export type CustomerTagOrderByRelevanceFieldEnum = (typeof CustomerTagOrderByRelevanceFieldEnum)[keyof typeof CustomerTagOrderByRelevanceFieldEnum]
+
+
+export const CampaignOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  status: 'status',
+  subject: 'subject',
+  body: 'body',
+  audience: 'audience'
+} as const
+
+export type CampaignOrderByRelevanceFieldEnum = (typeof CampaignOrderByRelevanceFieldEnum)[keyof typeof CampaignOrderByRelevanceFieldEnum]
+
+
+export const LoyaltyRuleOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type LoyaltyRuleOrderByRelevanceFieldEnum = (typeof LoyaltyRuleOrderByRelevanceFieldEnum)[keyof typeof LoyaltyRuleOrderByRelevanceFieldEnum]
+
+
+export const LoyaltyPointOrderByRelevanceFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  orderId: 'orderId',
+  type: 'type',
+  note: 'note'
+} as const
+
+export type LoyaltyPointOrderByRelevanceFieldEnum = (typeof LoyaltyPointOrderByRelevanceFieldEnum)[keyof typeof LoyaltyPointOrderByRelevanceFieldEnum]
+
+
+export const ChatSessionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  userId: 'userId',
+  guestName: 'guestName',
+  guestEmail: 'guestEmail',
+  status: 'status'
+} as const
+
+export type ChatSessionOrderByRelevanceFieldEnum = (typeof ChatSessionOrderByRelevanceFieldEnum)[keyof typeof ChatSessionOrderByRelevanceFieldEnum]
+
+
+export const ChatMessageOrderByRelevanceFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  sender: 'sender',
+  body: 'body'
+} as const
+
+export type ChatMessageOrderByRelevanceFieldEnum = (typeof ChatMessageOrderByRelevanceFieldEnum)[keyof typeof ChatMessageOrderByRelevanceFieldEnum]
+
+
+export const VendorOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  contactName: 'contactName',
+  email: 'email',
+  phone: 'phone',
+  status: 'status'
+} as const
+
+export type VendorOrderByRelevanceFieldEnum = (typeof VendorOrderByRelevanceFieldEnum)[keyof typeof VendorOrderByRelevanceFieldEnum]
 
 
 
@@ -4440,6 +5088,13 @@ export type GlobalOmitConfig = {
   cashSession?: Prisma.CashSessionOmit
   cashMovement?: Prisma.CashMovementOmit
   paymentMethod?: Prisma.PaymentMethodOmit
+  customerTag?: Prisma.CustomerTagOmit
+  campaign?: Prisma.CampaignOmit
+  loyaltyRule?: Prisma.LoyaltyRuleOmit
+  loyaltyPoint?: Prisma.LoyaltyPointOmit
+  chatSession?: Prisma.ChatSessionOmit
+  chatMessage?: Prisma.ChatMessageOmit
+  vendor?: Prisma.VendorOmit
 }
 
 /* Types for Logging */

@@ -89,7 +89,14 @@ export const ModelName = {
   ReturnItem: 'ReturnItem',
   CashSession: 'CashSession',
   CashMovement: 'CashMovement',
-  PaymentMethod: 'PaymentMethod'
+  PaymentMethod: 'PaymentMethod',
+  CustomerTag: 'CustomerTag',
+  Campaign: 'Campaign',
+  LoyaltyRule: 'LoyaltyRule',
+  LoyaltyPoint: 'LoyaltyPoint',
+  ChatSession: 'ChatSession',
+  ChatMessage: 'ChatMessage',
+  Vendor: 'Vendor'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -266,6 +273,7 @@ export const ProductScalarFieldEnum = {
   lastPurchaseCost: 'lastPurchaseCost',
   brandName: 'brandName',
   weight: 'weight',
+  vendorId: 'vendorId',
   isActive: 'isActive',
   isFeatured: 'isFeatured',
   isNew: 'isNew',
@@ -439,6 +447,9 @@ export const OrderScalarFieldEnum = {
   amountPaid: 'amountPaid',
   paidAt: 'paidAt',
   deliveredAt: 'deliveredAt',
+  loyaltyPointsEarned: 'loyaltyPointsEarned',
+  loyaltyPointsRedeemed: 'loyaltyPointsRedeemed',
+  pointsDiscount: 'pointsDiscount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -456,6 +467,7 @@ export const OrderItemScalarFieldEnum = {
   unitPrice: 'unitPrice',
   unitCost: 'unitCost',
   subtotal: 'subtotal',
+  vendorId: 'vendorId',
   createdAt: 'createdAt'
 } as const
 
@@ -748,6 +760,103 @@ export const PaymentMethodScalarFieldEnum = {
 export type PaymentMethodScalarFieldEnum = (typeof PaymentMethodScalarFieldEnum)[keyof typeof PaymentMethodScalarFieldEnum]
 
 
+export const CustomerTagScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  color: 'color',
+  createdAt: 'createdAt'
+} as const
+
+export type CustomerTagScalarFieldEnum = (typeof CustomerTagScalarFieldEnum)[keyof typeof CustomerTagScalarFieldEnum]
+
+
+export const CampaignScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  status: 'status',
+  subject: 'subject',
+  body: 'body',
+  audience: 'audience',
+  sentAt: 'sentAt',
+  sentCount: 'sentCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
+
+
+export const LoyaltyRuleScalarFieldEnum = {
+  id: 'id',
+  pointsPer1000Gs: 'pointsPer1000Gs',
+  valuePerPointGs: 'valuePerPointGs',
+  minRedeemPoints: 'minRedeemPoints',
+  maxRedeemPercent: 'maxRedeemPercent',
+  active: 'active'
+} as const
+
+export type LoyaltyRuleScalarFieldEnum = (typeof LoyaltyRuleScalarFieldEnum)[keyof typeof LoyaltyRuleScalarFieldEnum]
+
+
+export const LoyaltyPointScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  orderId: 'orderId',
+  type: 'type',
+  points: 'points',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type LoyaltyPointScalarFieldEnum = (typeof LoyaltyPointScalarFieldEnum)[keyof typeof LoyaltyPointScalarFieldEnum]
+
+
+export const ChatSessionScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  userId: 'userId',
+  guestName: 'guestName',
+  guestEmail: 'guestEmail',
+  status: 'status',
+  unreadAdmin: 'unreadAdmin',
+  unreadCustomer: 'unreadCustomer',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChatSessionScalarFieldEnum = (typeof ChatSessionScalarFieldEnum)[keyof typeof ChatSessionScalarFieldEnum]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  sender: 'sender',
+  body: 'body',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
+export const VendorScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  contactName: 'contactName',
+  email: 'email',
+  phone: 'phone',
+  commissionPct: 'commissionPct',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorScalarFieldEnum = (typeof VendorScalarFieldEnum)[keyof typeof VendorScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -885,6 +994,7 @@ export const ProductOrderByRelevanceFieldEnum = {
   barcode: 'barcode',
   secondaryBarcode: 'secondaryBarcode',
   brandName: 'brandName',
+  vendorId: 'vendorId',
   metaTitle: 'metaTitle',
   metaDescription: 'metaDescription'
 } as const
@@ -1027,7 +1137,8 @@ export const OrderItemOrderByRelevanceFieldEnum = {
   orderId: 'orderId',
   productId: 'productId',
   productName: 'productName',
-  productSku: 'productSku'
+  productSku: 'productSku',
+  vendorId: 'vendorId'
 } as const
 
 export type OrderItemOrderByRelevanceFieldEnum = (typeof OrderItemOrderByRelevanceFieldEnum)[keyof typeof OrderItemOrderByRelevanceFieldEnum]
@@ -1248,4 +1359,79 @@ export const PaymentMethodOrderByRelevanceFieldEnum = {
 } as const
 
 export type PaymentMethodOrderByRelevanceFieldEnum = (typeof PaymentMethodOrderByRelevanceFieldEnum)[keyof typeof PaymentMethodOrderByRelevanceFieldEnum]
+
+
+export const CustomerTagOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  color: 'color'
+} as const
+
+export type CustomerTagOrderByRelevanceFieldEnum = (typeof CustomerTagOrderByRelevanceFieldEnum)[keyof typeof CustomerTagOrderByRelevanceFieldEnum]
+
+
+export const CampaignOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  status: 'status',
+  subject: 'subject',
+  body: 'body',
+  audience: 'audience'
+} as const
+
+export type CampaignOrderByRelevanceFieldEnum = (typeof CampaignOrderByRelevanceFieldEnum)[keyof typeof CampaignOrderByRelevanceFieldEnum]
+
+
+export const LoyaltyRuleOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type LoyaltyRuleOrderByRelevanceFieldEnum = (typeof LoyaltyRuleOrderByRelevanceFieldEnum)[keyof typeof LoyaltyRuleOrderByRelevanceFieldEnum]
+
+
+export const LoyaltyPointOrderByRelevanceFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  orderId: 'orderId',
+  type: 'type',
+  note: 'note'
+} as const
+
+export type LoyaltyPointOrderByRelevanceFieldEnum = (typeof LoyaltyPointOrderByRelevanceFieldEnum)[keyof typeof LoyaltyPointOrderByRelevanceFieldEnum]
+
+
+export const ChatSessionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  userId: 'userId',
+  guestName: 'guestName',
+  guestEmail: 'guestEmail',
+  status: 'status'
+} as const
+
+export type ChatSessionOrderByRelevanceFieldEnum = (typeof ChatSessionOrderByRelevanceFieldEnum)[keyof typeof ChatSessionOrderByRelevanceFieldEnum]
+
+
+export const ChatMessageOrderByRelevanceFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  sender: 'sender',
+  body: 'body'
+} as const
+
+export type ChatMessageOrderByRelevanceFieldEnum = (typeof ChatMessageOrderByRelevanceFieldEnum)[keyof typeof ChatMessageOrderByRelevanceFieldEnum]
+
+
+export const VendorOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  contactName: 'contactName',
+  email: 'email',
+  phone: 'phone',
+  status: 'status'
+} as const
+
+export type VendorOrderByRelevanceFieldEnum = (typeof VendorOrderByRelevanceFieldEnum)[keyof typeof VendorOrderByRelevanceFieldEnum]
 

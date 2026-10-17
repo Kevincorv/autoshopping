@@ -35,6 +35,8 @@ export default function EditProduct() {
   const [brands, setBrands] = useState<Option[]>([]);
   const [vehicleMakes, setVehicleMakes] = useState<VehicleMakeOpt[]>([]);
   const [vehicleModelIds, setVehicleModelIds] = useState<string[]>([]);
+  const [vendors, setVendors] = useState<{ id: string; name: string; status: string }[]>([]);
+  const [vendorId, setVendorId] = useState("");
   const [vMakeId, setVMakeId] = useState("");
   const [vModelId, setVModelId] = useState("");
   const [form, setForm] = useState({
@@ -74,6 +76,11 @@ export default function EditProduct() {
       .then((data) => setVehicleMakes(data.makes || []))
       .catch(() => setVehicleMakes([]));
 
+    fetch("/api/admin/vendors")
+      .then((r) => r.json())
+      .then((data) => setVendors((data.vendors || []).map((v: any) => ({ id: v.id, name: v.name, status: v.status }))))
+      .catch(() => setVendors([]));
+
     if (!isNew) {
       fetch(`/api/products/${params.id}`)
         .then((r) => r.json())
@@ -108,6 +115,7 @@ export default function EditProduct() {
             if (Array.isArray(p.vehicles)) {
               setVehicleModelIds(p.vehicles.map((v: any) => v.modelId).filter(Boolean));
             }
+            setVendorId(p.vendorId || "");
           }
         })
         .finally(() => setLoading(false));
@@ -178,6 +186,7 @@ export default function EditProduct() {
         specs: form.specs.filter((s) => s.specName && s.specValue),
         tags: form.tags,
         vehicleModelIds,
+        vendorId: vendorId || null,
       };
 
       const url = isNew ? "/api/products" : `/api/products/${params.id}`;
@@ -356,6 +365,16 @@ export default function EditProduct() {
                 placeholder="Escribir y presionar Enter para agregar..."
                 className="input px-3 w-full text-sm"
               />
+            </div>
+            <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5 space-y-4">
+              <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Vendedor (marketplace)</h2>
+              <p className="text-xs text-neutral-500">Si el producto lo provee un vendedor externo, asignalo acá. La comisión se calcula al vender.</p>
+              <select value={vendorId} onChange={(e) => setVendorId(e.target.value)} className="input px-3 py-1.5 text-sm w-full">
+                <option value="">Sin vendedor (venta propia)</option>
+                {vendors.filter((v) => v.status === "active" || v.id === vendorId).map((v) => (
+                  <option key={v.id} value={v.id}>{v.name}</option>
+                ))}
+              </select>
             </div>
             <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5 space-y-4">
               <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Vehículos compatibles</h2>

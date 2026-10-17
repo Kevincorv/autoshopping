@@ -11,6 +11,14 @@ import { AUTH_CONFIG } from "@/lib/auth/config";
 import { cookies } from "next/headers";
 import { notifyAdmins, checkLowStock } from "@/lib/notify";
 import { sendEmail, orderCreatedEmail } from "@/lib/email";
+import {
+  getLoyaltyRule,
+  getLoyaltyBalance,
+  calcEarnedPoints,
+  calcRedeemDiscountGs,
+  calcMaxRedeemPoints,
+  findOrCreateCustomerForOrder,
+} from "@/lib/loyalty";
 
 const createOrderSchema = z.object({
   items: z.array(z.object({
@@ -30,6 +38,7 @@ const createOrderSchema = z.object({
   paymentReference: z.string().max(120).optional(),
   couponCode: z.string().max(40).optional(),
   notes: z.string().max(500).optional(),
+  pointsToRedeem: z.number().int().min(0).max(1_000_000).optional(),
 });
 
 export async function GET(request: Request) {
@@ -81,7 +90,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Datos inválidos", details: parsed.error.flatten() }, { status: 400 });
     }
 
-    const { items, customer, paymentMethod, paymentReference, couponCode, notes } = parsed.data;
+    const { items, customer, paymentMethod, paymentReference, couponCode, notes, pointsToRedeem } = parsed.data;
 
     const products = await prisma.product.findMany({ where: { id: { in: items.map((i) => i.productId) } } });
     const productMap = new Map(products.map((p) => [p.id, p]));
@@ -108,6 +117,7 @@ export async function POST(request: Request) {
         unitPrice,
         unitCost: product.unitCost ?? product.lastPurchaseCost ?? product.costPrice ?? null,
         subtotal: unitPrice * item.quantity,
+        vendorId: product.vendorId || null,
       };
     });
 
@@ -124,8 +134,52 @@ export async function POST(request: Request) {
       couponId = check.coupon.id;
     }
 
+    const subtotalAfterCoupon = Math.max(0, subtotal - discount);
+
+    let loyaltyCustomerId: string | null = null;
+    let pointsRedeemed = 0;
+    let pointsDiscountGs = 0;
+    let rule = null;
+    if (pointsToRedeem && pointsToRedeem > 0) {
+      rule = await getLoyaltyRule();
+      if (!rule.active) {
+        return NextResponse.json({ error: "El programa de puntos está desactivado" }, { status: 400 });
+      }
+      const cust = await findOrCreateCustomerForOrder({
+        userId: sessionUserId,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+      });
+      loyaltyCustomerId = cust.id;
+      const balance = await getLoyaltyBalance(cust.id);
+      const maxRedeem = calcMaxRedeemPoints(subtotalAfterCoupon, rule, balance);
+      if (pointsToRedeem > balance) {
+        return NextResponse.json({ error: `Solo tenés ${balance} puntos disponibles` }, { status: 400 });
+      }
+      if (pointsToRedeem < rule.minRedeemPoints) {
+        return NextResponse.json({ error: `El mínimo para canjear es de ${rule.minRedeemPoints} puntos` }, { status: 400 });
+      }
+      if (pointsToRedeem > maxRedeem) {
+        return NextResponse.json({ error: `Podés canjear hasta ${maxRedeem} puntos en este pedido` }, { status: 400 });
+      }
+      pointsRedeemed = pointsToRedeem;
+      pointsDiscountGs = Math.min(calcRedeemDiscountGs(pointsToRedeem, rule), subtotalAfterCoupon);
+    }
+
     const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}`;
-    const total = Math.max(0, subtotal - discount);
+    const total = Math.max(0, subtotalAfterCoupon - pointsDiscountGs);
+    const pointsEarned = rule && rule.active ? calcEarnedPoints(total, rule) : 0;
+
+    if (pointsEarned > 0 && !loyaltyCustomerId) {
+      const cust = await findOrCreateCustomerForOrder({
+        userId: sessionUserId,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+      });
+      loyaltyCustomerId = cust.id;
+    }
 
     const order = await prisma.$transaction(async (tx) => {
       if (couponId) {
@@ -134,10 +188,11 @@ export async function POST(request: Request) {
           throw new Error("COUPON_UNAVAILABLE");
         }
       }
-      return tx.order.create({
+      const created = await tx.order.create({
         data: {
           orderNumber,
           userId: sessionUserId,
+          customerId: loyaltyCustomerId,
           status: "pending",
           subtotal,
           discount,
@@ -151,6 +206,9 @@ export async function POST(request: Request) {
           customerEmail: sanitizeText(customer.email, 100).toLowerCase(),
           customerAddress: sanitizeText(customer.address, 200),
           customerCity: sanitizeText(customer.city || "", 100),
+          loyaltyPointsEarned: pointsEarned,
+          loyaltyPointsRedeemed: pointsRedeemed,
+          pointsDiscount: pointsDiscountGs,
           items: { create: orderItems },
           statusHistory: {
             create: { status: "pending", notes: "Pedido creado" },
@@ -158,6 +216,33 @@ export async function POST(request: Request) {
         },
         include: { items: true },
       });
+
+      if (loyaltyCustomerId) {
+        if (pointsRedeemed > 0) {
+          await tx.loyaltyPoint.create({
+            data: {
+              customerId: loyaltyCustomerId,
+              orderId: created.id,
+              type: "redeem",
+              points: -pointsRedeemed,
+              note: `Canje en ${orderNumber} (Gs. ${Math.round(pointsDiscountGs).toLocaleString("es-PY")})`,
+            },
+          });
+        }
+        if (pointsEarned > 0) {
+          await tx.loyaltyPoint.create({
+            data: {
+              customerId: loyaltyCustomerId,
+              orderId: created.id,
+              type: "earn",
+              points: pointsEarned,
+              note: `Ganados en ${orderNumber}`,
+            },
+          });
+        }
+      }
+
+      return created;
     });
 
     for (const item of items) {

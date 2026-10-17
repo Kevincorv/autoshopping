@@ -151,6 +151,7 @@ export async function PUT(
       salePrice,
       unitCost,
       vehicleModelIds,
+      vendorId,
     } = body || {};
 
     let brandUpdate: { id: string } | undefined;
@@ -215,6 +216,7 @@ export async function PUT(
         isFeatured: isFeatured !== undefined ? !!isFeatured : existing.isFeatured,
         isNew: isNew !== undefined ? !!isNew : existing.isNew,
         weight: weight !== undefined ? (weight === "" || weight == null ? null : parseFloat(weight)) : existing.weight,
+        vendorId: vendorId !== undefined ? (vendorId ? String(vendorId) : null) : existing.vendorId,
         images: Array.isArray(images)
           ? {
               create: images

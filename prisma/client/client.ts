@@ -236,3 +236,38 @@ export type CashMovement = Prisma.CashMovementModel
  * 
  */
 export type PaymentMethod = Prisma.PaymentMethodModel
+/**
+ * Model CustomerTag
+ * 
+ */
+export type CustomerTag = Prisma.CustomerTagModel
+/**
+ * Model Campaign
+ * 
+ */
+export type Campaign = Prisma.CampaignModel
+/**
+ * Model LoyaltyRule
+ * 
+ */
+export type LoyaltyRule = Prisma.LoyaltyRuleModel
+/**
+ * Model LoyaltyPoint
+ * 
+ */
+export type LoyaltyPoint = Prisma.LoyaltyPointModel
+/**
+ * Model ChatSession
+ * 
+ */
+export type ChatSession = Prisma.ChatSessionModel
+/**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = Prisma.ChatMessageModel
+/**
+ * Model Vendor
+ * 
+ */
+export type Vendor = Prisma.VendorModel

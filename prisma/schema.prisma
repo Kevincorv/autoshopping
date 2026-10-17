@@ -43,6 +43,7 @@ model User {
   sessions            Session[]
   loginAttempts       LoginAttempt[]
   reviews             Review[]
+  chatSessions        ChatSession[]
 
   @@index([roleId], map: "User_roleId_fkey")
 }
@@ -90,6 +91,9 @@ model Customer {
   orders             Order[]
   receivablePayments ReceivablePayment[]
   returns            ReturnOrder[]
+  tags               CustomerTag[]
+  loyaltyPoints      LoyaltyPoint[]
+  chatSessions       ChatSession[]
 }
 
 model ReceivablePayment {
@@ -176,6 +180,7 @@ model Product {
   lastPurchaseCost Float?
   brandName        String?
   weight           Float?
+  vendorId         String?
   isActive         Boolean         @default(true)
   isFeatured       Boolean         @default(false)
   isNew            Boolean         @default(false)
@@ -199,9 +204,11 @@ model Product {
   wishlistItems    WishlistItem[]
   reviewsList      Review[]
   vehicles         ProductVehicle[]
+  vendor           Vendor?          @relation(fields: [vendorId], references: [id])
 
   @@index([brandId], map: "Product_brandId_fkey")
   @@index([categoryId], map: "Product_categoryId_fkey")
+  @@index([vendorId])
 }
 
 model VehicleMake {
@@ -368,6 +375,9 @@ model Order {
   amountPaid      Float                @default(0)
   paidAt          DateTime?
   deliveredAt     DateTime?
+  loyaltyPointsEarned   Int             @default(0)
+  loyaltyPointsRedeemed Int             @default(0)
+  pointsDiscount        Float           @default(0)
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
   customer        Customer?            @relation(fields: [customerId], references: [id])
@@ -377,6 +387,7 @@ model Order {
   statusHistory   OrderStatusHistory[]
   payments        Payment[]
   returns         ReturnOrder[]
+  loyaltyPoints   LoyaltyPoint[]
 
   @@index([customerId], map: "Order_customerId_fkey")
   @@index([userId], map: "Order_userId_fkey")
@@ -392,12 +403,15 @@ model OrderItem {
   unitPrice   Float
   unitCost    Float?
   subtotal    Float
+  vendorId    String?
   createdAt   DateTime @default(now())
   order       Order    @relation(fields: [orderId], references: [id])
   product     Product? @relation(fields: [productId], references: [id])
+  vendor      Vendor?  @relation(fields: [vendorId], references: [id])
 
   @@index([orderId], map: "OrderItem_orderId_fkey")
   @@index([productId], map: "OrderItem_productId_fkey")
+  @@index([vendorId])
 }
 
 model OrderStatusHistory {
@@ -691,6 +705,97 @@ model PaymentMethod {
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime
+}
+
+model CustomerTag {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  color     String     @default("#3b82f6")
+  createdAt DateTime   @default(now())
+  customers Customer[]
+}
+
+model Campaign {
+  id        String    @id @default(cuid())
+  name      String
+  type      String    @default("email")
+  status    String    @default("draft")
+  subject   String?
+  body      String    @default("")
+  audience  String    @default("all")
+  sentAt    DateTime?
+  sentCount Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model LoyaltyRule {
+  id                 String  @id @default(cuid())
+  pointsPer1000Gs    Int     @default(1)
+  valuePerPointGs    Int     @default(100)
+  minRedeemPoints    Int     @default(50)
+  maxRedeemPercent   Int     @default(20)
+  active             Boolean @default(true)
+}
+
+model LoyaltyPoint {
+  id         String   @id @default(cuid())
+  customerId String
+  orderId    String?
+  type       String
+  points     Int
+  note       String?
+  createdAt  DateTime @default(now())
+  customer   Customer @relation(fields: [customerId], references: [id])
+  order      Order?   @relation(fields: [orderId], references: [id])
+
+  @@index([customerId])
+}
+
+model ChatSession {
+  id             String        @id @default(cuid())
+  customerId     String?
+  userId         String?
+  guestName      String?
+  guestEmail     String?
+  status         String        @default("open")
+  unreadAdmin    Int           @default(0)
+  unreadCustomer Int           @default(0)
+  lastMessageAt  DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  customer       Customer?     @relation(fields: [customerId], references: [id])
+  user           User?         @relation(fields: [userId], references: [id])
+  messages       ChatMessage[]
+
+  @@index([status, lastMessageAt])
+}
+
+model ChatMessage {
+  id        String       @id @default(cuid())
+  sessionId String
+  sender    String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime     @default(now())
+  session   ChatSession  @relation(fields: [sessionId], references: [id])
+
+  @@index([sessionId])
+}
+
+model Vendor {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  contactName   String?
+  email         String?
+  phone         String?
+  commissionPct Float       @default(10)
+  status        String      @default("active")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  products      Product[]
+  orderItems    OrderItem[]
 }
 
 

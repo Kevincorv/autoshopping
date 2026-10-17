@@ -54,7 +54,7 @@ export async function sendEmail(input: EmailInput): Promise<EmailResult> {
   }
 }
 
-function shell(title: string, bodyHtml: string, footer = "AutoShopping — San Ignacio, Misiones, Paraguay"): string {
+export function shell(title: string, bodyHtml: string, footer = "AutoShopping — San Ignacio, Misiones, Paraguay"): string {
   return `<!doctype html><html><body style="margin:0;background:#0f0f10;padding:24px;font-family:Arial,Helvetica,sans-serif;">
   <div style="max-width:560px;margin:0 auto;background:#17171a;border:1px solid #2a2a2e;border-radius:12px;overflow:hidden;">
     <div style="background:#111113;padding:16px 24px;border-bottom:1px solid #2a2a2e;">

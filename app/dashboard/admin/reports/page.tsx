@@ -184,6 +184,14 @@ export default function AdminReports() {
             <FileText className="w-4 h-4" />
             {exporting === "pdf" ? "Exportando..." : "PDF"}
           </button>
+          <a
+            href={`/api/reports/export?type=${type === "inventory" ? "products" : type === "financial" ? "sales" : "orders"}&days=90`}
+            className="btn-ghost text-sm flex items-center gap-2"
+            download
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            CSV crudo
+          </a>
         </div>
       </div>
 

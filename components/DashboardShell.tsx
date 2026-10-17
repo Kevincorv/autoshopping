@@ -11,7 +11,7 @@ import {
   TrendingUp, ClipboardList, Store,
   UserCircle2, Tags as TagsIcon, ArrowLeftRight,
   AlertTriangle, Truck, ShoppingBag, Wallet, Receipt,
-  BadgePercent, Plug, Ticket, Newspaper,
+  BadgePercent, Plug, Ticket, Newspaper, Megaphone, Gift, MessageCircle,
 } from "lucide-react";
 
 const NAV_GROUPS = [
@@ -29,6 +29,8 @@ const NAV_GROUPS = [
       { href: "/dashboard/admin/sales", label: "Ventas", icon: TrendingUp },
       { href: "/dashboard/admin/returns", label: "Devoluciones", icon: ArrowLeftRight },
       { href: "/dashboard/admin/coupons", label: "Cupones", icon: Ticket },
+      { href: "/dashboard/admin/crm", label: "CRM", icon: Megaphone },
+      { href: "/dashboard/admin/chat", label: "Chats", icon: MessageCircle },
     ],
   },
   {
@@ -37,6 +39,7 @@ const NAV_GROUPS = [
       { href: "/dashboard/admin/products", label: "Productos", icon: Package },
       { href: "/dashboard/admin/categories", label: "Categorías", icon: TagsIcon },
       { href: "/dashboard/admin/brands", label: "Marcas", icon: BadgePercent },
+      { href: "/dashboard/admin/vendors", label: "Vendedores", icon: Store },
     ],
   },
   {
@@ -55,6 +58,7 @@ const NAV_GROUPS = [
       { href: "/dashboard/admin/payments", label: "Pagos", icon: CreditCard },
       { href: "/dashboard/admin/cash", label: "Caja", icon: Wallet },
       { href: "/dashboard/admin/receivables", label: "Cuentas por cobrar", icon: Receipt },
+      { href: "/dashboard/admin/loyalty", label: "Puntos", icon: Gift },
     ],
   },
   {
@@ -72,6 +76,7 @@ const NAV_GROUPS = [
       { href: "/dashboard/admin/users", label: "Usuarios", icon: Users },
       { href: "/dashboard/admin/roles", label: "Roles y permisos", icon: Shield },
       { href: "/dashboard/admin/integrations", label: "Integraciones", icon: Plug },
+      { href: "/dashboard/admin/channels", label: "Canales (IG/FB)", icon: Newspaper },
       { href: "/dashboard/admin/settings", label: "Configuración", icon: Settings },
     ],
   },

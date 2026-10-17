@@ -32,6 +32,9 @@ export type OrderAvgAggregateOutputType = {
   shipping: number | null
   total: number | null
   amountPaid: number | null
+  loyaltyPointsEarned: number | null
+  loyaltyPointsRedeemed: number | null
+  pointsDiscount: number | null
 }
 
 export type OrderSumAggregateOutputType = {
@@ -40,6 +43,9 @@ export type OrderSumAggregateOutputType = {
   shipping: number | null
   total: number | null
   amountPaid: number | null
+  loyaltyPointsEarned: number | null
+  loyaltyPointsRedeemed: number | null
+  pointsDiscount: number | null
 }
 
 export type OrderMinAggregateOutputType = {
@@ -69,6 +75,9 @@ export type OrderMinAggregateOutputType = {
   amountPaid: number | null
   paidAt: Date | null
   deliveredAt: Date | null
+  loyaltyPointsEarned: number | null
+  loyaltyPointsRedeemed: number | null
+  pointsDiscount: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -100,6 +109,9 @@ export type OrderMaxAggregateOutputType = {
   amountPaid: number | null
   paidAt: Date | null
   deliveredAt: Date | null
+  loyaltyPointsEarned: number | null
+  loyaltyPointsRedeemed: number | null
+  pointsDiscount: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -131,6 +143,9 @@ export type OrderCountAggregateOutputType = {
   amountPaid: number
   paidAt: number
   deliveredAt: number
+  loyaltyPointsEarned: number
+  loyaltyPointsRedeemed: number
+  pointsDiscount: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -143,6 +158,9 @@ export type OrderAvgAggregateInputType = {
   shipping?: true
   total?: true
   amountPaid?: true
+  loyaltyPointsEarned?: true
+  loyaltyPointsRedeemed?: true
+  pointsDiscount?: true
 }
 
 export type OrderSumAggregateInputType = {
@@ -151,6 +169,9 @@ export type OrderSumAggregateInputType = {
   shipping?: true
   total?: true
   amountPaid?: true
+  loyaltyPointsEarned?: true
+  loyaltyPointsRedeemed?: true
+  pointsDiscount?: true
 }
 
 export type OrderMinAggregateInputType = {
@@ -180,6 +201,9 @@ export type OrderMinAggregateInputType = {
   amountPaid?: true
   paidAt?: true
   deliveredAt?: true
+  loyaltyPointsEarned?: true
+  loyaltyPointsRedeemed?: true
+  pointsDiscount?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -211,6 +235,9 @@ export type OrderMaxAggregateInputType = {
   amountPaid?: true
   paidAt?: true
   deliveredAt?: true
+  loyaltyPointsEarned?: true
+  loyaltyPointsRedeemed?: true
+  pointsDiscount?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -242,6 +269,9 @@ export type OrderCountAggregateInputType = {
   amountPaid?: true
   paidAt?: true
   deliveredAt?: true
+  loyaltyPointsEarned?: true
+  loyaltyPointsRedeemed?: true
+  pointsDiscount?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -360,6 +390,9 @@ export type OrderGroupByOutputType = {
   amountPaid: number
   paidAt: Date | null
   deliveredAt: Date | null
+  loyaltyPointsEarned: number
+  loyaltyPointsRedeemed: number
+  pointsDiscount: number
   createdAt: Date
   updatedAt: Date
   _count: OrderCountAggregateOutputType | null
@@ -414,6 +447,9 @@ export type OrderWhereInput = {
   amountPaid?: Prisma.FloatFilter<"Order"> | number
   paidAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFilter<"Order"> | number
+  loyaltyPointsRedeemed?: Prisma.IntFilter<"Order"> | number
+  pointsDiscount?: Prisma.FloatFilter<"Order"> | number
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
@@ -423,6 +459,7 @@ export type OrderWhereInput = {
   statusHistory?: Prisma.OrderStatusHistoryListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   returns?: Prisma.ReturnOrderListRelationFilter
+  loyaltyPoints?: Prisma.LoyaltyPointListRelationFilter
 }
 
 export type OrderOrderByWithRelationInput = {
@@ -452,6 +489,9 @@ export type OrderOrderByWithRelationInput = {
   amountPaid?: Prisma.SortOrder
   paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  loyaltyPointsEarned?: Prisma.SortOrder
+  loyaltyPointsRedeemed?: Prisma.SortOrder
+  pointsDiscount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   customer?: Prisma.CustomerOrderByWithRelationInput
@@ -461,6 +501,7 @@ export type OrderOrderByWithRelationInput = {
   statusHistory?: Prisma.OrderStatusHistoryOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   returns?: Prisma.ReturnOrderOrderByRelationAggregateInput
+  loyaltyPoints?: Prisma.LoyaltyPointOrderByRelationAggregateInput
   _relevance?: Prisma.OrderOrderByRelevanceInput
 }
 
@@ -494,6 +535,9 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   amountPaid?: Prisma.FloatFilter<"Order"> | number
   paidAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFilter<"Order"> | number
+  loyaltyPointsRedeemed?: Prisma.IntFilter<"Order"> | number
+  pointsDiscount?: Prisma.FloatFilter<"Order"> | number
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
@@ -503,6 +547,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   statusHistory?: Prisma.OrderStatusHistoryListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   returns?: Prisma.ReturnOrderListRelationFilter
+  loyaltyPoints?: Prisma.LoyaltyPointListRelationFilter
 }, "id" | "orderNumber">
 
 export type OrderOrderByWithAggregationInput = {
@@ -532,6 +577,9 @@ export type OrderOrderByWithAggregationInput = {
   amountPaid?: Prisma.SortOrder
   paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  loyaltyPointsEarned?: Prisma.SortOrder
+  loyaltyPointsRedeemed?: Prisma.SortOrder
+  pointsDiscount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OrderCountOrderByAggregateInput
@@ -571,6 +619,9 @@ export type OrderScalarWhereWithAggregatesInput = {
   amountPaid?: Prisma.FloatWithAggregatesFilter<"Order"> | number
   paidAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntWithAggregatesFilter<"Order"> | number
+  loyaltyPointsRedeemed?: Prisma.IntWithAggregatesFilter<"Order"> | number
+  pointsDiscount?: Prisma.FloatWithAggregatesFilter<"Order"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
 }
@@ -599,6 +650,9 @@ export type OrderCreateInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
@@ -608,6 +662,7 @@ export type OrderCreateInput = {
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateInput = {
@@ -637,12 +692,16 @@ export type OrderUncheckedCreateInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUpdateInput = {
@@ -669,6 +728,9 @@ export type OrderUpdateInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
@@ -678,6 +740,7 @@ export type OrderUpdateInput = {
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateInput = {
@@ -707,12 +770,16 @@ export type OrderUncheckedUpdateInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateManyInput = {
@@ -742,6 +809,9 @@ export type OrderCreateManyInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -770,6 +840,9 @@ export type OrderUpdateManyMutationInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -801,6 +874,9 @@ export type OrderUncheckedUpdateManyInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -848,6 +924,9 @@ export type OrderCountOrderByAggregateInput = {
   amountPaid?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
+  loyaltyPointsEarned?: Prisma.SortOrder
+  loyaltyPointsRedeemed?: Prisma.SortOrder
+  pointsDiscount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -858,6 +937,9 @@ export type OrderAvgOrderByAggregateInput = {
   shipping?: Prisma.SortOrder
   total?: Prisma.SortOrder
   amountPaid?: Prisma.SortOrder
+  loyaltyPointsEarned?: Prisma.SortOrder
+  loyaltyPointsRedeemed?: Prisma.SortOrder
+  pointsDiscount?: Prisma.SortOrder
 }
 
 export type OrderMaxOrderByAggregateInput = {
@@ -887,6 +969,9 @@ export type OrderMaxOrderByAggregateInput = {
   amountPaid?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
+  loyaltyPointsEarned?: Prisma.SortOrder
+  loyaltyPointsRedeemed?: Prisma.SortOrder
+  pointsDiscount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -918,6 +1003,9 @@ export type OrderMinOrderByAggregateInput = {
   amountPaid?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
+  loyaltyPointsEarned?: Prisma.SortOrder
+  loyaltyPointsRedeemed?: Prisma.SortOrder
+  pointsDiscount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -928,6 +1016,9 @@ export type OrderSumOrderByAggregateInput = {
   shipping?: Prisma.SortOrder
   total?: Prisma.SortOrder
   amountPaid?: Prisma.SortOrder
+  loyaltyPointsEarned?: Prisma.SortOrder
+  loyaltyPointsRedeemed?: Prisma.SortOrder
+  pointsDiscount?: Prisma.SortOrder
 }
 
 export type OrderScalarRelationFilter = {
@@ -1124,6 +1215,22 @@ export type OrderUpdateOneWithoutReturnsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutReturnsInput, Prisma.OrderUpdateWithoutReturnsInput>, Prisma.OrderUncheckedUpdateWithoutReturnsInput>
 }
 
+export type OrderCreateNestedOneWithoutLoyaltyPointsInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutLoyaltyPointsInput, Prisma.OrderUncheckedCreateWithoutLoyaltyPointsInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutLoyaltyPointsInput
+  connect?: Prisma.OrderWhereUniqueInput
+}
+
+export type OrderUpdateOneWithoutLoyaltyPointsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutLoyaltyPointsInput, Prisma.OrderUncheckedCreateWithoutLoyaltyPointsInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutLoyaltyPointsInput
+  upsert?: Prisma.OrderUpsertWithoutLoyaltyPointsInput
+  disconnect?: Prisma.OrderWhereInput | boolean
+  delete?: Prisma.OrderWhereInput | boolean
+  connect?: Prisma.OrderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutLoyaltyPointsInput, Prisma.OrderUpdateWithoutLoyaltyPointsInput>, Prisma.OrderUncheckedUpdateWithoutLoyaltyPointsInput>
+}
+
 export type OrderCreateWithoutUserInput = {
   id?: string
   orderNumber: string
@@ -1148,6 +1255,9 @@ export type OrderCreateWithoutUserInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
@@ -1156,6 +1266,7 @@ export type OrderCreateWithoutUserInput = {
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutUserInput = {
@@ -1184,12 +1295,16 @@ export type OrderUncheckedCreateWithoutUserInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutUserInput = {
@@ -1248,6 +1363,9 @@ export type OrderScalarWhereInput = {
   amountPaid?: Prisma.FloatFilter<"Order"> | number
   paidAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFilter<"Order"> | number
+  loyaltyPointsRedeemed?: Prisma.IntFilter<"Order"> | number
+  pointsDiscount?: Prisma.FloatFilter<"Order"> | number
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
 }
@@ -1276,6 +1394,9 @@ export type OrderCreateWithoutCustomerInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutOrdersInput
@@ -1284,6 +1405,7 @@ export type OrderCreateWithoutCustomerInput = {
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutCustomerInput = {
@@ -1312,12 +1434,16 @@ export type OrderUncheckedCreateWithoutCustomerInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutCustomerInput = {
@@ -1370,6 +1496,9 @@ export type OrderCreateWithoutItemsInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
@@ -1378,6 +1507,7 @@ export type OrderCreateWithoutItemsInput = {
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutItemsInput = {
@@ -1407,11 +1537,15 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutItemsInput = {
@@ -1454,6 +1588,9 @@ export type OrderUpdateWithoutItemsInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
@@ -1462,6 +1599,7 @@ export type OrderUpdateWithoutItemsInput = {
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutItemsInput = {
@@ -1491,11 +1629,15 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutStatusHistoryInput = {
@@ -1522,6 +1664,9 @@ export type OrderCreateWithoutStatusHistoryInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
@@ -1530,6 +1675,7 @@ export type OrderCreateWithoutStatusHistoryInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutStatusHistoryInput = {
@@ -1559,11 +1705,15 @@ export type OrderUncheckedCreateWithoutStatusHistoryInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutStatusHistoryInput = {
@@ -1606,6 +1756,9 @@ export type OrderUpdateWithoutStatusHistoryInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
@@ -1614,6 +1767,7 @@ export type OrderUpdateWithoutStatusHistoryInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutStatusHistoryInput = {
@@ -1643,11 +1797,15 @@ export type OrderUncheckedUpdateWithoutStatusHistoryInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutPaymentsInput = {
@@ -1674,6 +1832,9 @@ export type OrderCreateWithoutPaymentsInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
@@ -1682,6 +1843,7 @@ export type OrderCreateWithoutPaymentsInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutPaymentsInput = {
@@ -1711,11 +1873,15 @@ export type OrderUncheckedCreateWithoutPaymentsInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutPaymentsInput = {
@@ -1758,6 +1924,9 @@ export type OrderUpdateWithoutPaymentsInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
@@ -1766,6 +1935,7 @@ export type OrderUpdateWithoutPaymentsInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutPaymentsInput = {
@@ -1795,11 +1965,15 @@ export type OrderUncheckedUpdateWithoutPaymentsInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutCouponInput = {
@@ -1826,6 +2000,9 @@ export type OrderCreateWithoutCouponInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
@@ -1834,6 +2011,7 @@ export type OrderCreateWithoutCouponInput = {
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutCouponInput = {
@@ -1862,12 +2040,16 @@ export type OrderUncheckedCreateWithoutCouponInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutCouponInput = {
@@ -1920,6 +2102,9 @@ export type OrderCreateWithoutReturnsInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
@@ -1928,6 +2113,7 @@ export type OrderCreateWithoutReturnsInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutReturnsInput = {
@@ -1957,11 +2143,15 @@ export type OrderUncheckedCreateWithoutReturnsInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutReturnsInput = {
@@ -2004,6 +2194,9 @@ export type OrderUpdateWithoutReturnsInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
@@ -2012,6 +2205,7 @@ export type OrderUpdateWithoutReturnsInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutReturnsInput = {
@@ -2041,11 +2235,183 @@ export type OrderUncheckedUpdateWithoutReturnsInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderCreateWithoutLoyaltyPointsInput = {
+  id?: string
+  orderNumber: string
+  sellerId?: string | null
+  status?: string
+  subtotal: number
+  discount?: number
+  shipping?: number
+  total: number
+  paymentMethod?: string | null
+  paymentStatus?: string
+  paymentReference?: string | null
+  trackingNumber?: string | null
+  courier?: string | null
+  notes?: string | null
+  customerName: string
+  customerPhone: string
+  customerEmail: string
+  customerAddress: string
+  customerCity: string
+  deliveryMethod?: string | null
+  amountPaid?: number
+  paidAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
+  user?: Prisma.UserCreateNestedOneWithoutOrdersInput
+  coupon?: Prisma.CouponCreateNestedOneWithoutOrdersInput
+  items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
+  statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
+  returns?: Prisma.ReturnOrderCreateNestedManyWithoutOrderInput
+}
+
+export type OrderUncheckedCreateWithoutLoyaltyPointsInput = {
+  id?: string
+  orderNumber: string
+  userId?: string | null
+  customerId?: string | null
+  sellerId?: string | null
+  status?: string
+  subtotal: number
+  discount?: number
+  shipping?: number
+  total: number
+  paymentMethod?: string | null
+  paymentStatus?: string
+  paymentReference?: string | null
+  couponId?: string | null
+  trackingNumber?: string | null
+  courier?: string | null
+  notes?: string | null
+  customerName: string
+  customerPhone: string
+  customerEmail: string
+  customerAddress: string
+  customerCity: string
+  deliveryMethod?: string | null
+  amountPaid?: number
+  paidAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
+  statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
+  returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutOrderInput
+}
+
+export type OrderCreateOrConnectWithoutLoyaltyPointsInput = {
+  where: Prisma.OrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderCreateWithoutLoyaltyPointsInput, Prisma.OrderUncheckedCreateWithoutLoyaltyPointsInput>
+}
+
+export type OrderUpsertWithoutLoyaltyPointsInput = {
+  update: Prisma.XOR<Prisma.OrderUpdateWithoutLoyaltyPointsInput, Prisma.OrderUncheckedUpdateWithoutLoyaltyPointsInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutLoyaltyPointsInput, Prisma.OrderUncheckedCreateWithoutLoyaltyPointsInput>
+  where?: Prisma.OrderWhereInput
+}
+
+export type OrderUpdateToOneWithWhereWithoutLoyaltyPointsInput = {
+  where?: Prisma.OrderWhereInput
+  data: Prisma.XOR<Prisma.OrderUpdateWithoutLoyaltyPointsInput, Prisma.OrderUncheckedUpdateWithoutLoyaltyPointsInput>
+}
+
+export type OrderUpdateWithoutLoyaltyPointsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  discount?: Prisma.FloatFieldUpdateOperationsInput | number
+  shipping?: Prisma.FloatFieldUpdateOperationsInput | number
+  total?: Prisma.FloatFieldUpdateOperationsInput | number
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  customerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  customerAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  customerCity?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
+  user?: Prisma.UserUpdateOneWithoutOrdersNestedInput
+  coupon?: Prisma.CouponUpdateOneWithoutOrdersNestedInput
+  items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
+  statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
+  returns?: Prisma.ReturnOrderUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderUncheckedUpdateWithoutLoyaltyPointsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  discount?: Prisma.FloatFieldUpdateOperationsInput | number
+  shipping?: Prisma.FloatFieldUpdateOperationsInput | number
+  total?: Prisma.FloatFieldUpdateOperationsInput | number
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  couponId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  courier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  customerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  customerAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  customerCity?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+  statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
+  returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateManyUserInput = {
@@ -2074,6 +2440,9 @@ export type OrderCreateManyUserInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2102,6 +2471,9 @@ export type OrderUpdateWithoutUserInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
@@ -2110,6 +2482,7 @@ export type OrderUpdateWithoutUserInput = {
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutUserInput = {
@@ -2138,12 +2511,16 @@ export type OrderUncheckedUpdateWithoutUserInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutUserInput = {
@@ -2172,6 +2549,9 @@ export type OrderUncheckedUpdateManyWithoutUserInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2202,6 +2582,9 @@ export type OrderCreateManyCustomerInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2230,6 +2613,9 @@ export type OrderUpdateWithoutCustomerInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutOrdersNestedInput
@@ -2238,6 +2624,7 @@ export type OrderUpdateWithoutCustomerInput = {
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutCustomerInput = {
@@ -2266,12 +2653,16 @@ export type OrderUncheckedUpdateWithoutCustomerInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutCustomerInput = {
@@ -2300,6 +2691,9 @@ export type OrderUncheckedUpdateManyWithoutCustomerInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2330,6 +2724,9 @@ export type OrderCreateManyCouponInput = {
   amountPaid?: number
   paidAt?: Date | string | null
   deliveredAt?: Date | string | null
+  loyaltyPointsEarned?: number
+  loyaltyPointsRedeemed?: number
+  pointsDiscount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2358,6 +2755,9 @@ export type OrderUpdateWithoutCouponInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
@@ -2366,6 +2766,7 @@ export type OrderUpdateWithoutCouponInput = {
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutCouponInput = {
@@ -2394,12 +2795,16 @@ export type OrderUncheckedUpdateWithoutCouponInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutCouponInput = {
@@ -2428,6 +2833,9 @@ export type OrderUncheckedUpdateManyWithoutCouponInput = {
   amountPaid?: Prisma.FloatFieldUpdateOperationsInput | number
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  loyaltyPointsEarned?: Prisma.IntFieldUpdateOperationsInput | number
+  loyaltyPointsRedeemed?: Prisma.IntFieldUpdateOperationsInput | number
+  pointsDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2442,6 +2850,7 @@ export type OrderCountOutputType = {
   statusHistory: number
   payments: number
   returns: number
+  loyaltyPoints: number
 }
 
 export type OrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2449,6 +2858,7 @@ export type OrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   statusHistory?: boolean | OrderCountOutputTypeCountStatusHistoryArgs
   payments?: boolean | OrderCountOutputTypeCountPaymentsArgs
   returns?: boolean | OrderCountOutputTypeCountReturnsArgs
+  loyaltyPoints?: boolean | OrderCountOutputTypeCountLoyaltyPointsArgs
 }
 
 /**
@@ -2489,6 +2899,13 @@ export type OrderCountOutputTypeCountReturnsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.ReturnOrderWhereInput
 }
 
+/**
+ * OrderCountOutputType without action
+ */
+export type OrderCountOutputTypeCountLoyaltyPointsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoyaltyPointWhereInput
+}
+
 
 export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2517,6 +2934,9 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   amountPaid?: boolean
   paidAt?: boolean
   deliveredAt?: boolean
+  loyaltyPointsEarned?: boolean
+  loyaltyPointsRedeemed?: boolean
+  pointsDiscount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   customer?: boolean | Prisma.Order$customerArgs<ExtArgs>
@@ -2526,6 +2946,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   statusHistory?: boolean | Prisma.Order$statusHistoryArgs<ExtArgs>
   payments?: boolean | Prisma.Order$paymentsArgs<ExtArgs>
   returns?: boolean | Prisma.Order$returnsArgs<ExtArgs>
+  loyaltyPoints?: boolean | Prisma.Order$loyaltyPointsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
@@ -2558,11 +2979,14 @@ export type OrderSelectScalar = {
   amountPaid?: boolean
   paidAt?: boolean
   deliveredAt?: boolean
+  loyaltyPointsEarned?: boolean
+  loyaltyPointsRedeemed?: boolean
+  pointsDiscount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNumber" | "userId" | "customerId" | "sellerId" | "status" | "subtotal" | "discount" | "shipping" | "total" | "paymentMethod" | "paymentStatus" | "paymentReference" | "couponId" | "trackingNumber" | "courier" | "notes" | "customerName" | "customerPhone" | "customerEmail" | "customerAddress" | "customerCity" | "deliveryMethod" | "amountPaid" | "paidAt" | "deliveredAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNumber" | "userId" | "customerId" | "sellerId" | "status" | "subtotal" | "discount" | "shipping" | "total" | "paymentMethod" | "paymentStatus" | "paymentReference" | "couponId" | "trackingNumber" | "courier" | "notes" | "customerName" | "customerPhone" | "customerEmail" | "customerAddress" | "customerCity" | "deliveryMethod" | "amountPaid" | "paidAt" | "deliveredAt" | "loyaltyPointsEarned" | "loyaltyPointsRedeemed" | "pointsDiscount" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.Order$customerArgs<ExtArgs>
   user?: boolean | Prisma.Order$userArgs<ExtArgs>
@@ -2571,6 +2995,7 @@ export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   statusHistory?: boolean | Prisma.Order$statusHistoryArgs<ExtArgs>
   payments?: boolean | Prisma.Order$paymentsArgs<ExtArgs>
   returns?: boolean | Prisma.Order$returnsArgs<ExtArgs>
+  loyaltyPoints?: boolean | Prisma.Order$loyaltyPointsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -2584,6 +3009,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     statusHistory: Prisma.$OrderStatusHistoryPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     returns: Prisma.$ReturnOrderPayload<ExtArgs>[]
+    loyaltyPoints: Prisma.$LoyaltyPointPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2612,6 +3038,9 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     amountPaid: number
     paidAt: Date | null
     deliveredAt: Date | null
+    loyaltyPointsEarned: number
+    loyaltyPointsRedeemed: number
+    pointsDiscount: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["order"]>
@@ -2961,6 +3390,7 @@ export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Ty
   statusHistory<T extends Prisma.Order$statusHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$statusHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.Order$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   returns<T extends Prisma.Order$returnsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$returnsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReturnOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  loyaltyPoints<T extends Prisma.Order$loyaltyPointsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$loyaltyPointsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoyaltyPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3016,6 +3446,9 @@ export interface OrderFieldRefs {
   readonly amountPaid: Prisma.FieldRef<"Order", 'Float'>
   readonly paidAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly deliveredAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly loyaltyPointsEarned: Prisma.FieldRef<"Order", 'Int'>
+  readonly loyaltyPointsRedeemed: Prisma.FieldRef<"Order", 'Int'>
+  readonly pointsDiscount: Prisma.FieldRef<"Order", 'Float'>
   readonly createdAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Order", 'DateTime'>
 }
@@ -3516,6 +3949,30 @@ export type Order$returnsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.ReturnOrderScalarFieldEnum | Prisma.ReturnOrderScalarFieldEnum[]
+}
+
+/**
+ * Order.loyaltyPoints
+ */
+export type Order$loyaltyPointsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoyaltyPoint
+   */
+  select?: Prisma.LoyaltyPointSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoyaltyPoint
+   */
+  omit?: Prisma.LoyaltyPointOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoyaltyPointInclude<ExtArgs> | null
+  where?: Prisma.LoyaltyPointWhereInput
+  orderBy?: Prisma.LoyaltyPointOrderByWithRelationInput | Prisma.LoyaltyPointOrderByWithRelationInput[]
+  cursor?: Prisma.LoyaltyPointWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoyaltyPointScalarFieldEnum | Prisma.LoyaltyPointScalarFieldEnum[]
 }
 
 /**

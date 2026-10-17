@@ -9,6 +9,7 @@ import { LiveStatus } from "@/components/LiveStatus";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { CompareBar } from "@/components/CompareBar";
 import { PwaRegister } from "@/components/PwaRegister";
+import { ChatWidget } from "@/components/ChatWidget";
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,6 +29,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <WhatsAppButton />
       <CompareBar />
       <PwaRegister />
+      <ChatWidget />
     </div>
   );
 }

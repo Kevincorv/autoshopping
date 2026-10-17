@@ -328,6 +328,9 @@ export type CustomerWhereInput = {
   orders?: Prisma.OrderListRelationFilter
   receivablePayments?: Prisma.ReceivablePaymentListRelationFilter
   returns?: Prisma.ReturnOrderListRelationFilter
+  tags?: Prisma.CustomerTagListRelationFilter
+  loyaltyPoints?: Prisma.LoyaltyPointListRelationFilter
+  chatSessions?: Prisma.ChatSessionListRelationFilter
 }
 
 export type CustomerOrderByWithRelationInput = {
@@ -353,6 +356,9 @@ export type CustomerOrderByWithRelationInput = {
   orders?: Prisma.OrderOrderByRelationAggregateInput
   receivablePayments?: Prisma.ReceivablePaymentOrderByRelationAggregateInput
   returns?: Prisma.ReturnOrderOrderByRelationAggregateInput
+  tags?: Prisma.CustomerTagOrderByRelationAggregateInput
+  loyaltyPoints?: Prisma.LoyaltyPointOrderByRelationAggregateInput
+  chatSessions?: Prisma.ChatSessionOrderByRelationAggregateInput
   _relevance?: Prisma.CustomerOrderByRelevanceInput
 }
 
@@ -382,6 +388,9 @@ export type CustomerWhereUniqueInput = Prisma.AtLeast<{
   orders?: Prisma.OrderListRelationFilter
   receivablePayments?: Prisma.ReceivablePaymentListRelationFilter
   returns?: Prisma.ReturnOrderListRelationFilter
+  tags?: Prisma.CustomerTagListRelationFilter
+  loyaltyPoints?: Prisma.LoyaltyPointListRelationFilter
+  chatSessions?: Prisma.ChatSessionListRelationFilter
 }, "id" | "userId">
 
 export type CustomerOrderByWithAggregationInput = {
@@ -456,6 +465,9 @@ export type CustomerCreateInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
   receivablePayments?: Prisma.ReceivablePaymentCreateNestedManyWithoutCustomerInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUncheckedCreateInput = {
@@ -480,6 +492,9 @@ export type CustomerUncheckedCreateInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
   receivablePayments?: Prisma.ReceivablePaymentUncheckedCreateNestedManyWithoutCustomerInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagUncheckedCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUpdateInput = {
@@ -504,6 +519,9 @@ export type CustomerUpdateInput = {
   orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
   receivablePayments?: Prisma.ReceivablePaymentUpdateManyWithoutCustomerNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerUncheckedUpdateInput = {
@@ -528,6 +546,9 @@ export type CustomerUncheckedUpdateInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
   receivablePayments?: Prisma.ReceivablePaymentUncheckedUpdateManyWithoutCustomerNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUncheckedUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerCreateManyInput = {
@@ -681,6 +702,16 @@ export type CustomerScalarRelationFilter = {
   isNot?: Prisma.CustomerWhereInput
 }
 
+export type CustomerListRelationFilter = {
+  every?: Prisma.CustomerWhereInput
+  some?: Prisma.CustomerWhereInput
+  none?: Prisma.CustomerWhereInput
+}
+
+export type CustomerOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type CustomerCreateNestedOneWithoutUserInput = {
   create?: Prisma.XOR<Prisma.CustomerCreateWithoutUserInput, Prisma.CustomerUncheckedCreateWithoutUserInput>
   connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutUserInput
@@ -767,6 +798,74 @@ export type CustomerUpdateOneWithoutReturnsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CustomerUpdateToOneWithWhereWithoutReturnsInput, Prisma.CustomerUpdateWithoutReturnsInput>, Prisma.CustomerUncheckedUpdateWithoutReturnsInput>
 }
 
+export type CustomerCreateNestedManyWithoutTagsInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutTagsInput, Prisma.CustomerUncheckedCreateWithoutTagsInput> | Prisma.CustomerCreateWithoutTagsInput[] | Prisma.CustomerUncheckedCreateWithoutTagsInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutTagsInput | Prisma.CustomerCreateOrConnectWithoutTagsInput[]
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+}
+
+export type CustomerUncheckedCreateNestedManyWithoutTagsInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutTagsInput, Prisma.CustomerUncheckedCreateWithoutTagsInput> | Prisma.CustomerCreateWithoutTagsInput[] | Prisma.CustomerUncheckedCreateWithoutTagsInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutTagsInput | Prisma.CustomerCreateOrConnectWithoutTagsInput[]
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+}
+
+export type CustomerUpdateManyWithoutTagsNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutTagsInput, Prisma.CustomerUncheckedCreateWithoutTagsInput> | Prisma.CustomerCreateWithoutTagsInput[] | Prisma.CustomerUncheckedCreateWithoutTagsInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutTagsInput | Prisma.CustomerCreateOrConnectWithoutTagsInput[]
+  upsert?: Prisma.CustomerUpsertWithWhereUniqueWithoutTagsInput | Prisma.CustomerUpsertWithWhereUniqueWithoutTagsInput[]
+  set?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  disconnect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  delete?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  update?: Prisma.CustomerUpdateWithWhereUniqueWithoutTagsInput | Prisma.CustomerUpdateWithWhereUniqueWithoutTagsInput[]
+  updateMany?: Prisma.CustomerUpdateManyWithWhereWithoutTagsInput | Prisma.CustomerUpdateManyWithWhereWithoutTagsInput[]
+  deleteMany?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+}
+
+export type CustomerUncheckedUpdateManyWithoutTagsNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutTagsInput, Prisma.CustomerUncheckedCreateWithoutTagsInput> | Prisma.CustomerCreateWithoutTagsInput[] | Prisma.CustomerUncheckedCreateWithoutTagsInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutTagsInput | Prisma.CustomerCreateOrConnectWithoutTagsInput[]
+  upsert?: Prisma.CustomerUpsertWithWhereUniqueWithoutTagsInput | Prisma.CustomerUpsertWithWhereUniqueWithoutTagsInput[]
+  set?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  disconnect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  delete?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  update?: Prisma.CustomerUpdateWithWhereUniqueWithoutTagsInput | Prisma.CustomerUpdateWithWhereUniqueWithoutTagsInput[]
+  updateMany?: Prisma.CustomerUpdateManyWithWhereWithoutTagsInput | Prisma.CustomerUpdateManyWithWhereWithoutTagsInput[]
+  deleteMany?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+}
+
+export type CustomerCreateNestedOneWithoutLoyaltyPointsInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutLoyaltyPointsInput, Prisma.CustomerUncheckedCreateWithoutLoyaltyPointsInput>
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutLoyaltyPointsInput
+  connect?: Prisma.CustomerWhereUniqueInput
+}
+
+export type CustomerUpdateOneRequiredWithoutLoyaltyPointsNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutLoyaltyPointsInput, Prisma.CustomerUncheckedCreateWithoutLoyaltyPointsInput>
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutLoyaltyPointsInput
+  upsert?: Prisma.CustomerUpsertWithoutLoyaltyPointsInput
+  connect?: Prisma.CustomerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CustomerUpdateToOneWithWhereWithoutLoyaltyPointsInput, Prisma.CustomerUpdateWithoutLoyaltyPointsInput>, Prisma.CustomerUncheckedUpdateWithoutLoyaltyPointsInput>
+}
+
+export type CustomerCreateNestedOneWithoutChatSessionsInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutChatSessionsInput, Prisma.CustomerUncheckedCreateWithoutChatSessionsInput>
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutChatSessionsInput
+  connect?: Prisma.CustomerWhereUniqueInput
+}
+
+export type CustomerUpdateOneWithoutChatSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutChatSessionsInput, Prisma.CustomerUncheckedCreateWithoutChatSessionsInput>
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutChatSessionsInput
+  upsert?: Prisma.CustomerUpsertWithoutChatSessionsInput
+  disconnect?: Prisma.CustomerWhereInput | boolean
+  delete?: Prisma.CustomerWhereInput | boolean
+  connect?: Prisma.CustomerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CustomerUpdateToOneWithWhereWithoutChatSessionsInput, Prisma.CustomerUpdateWithoutChatSessionsInput>, Prisma.CustomerUncheckedUpdateWithoutChatSessionsInput>
+}
+
 export type CustomerCreateWithoutUserInput = {
   id?: string
   name: string
@@ -788,6 +887,9 @@ export type CustomerCreateWithoutUserInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
   receivablePayments?: Prisma.ReceivablePaymentCreateNestedManyWithoutCustomerInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUncheckedCreateWithoutUserInput = {
@@ -811,6 +913,9 @@ export type CustomerUncheckedCreateWithoutUserInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
   receivablePayments?: Prisma.ReceivablePaymentUncheckedCreateNestedManyWithoutCustomerInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagUncheckedCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerCreateOrConnectWithoutUserInput = {
@@ -850,6 +955,9 @@ export type CustomerUpdateWithoutUserInput = {
   orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
   receivablePayments?: Prisma.ReceivablePaymentUpdateManyWithoutCustomerNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerUncheckedUpdateWithoutUserInput = {
@@ -873,6 +981,9 @@ export type CustomerUncheckedUpdateWithoutUserInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
   receivablePayments?: Prisma.ReceivablePaymentUncheckedUpdateManyWithoutCustomerNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUncheckedUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerCreateWithoutReceivablePaymentsInput = {
@@ -896,6 +1007,9 @@ export type CustomerCreateWithoutReceivablePaymentsInput = {
   user: Prisma.UserCreateNestedOneWithoutCustomerProfileInput
   orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUncheckedCreateWithoutReceivablePaymentsInput = {
@@ -919,6 +1033,9 @@ export type CustomerUncheckedCreateWithoutReceivablePaymentsInput = {
   updatedAt?: Date | string
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagUncheckedCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerCreateOrConnectWithoutReceivablePaymentsInput = {
@@ -958,6 +1075,9 @@ export type CustomerUpdateWithoutReceivablePaymentsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutCustomerProfileNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerUncheckedUpdateWithoutReceivablePaymentsInput = {
@@ -981,6 +1101,9 @@ export type CustomerUncheckedUpdateWithoutReceivablePaymentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUncheckedUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerCreateWithoutOrdersInput = {
@@ -1004,6 +1127,9 @@ export type CustomerCreateWithoutOrdersInput = {
   user: Prisma.UserCreateNestedOneWithoutCustomerProfileInput
   receivablePayments?: Prisma.ReceivablePaymentCreateNestedManyWithoutCustomerInput
   returns?: Prisma.ReturnOrderCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUncheckedCreateWithoutOrdersInput = {
@@ -1027,6 +1153,9 @@ export type CustomerUncheckedCreateWithoutOrdersInput = {
   updatedAt?: Date | string
   receivablePayments?: Prisma.ReceivablePaymentUncheckedCreateNestedManyWithoutCustomerInput
   returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagUncheckedCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerCreateOrConnectWithoutOrdersInput = {
@@ -1066,6 +1195,9 @@ export type CustomerUpdateWithoutOrdersInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutCustomerProfileNestedInput
   receivablePayments?: Prisma.ReceivablePaymentUpdateManyWithoutCustomerNestedInput
   returns?: Prisma.ReturnOrderUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerUncheckedUpdateWithoutOrdersInput = {
@@ -1089,6 +1221,9 @@ export type CustomerUncheckedUpdateWithoutOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   receivablePayments?: Prisma.ReceivablePaymentUncheckedUpdateManyWithoutCustomerNestedInput
   returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUncheckedUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerCreateWithoutReturnsInput = {
@@ -1112,6 +1247,9 @@ export type CustomerCreateWithoutReturnsInput = {
   user: Prisma.UserCreateNestedOneWithoutCustomerProfileInput
   orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
   receivablePayments?: Prisma.ReceivablePaymentCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUncheckedCreateWithoutReturnsInput = {
@@ -1135,6 +1273,9 @@ export type CustomerUncheckedCreateWithoutReturnsInput = {
   updatedAt?: Date | string
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
   receivablePayments?: Prisma.ReceivablePaymentUncheckedCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagUncheckedCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerCreateOrConnectWithoutReturnsInput = {
@@ -1174,6 +1315,9 @@ export type CustomerUpdateWithoutReturnsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutCustomerProfileNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
   receivablePayments?: Prisma.ReceivablePaymentUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerUncheckedUpdateWithoutReturnsInput = {
@@ -1197,6 +1341,419 @@ export type CustomerUncheckedUpdateWithoutReturnsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
   receivablePayments?: Prisma.ReceivablePaymentUncheckedUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUncheckedUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerCreateWithoutTagsInput = {
+  id?: string
+  name: string
+  lastname: string
+  document: string
+  phone: string
+  whatsapp?: string | null
+  email: string
+  city?: string | null
+  department?: string | null
+  address?: string | null
+  notes?: string | null
+  totalPurchases?: number
+  balance?: number
+  isBlocked?: boolean
+  blockedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutCustomerProfileInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
+  receivablePayments?: Prisma.ReceivablePaymentCreateNestedManyWithoutCustomerInput
+  returns?: Prisma.ReturnOrderCreateNestedManyWithoutCustomerInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerUncheckedCreateWithoutTagsInput = {
+  id?: string
+  userId: string
+  name: string
+  lastname: string
+  document: string
+  phone: string
+  whatsapp?: string | null
+  email: string
+  city?: string | null
+  department?: string | null
+  address?: string | null
+  notes?: string | null
+  totalPurchases?: number
+  balance?: number
+  isBlocked?: boolean
+  blockedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
+  receivablePayments?: Prisma.ReceivablePaymentUncheckedCreateNestedManyWithoutCustomerInput
+  returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutCustomerInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutCustomerInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerCreateOrConnectWithoutTagsInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutTagsInput, Prisma.CustomerUncheckedCreateWithoutTagsInput>
+}
+
+export type CustomerUpsertWithWhereUniqueWithoutTagsInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  update: Prisma.XOR<Prisma.CustomerUpdateWithoutTagsInput, Prisma.CustomerUncheckedUpdateWithoutTagsInput>
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutTagsInput, Prisma.CustomerUncheckedCreateWithoutTagsInput>
+}
+
+export type CustomerUpdateWithWhereUniqueWithoutTagsInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  data: Prisma.XOR<Prisma.CustomerUpdateWithoutTagsInput, Prisma.CustomerUncheckedUpdateWithoutTagsInput>
+}
+
+export type CustomerUpdateManyWithWhereWithoutTagsInput = {
+  where: Prisma.CustomerScalarWhereInput
+  data: Prisma.XOR<Prisma.CustomerUpdateManyMutationInput, Prisma.CustomerUncheckedUpdateManyWithoutTagsInput>
+}
+
+export type CustomerScalarWhereInput = {
+  AND?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+  OR?: Prisma.CustomerScalarWhereInput[]
+  NOT?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+  id?: Prisma.StringFilter<"Customer"> | string
+  userId?: Prisma.StringFilter<"Customer"> | string
+  name?: Prisma.StringFilter<"Customer"> | string
+  lastname?: Prisma.StringFilter<"Customer"> | string
+  document?: Prisma.StringFilter<"Customer"> | string
+  phone?: Prisma.StringFilter<"Customer"> | string
+  whatsapp?: Prisma.StringNullableFilter<"Customer"> | string | null
+  email?: Prisma.StringFilter<"Customer"> | string
+  city?: Prisma.StringNullableFilter<"Customer"> | string | null
+  department?: Prisma.StringNullableFilter<"Customer"> | string | null
+  address?: Prisma.StringNullableFilter<"Customer"> | string | null
+  notes?: Prisma.StringNullableFilter<"Customer"> | string | null
+  totalPurchases?: Prisma.IntFilter<"Customer"> | number
+  balance?: Prisma.FloatFilter<"Customer"> | number
+  isBlocked?: Prisma.BoolFilter<"Customer"> | boolean
+  blockedReason?: Prisma.StringNullableFilter<"Customer"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
+}
+
+export type CustomerCreateWithoutLoyaltyPointsInput = {
+  id?: string
+  name: string
+  lastname: string
+  document: string
+  phone: string
+  whatsapp?: string | null
+  email: string
+  city?: string | null
+  department?: string | null
+  address?: string | null
+  notes?: string | null
+  totalPurchases?: number
+  balance?: number
+  isBlocked?: boolean
+  blockedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutCustomerProfileInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
+  receivablePayments?: Prisma.ReceivablePaymentCreateNestedManyWithoutCustomerInput
+  returns?: Prisma.ReturnOrderCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagCreateNestedManyWithoutCustomersInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerUncheckedCreateWithoutLoyaltyPointsInput = {
+  id?: string
+  userId: string
+  name: string
+  lastname: string
+  document: string
+  phone: string
+  whatsapp?: string | null
+  email: string
+  city?: string | null
+  department?: string | null
+  address?: string | null
+  notes?: string | null
+  totalPurchases?: number
+  balance?: number
+  isBlocked?: boolean
+  blockedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
+  receivablePayments?: Prisma.ReceivablePaymentUncheckedCreateNestedManyWithoutCustomerInput
+  returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagUncheckedCreateNestedManyWithoutCustomersInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerCreateOrConnectWithoutLoyaltyPointsInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutLoyaltyPointsInput, Prisma.CustomerUncheckedCreateWithoutLoyaltyPointsInput>
+}
+
+export type CustomerUpsertWithoutLoyaltyPointsInput = {
+  update: Prisma.XOR<Prisma.CustomerUpdateWithoutLoyaltyPointsInput, Prisma.CustomerUncheckedUpdateWithoutLoyaltyPointsInput>
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutLoyaltyPointsInput, Prisma.CustomerUncheckedCreateWithoutLoyaltyPointsInput>
+  where?: Prisma.CustomerWhereInput
+}
+
+export type CustomerUpdateToOneWithWhereWithoutLoyaltyPointsInput = {
+  where?: Prisma.CustomerWhereInput
+  data: Prisma.XOR<Prisma.CustomerUpdateWithoutLoyaltyPointsInput, Prisma.CustomerUncheckedUpdateWithoutLoyaltyPointsInput>
+}
+
+export type CustomerUpdateWithoutLoyaltyPointsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  document?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPurchases?: Prisma.IntFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutCustomerProfileNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
+  receivablePayments?: Prisma.ReceivablePaymentUpdateManyWithoutCustomerNestedInput
+  returns?: Prisma.ReturnOrderUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUpdateManyWithoutCustomersNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUncheckedUpdateWithoutLoyaltyPointsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  document?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPurchases?: Prisma.IntFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
+  receivablePayments?: Prisma.ReceivablePaymentUncheckedUpdateManyWithoutCustomerNestedInput
+  returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUncheckedUpdateManyWithoutCustomersNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerCreateWithoutChatSessionsInput = {
+  id?: string
+  name: string
+  lastname: string
+  document: string
+  phone: string
+  whatsapp?: string | null
+  email: string
+  city?: string | null
+  department?: string | null
+  address?: string | null
+  notes?: string | null
+  totalPurchases?: number
+  balance?: number
+  isBlocked?: boolean
+  blockedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutCustomerProfileInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
+  receivablePayments?: Prisma.ReceivablePaymentCreateNestedManyWithoutCustomerInput
+  returns?: Prisma.ReturnOrderCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerUncheckedCreateWithoutChatSessionsInput = {
+  id?: string
+  userId: string
+  name: string
+  lastname: string
+  document: string
+  phone: string
+  whatsapp?: string | null
+  email: string
+  city?: string | null
+  department?: string | null
+  address?: string | null
+  notes?: string | null
+  totalPurchases?: number
+  balance?: number
+  isBlocked?: boolean
+  blockedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
+  receivablePayments?: Prisma.ReceivablePaymentUncheckedCreateNestedManyWithoutCustomerInput
+  returns?: Prisma.ReturnOrderUncheckedCreateNestedManyWithoutCustomerInput
+  tags?: Prisma.CustomerTagUncheckedCreateNestedManyWithoutCustomersInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerCreateOrConnectWithoutChatSessionsInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutChatSessionsInput, Prisma.CustomerUncheckedCreateWithoutChatSessionsInput>
+}
+
+export type CustomerUpsertWithoutChatSessionsInput = {
+  update: Prisma.XOR<Prisma.CustomerUpdateWithoutChatSessionsInput, Prisma.CustomerUncheckedUpdateWithoutChatSessionsInput>
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutChatSessionsInput, Prisma.CustomerUncheckedCreateWithoutChatSessionsInput>
+  where?: Prisma.CustomerWhereInput
+}
+
+export type CustomerUpdateToOneWithWhereWithoutChatSessionsInput = {
+  where?: Prisma.CustomerWhereInput
+  data: Prisma.XOR<Prisma.CustomerUpdateWithoutChatSessionsInput, Prisma.CustomerUncheckedUpdateWithoutChatSessionsInput>
+}
+
+export type CustomerUpdateWithoutChatSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  document?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPurchases?: Prisma.IntFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutCustomerProfileNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
+  receivablePayments?: Prisma.ReceivablePaymentUpdateManyWithoutCustomerNestedInput
+  returns?: Prisma.ReturnOrderUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUncheckedUpdateWithoutChatSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  document?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPurchases?: Prisma.IntFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
+  receivablePayments?: Prisma.ReceivablePaymentUncheckedUpdateManyWithoutCustomerNestedInput
+  returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutCustomerNestedInput
+  tags?: Prisma.CustomerTagUncheckedUpdateManyWithoutCustomersNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  document?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPurchases?: Prisma.IntFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutCustomerProfileNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
+  receivablePayments?: Prisma.ReceivablePaymentUpdateManyWithoutCustomerNestedInput
+  returns?: Prisma.ReturnOrderUpdateManyWithoutCustomerNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUncheckedUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  document?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPurchases?: Prisma.IntFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
+  receivablePayments?: Prisma.ReceivablePaymentUncheckedUpdateManyWithoutCustomerNestedInput
+  returns?: Prisma.ReturnOrderUncheckedUpdateManyWithoutCustomerNestedInput
+  loyaltyPoints?: Prisma.LoyaltyPointUncheckedUpdateManyWithoutCustomerNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUncheckedUpdateManyWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  document?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPurchases?: Prisma.IntFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1208,12 +1765,18 @@ export type CustomerCountOutputType = {
   orders: number
   receivablePayments: number
   returns: number
+  tags: number
+  loyaltyPoints: number
+  chatSessions: number
 }
 
 export type CustomerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   orders?: boolean | CustomerCountOutputTypeCountOrdersArgs
   receivablePayments?: boolean | CustomerCountOutputTypeCountReceivablePaymentsArgs
   returns?: boolean | CustomerCountOutputTypeCountReturnsArgs
+  tags?: boolean | CustomerCountOutputTypeCountTagsArgs
+  loyaltyPoints?: boolean | CustomerCountOutputTypeCountLoyaltyPointsArgs
+  chatSessions?: boolean | CustomerCountOutputTypeCountChatSessionsArgs
 }
 
 /**
@@ -1247,6 +1810,27 @@ export type CustomerCountOutputTypeCountReturnsArgs<ExtArgs extends runtime.Type
   where?: Prisma.ReturnOrderWhereInput
 }
 
+/**
+ * CustomerCountOutputType without action
+ */
+export type CustomerCountOutputTypeCountTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CustomerTagWhereInput
+}
+
+/**
+ * CustomerCountOutputType without action
+ */
+export type CustomerCountOutputTypeCountLoyaltyPointsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoyaltyPointWhereInput
+}
+
+/**
+ * CustomerCountOutputType without action
+ */
+export type CustomerCountOutputTypeCountChatSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatSessionWhereInput
+}
+
 
 export type CustomerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1271,6 +1855,9 @@ export type CustomerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   orders?: boolean | Prisma.Customer$ordersArgs<ExtArgs>
   receivablePayments?: boolean | Prisma.Customer$receivablePaymentsArgs<ExtArgs>
   returns?: boolean | Prisma.Customer$returnsArgs<ExtArgs>
+  tags?: boolean | Prisma.Customer$tagsArgs<ExtArgs>
+  loyaltyPoints?: boolean | Prisma.Customer$loyaltyPointsArgs<ExtArgs>
+  chatSessions?: boolean | Prisma.Customer$chatSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.CustomerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["customer"]>
 
@@ -1303,6 +1890,9 @@ export type CustomerInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   orders?: boolean | Prisma.Customer$ordersArgs<ExtArgs>
   receivablePayments?: boolean | Prisma.Customer$receivablePaymentsArgs<ExtArgs>
   returns?: boolean | Prisma.Customer$returnsArgs<ExtArgs>
+  tags?: boolean | Prisma.Customer$tagsArgs<ExtArgs>
+  loyaltyPoints?: boolean | Prisma.Customer$loyaltyPointsArgs<ExtArgs>
+  chatSessions?: boolean | Prisma.Customer$chatSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.CustomerCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1313,6 +1903,9 @@ export type $CustomerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     orders: Prisma.$OrderPayload<ExtArgs>[]
     receivablePayments: Prisma.$ReceivablePaymentPayload<ExtArgs>[]
     returns: Prisma.$ReturnOrderPayload<ExtArgs>[]
+    tags: Prisma.$CustomerTagPayload<ExtArgs>[]
+    loyaltyPoints: Prisma.$LoyaltyPointPayload<ExtArgs>[]
+    chatSessions: Prisma.$ChatSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1677,6 +2270,9 @@ export interface Prisma__CustomerClient<T, Null = never, ExtArgs extends runtime
   orders<T extends Prisma.Customer$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   receivablePayments<T extends Prisma.Customer$receivablePaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$receivablePaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReceivablePaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   returns<T extends Prisma.Customer$returnsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$returnsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReturnOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tags<T extends Prisma.Customer$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  loyaltyPoints<T extends Prisma.Customer$loyaltyPointsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$loyaltyPointsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoyaltyPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatSessions<T extends Prisma.Customer$chatSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2141,6 +2737,78 @@ export type Customer$returnsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.ReturnOrderScalarFieldEnum | Prisma.ReturnOrderScalarFieldEnum[]
+}
+
+/**
+ * Customer.tags
+ */
+export type Customer$tagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CustomerTag
+   */
+  select?: Prisma.CustomerTagSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CustomerTag
+   */
+  omit?: Prisma.CustomerTagOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerTagInclude<ExtArgs> | null
+  where?: Prisma.CustomerTagWhereInput
+  orderBy?: Prisma.CustomerTagOrderByWithRelationInput | Prisma.CustomerTagOrderByWithRelationInput[]
+  cursor?: Prisma.CustomerTagWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CustomerTagScalarFieldEnum | Prisma.CustomerTagScalarFieldEnum[]
+}
+
+/**
+ * Customer.loyaltyPoints
+ */
+export type Customer$loyaltyPointsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoyaltyPoint
+   */
+  select?: Prisma.LoyaltyPointSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoyaltyPoint
+   */
+  omit?: Prisma.LoyaltyPointOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoyaltyPointInclude<ExtArgs> | null
+  where?: Prisma.LoyaltyPointWhereInput
+  orderBy?: Prisma.LoyaltyPointOrderByWithRelationInput | Prisma.LoyaltyPointOrderByWithRelationInput[]
+  cursor?: Prisma.LoyaltyPointWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoyaltyPointScalarFieldEnum | Prisma.LoyaltyPointScalarFieldEnum[]
+}
+
+/**
+ * Customer.chatSessions
+ */
+export type Customer$chatSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatSession
+   */
+  select?: Prisma.ChatSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatSession
+   */
+  omit?: Prisma.ChatSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatSessionInclude<ExtArgs> | null
+  where?: Prisma.ChatSessionWhereInput
+  orderBy?: Prisma.ChatSessionOrderByWithRelationInput | Prisma.ChatSessionOrderByWithRelationInput[]
+  cursor?: Prisma.ChatSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatSessionScalarFieldEnum | Prisma.ChatSessionScalarFieldEnum[]
 }
 
 /**

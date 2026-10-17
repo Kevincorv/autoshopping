@@ -11,7 +11,7 @@ import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { BANK_ACCOUNTS, PAYMENT_ALIAS } from "@/lib/payment-info";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Skeleton } from "@/components/Skeleton";
-import { Check, CreditCard, Banknote, Smartphone, ArrowLeft, ArrowRight, MessageCircle, QrCode, Wallet, User, MapPin, ClipboardCheck, Package, Ticket, Landmark } from "lucide-react";
+import { Check, CreditCard, Banknote, Smartphone, ArrowLeft, ArrowRight, MessageCircle, QrCode, Wallet, User, MapPin, ClipboardCheck, Package, Ticket, Landmark, Award } from "lucide-react";
 import type { Product } from "@/lib/types";
 
 const STEPS = [
@@ -51,6 +51,9 @@ function CheckoutInner() {
   const [applyingCoupon, setApplyingCoupon] = useState(false);
   const [paymentReference, setPaymentReference] = useState("");
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const [loyalty, setLoyalty] = useState<{ balance: number; pointsValueGs: number; rule: any } | null>(null);
+  const [pointsInput, setPointsInput] = useState("");
+  const [pointsError, setPointsError] = useState("");
 
   useEffect(() => {
     let alive = true;
@@ -81,6 +84,14 @@ function CheckoutInner() {
         email: f.email || user.email || "",
         phone: f.phone || user.phone || "",
       }));
+      fetch("/api/loyalty")
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && data.rule?.active && data.balance > 0) {
+            setLoyalty({ balance: data.balance, pointsValueGs: data.pointsValueGs, rule: data.rule });
+          }
+        })
+        .catch(() => {});
     }
   }, [user]);
 
@@ -91,7 +102,14 @@ function CheckoutInner() {
   }, 0);
   const shipping = subtotal > 0 ? (subtotal > 2000000 ? 0 : 50000) : 0;
   const discount = appliedCoupon ? Math.min(appliedCoupon.discount, subtotal) : 0;
-  const total = Math.max(0, subtotal + shipping - discount);
+  const pointsToRedeem = Math.min(
+    parseInt(pointsInput) || 0,
+    loyalty?.balance || 0
+  );
+  const pointsDiscount = loyalty?.rule && pointsToRedeem > 0
+    ? Math.min(pointsToRedeem * loyalty.rule.valuePerPointGs, Math.max(0, subtotal - discount))
+    : 0;
+  const total = Math.max(0, subtotal + shipping - discount - pointsDiscount);
 
   async function applyCoupon() {
     const code = couponInput.trim();
@@ -159,6 +177,7 @@ function CheckoutInner() {
         paymentReference: paymentReference.trim() || undefined,
         couponCode: appliedCoupon?.code,
         notes: form.notes,
+        pointsToRedeem: pointsToRedeem > 0 ? pointsToRedeem : undefined,
       });
       setOrderNumber(r.orderNumber || r.order?.orderNumber || null);
       setDone(r.order.id);
@@ -401,6 +420,9 @@ function CheckoutInner() {
                 {appliedCoupon && (
                   <div className="flex justify-between text-emerald-400"><span>Cupón {appliedCoupon.code}</span><span>-{formatPYG(discount)}</span></div>
                 )}
+                {pointsToRedeem > 0 && pointsDiscount > 0 && (
+                  <div className="flex justify-between text-amber-400"><span>Puntos canjeados ({pointsToRedeem})</span><span>-{formatPYG(pointsDiscount)}</span></div>
+                )}
                 <div className="flex justify-between font-semibold border-t border-neutral-800 pt-2 mt-2"><span>Total a pagar</span><span className="text-brand-400">{formatPYG(total)}</span></div>
               </div>
             </div>
@@ -444,6 +466,12 @@ function CheckoutInner() {
                 <span>-{formatPYG(discount)}</span>
               </div>
             )}
+            {pointsToRedeem > 0 && pointsDiscount > 0 && (
+              <div className="flex justify-between text-amber-400">
+                <span>Puntos ({pointsToRedeem})</span>
+                <span>-{formatPYG(pointsDiscount)}</span>
+              </div>
+            )}
             <div className="flex justify-between font-bold text-base pt-2"><span>Total</span><span className="text-brand-400">{formatPYG(total)}</span></div>
           </div>
 
@@ -473,6 +501,45 @@ function CheckoutInner() {
             )}
             {couponError && <p className="text-red-400 text-xs mt-1">{couponError}</p>}
           </div>
+
+          {/* Puntos de fidelidad */}
+          {loyalty && loyalty.balance > 0 && (
+            <div className="mt-3">
+              {pointsToRedeem > 0 ? (
+                <div className="flex items-center justify-between bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2 text-sm">
+                  <span className="text-amber-400 flex items-center gap-1.5">
+                    <Award className="w-4 h-4" /> {pointsToRedeem} pts (-{formatPYG(pointsDiscount)})
+                  </span>
+                  <button type="button" onClick={() => { setPointsInput(""); setPointsError(""); }} className="text-neutral-400 hover:text-red-400 text-xs">Quitar</button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    className="input px-3 py-1.5 text-sm flex-1"
+                    placeholder={`Canjear puntos (máx ${loyalty.balance})`}
+                    value={pointsInput}
+                    onChange={(e) => { setPointsInput(e.target.value.replace(/\D/g, "")); setPointsError(""); }}
+                    maxLength={7}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const pts = parseInt(pointsInput) || 0;
+                      const rule = loyalty.rule;
+                      if (pts < rule.minRedeemPoints) { setPointsError(`Mínimo ${rule.minRedeemPoints} puntos`); return; }
+                      if (pts > loyalty.balance) { setPointsError(`Solo tenés ${loyalty.balance} puntos`); return; }
+                      setPointsError("");
+                    }}
+                    className="btn-ghost px-3 py-1.5 text-sm"
+                  >Usar</button>
+                </div>
+              )}
+              {pointsError && <p className="text-red-400 text-xs mt-1">{pointsError}</p>}
+              {!pointsError && pointsToRedeem === 0 && (
+                <p className="text-xs text-neutral-500 mt-1">Tenés {loyalty.balance} puntos (≈ {formatPYG(loyalty.pointsValueGs)}) — mín {loyalty.rule.minRedeemPoints} pts</p>
+              )}
+            </div>
+          )}
 
           <div className="flex gap-2 mt-4">
             {step > 0 && (
