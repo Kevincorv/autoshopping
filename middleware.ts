@@ -23,6 +23,7 @@ const PUBLIC_API_GET: RegExp[] = [
   /^\/api\/push\/public-key$/,
   /^\/api\/v1\/products$/,
   /^\/api\/v1$/,
+  /^\/api\/chat$/,
 ];
 
 const PUBLIC_API_POST: RegExp[] = [
