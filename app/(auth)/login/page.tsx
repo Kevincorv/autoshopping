@@ -49,10 +49,6 @@ export default function LoginPage() {
         router.push(`/login/2fa?redirect=${encodeURIComponent(target)}`);
         return;
       }
-      if (data.mustChangePassword) {
-        router.push(`/change-password?redirect=${encodeURIComponent(target)}`);
-        return;
-      }
       if (data.requires2FASetup) {
         router.push("/2fa-setup");
         return;

@@ -128,12 +128,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (payload.mustChangePassword && pathname !== "/change-password") {
-    const url = new URL("/change-password", request.url);
-    url.searchParams.set("redirect", request.nextUrl.search || "");
-    return NextResponse.redirect(url);
-  }
-
   if (payload.roleName === "admin" && !payload.twoFactorEnabled) {
     if (pathname !== "/2fa-setup") {
       return NextResponse.redirect(new URL("/2fa-setup", request.url));

@@ -87,16 +87,9 @@ export async function requireAuth(
   const mustChangePassword = user.mustChangePassword;
   const twoFactorEnabled = user.twoFactorEnabled;
 
-  if (mustChangePassword && !pathAllowed(pathname, ALWAYS_ALLOWED_PATHS)) {
-    return {
-      payload: null,
-      response: errorResponse(403, "Debés cambiar tu contraseña para continuar", "PASSWORD_CHANGE_REQUIRED"),
-    };
-  }
-
   if (user.role.name === "admin" && !twoFactorEnabled && !pathAllowed(pathname, ALWAYS_ALLOWED_PATHS)) {
     const under2fa = pathname.startsWith("/api/auth/2fa/") || pathAllowed(pathname, SESSIONLESS_2FA_PATHS);
-    if (!under2fa || mustChangePassword) {
+    if (!under2fa) {
       return {
         payload: null,
         response: errorResponse(403, "El administrador debe activar la verificación en dos pasos", "TWO_FACTOR_SETUP_REQUIRED"),

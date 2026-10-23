@@ -39,9 +39,7 @@ function TwoFaForm() {
       const target = sanitizeRedirect(rawRedirect, roleName);
       setUser(data.user);
 
-      if (data.mustChangePassword) {
-        router.push(`/change-password?redirect=${encodeURIComponent(target)}`);
-      } else if (roleName === "admin" && data.user?.twoFactorEnabled === false) {
+      if (roleName === "admin" && data.user?.twoFactorEnabled === false) {
         router.push("/2fa-setup");
       } else {
         router.push(target);

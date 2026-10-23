@@ -73,7 +73,6 @@ export function Footer() {
           <h4 className="text-sm font-semibold mb-3 mt-5">Explorar</h4>
           <ul className="space-y-2 text-sm text-neutral-400">
             <li><Link href="/products" className="hover:text-neutral-200 transition-colors">Productos</Link></li>
-            <li><Link href="/vehicles" className="hover:text-neutral-200 transition-colors">Buscar por vehículo</Link></li>
             <li><Link href="/blog" className="hover:text-neutral-200 transition-colors">Blog automotriz</Link></li>
           </ul>
         </div>
