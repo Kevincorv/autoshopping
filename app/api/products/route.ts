@@ -43,6 +43,11 @@ export async function GET(request: Request) {
       where.brand = { slug: brand.toLowerCase().replace(/\s+/g, "-") };
     }
 
+    // Brand filter should respect stock: if inStock is also requested, only show in-stock products
+    if (brand && inStock) {
+      where.stock = { gt: 0 };
+    }
+
     if (minPrice || maxPrice) {
       where.price = {};
       if (minPrice) (where.price as Record<string, unknown>).gte = parseFloat(minPrice);
