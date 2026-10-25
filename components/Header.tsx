@@ -50,8 +50,6 @@ export function Header() {
         <nav className="hidden lg:flex items-center gap-0.5 ml-2">
           <Link href="/" className="text-sm font-medium">Inicio</Link>
           <Link href="/products" className="text-sm font-medium">Productos</Link>
-          <Link href="/products?sale=1" className="text-sm font-medium">Ofertas</Link>
-          <Link href="/blog" className="text-sm font-medium">Blog</Link>
         </nav>
         <div className="hidden lg:block flex-1 min-w-0 mx-3">
           <SearchBar />

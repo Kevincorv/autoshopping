@@ -139,6 +139,47 @@ async function main() {
     select: { email: true, role: { select: { name: true } } },
   });
 
+  // Categorías iniciales
+  const categoryData = [
+    { name: "Accesorios Varios", slug: "accesorios-varios" },
+    { name: "Electrónica", slug: "electronica" },
+    { name: "Iluminación", slug: "iluminacion" },
+    { name: "Cosmetica automotriz", slug: "cosmetica-automotriz" },
+    { name: "Conectores", slug: "conectores" },
+    { name: "Seguridad", slug: "seguridad" },
+    { name: "Audio", slug: "audio" },
+    { name: "Limpia Parabrisas", slug: "limpia-parabrisas" },
+    { name: "Calcomanias y Logos", slug: "calcomanias-y-logos" },
+    { name: "Aromatizantes", slug: "aromatizantes" },
+    { name: "HERRAMIENTAS", slug: "herramientas" },
+  ];
+
+  for (const c of categoryData) {
+    await prisma.category.upsert({
+      where: { slug: c.slug },
+      update: { name: c.name },
+      create: { name: c.name, slug: c.slug },
+    });
+  }
+
+  // Marcas iniciales
+  const brandData = [
+    { name: "GENERALES", slug: "generales" },
+    { name: "KOJIMA", slug: "kojima" },
+    { name: "Reverb", slug: "reverb" },
+    { name: "Sin marca", slug: "sin-marca" },
+    { name: "StarLink", slug: "starlink" },
+    { name: "VONIX", slug: "vonix" },
+  ];
+
+  for (const b of brandData) {
+    await prisma.brand.upsert({
+      where: { slug: b.slug },
+      update: { name: b.name },
+      create: { name: b.name, slug: b.slug },
+    });
+  }
+
   console.log("Seed completado.");
   if (generatedPassword) {
     console.log("=====================================================");
