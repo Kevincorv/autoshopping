@@ -47,7 +47,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2 shrink-0" aria-label="AutoShopping — Inicio">
           <Image src="/logoautoshopping.png" alt="AUTOSHOPPING" width={140} height={42} className="h-8 md:h-10 w-auto rounded-sm" priority />
         </Link>
-        <nav className="hidden lg:flex items-center gap-0.5 ml-2">
+        <nav className="hidden lg:flex items-center gap-2 ml-2">
           <Link href="/" className="text-sm font-medium">Inicio</Link>
           <Link href="/products" className="text-sm font-medium">Productos</Link>
         </nav>
