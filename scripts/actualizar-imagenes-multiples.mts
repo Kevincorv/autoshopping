@@ -614,7 +614,7 @@ async function main() {
           await prisma.productImage.create({
             data: {
               productId: product.id,
-              url: result.imageUrl,
+              url: result.imageUrl ? result.imageUrl.substring(0, 500) : '',
               alt: product.name,
               isPrimary: true,
               sortOrder: 0,

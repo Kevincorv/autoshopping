@@ -184,7 +184,7 @@ CREATE TABLE `Product` (
 CREATE TABLE `ProductImage` (
     `id` VARCHAR(191) NOT NULL,
     `productId` VARCHAR(191) NOT NULL,
-    `url` VARCHAR(191) NOT NULL,
+    `url` VARCHAR(500) NOT NULL,
     `alt` VARCHAR(191) NULL,
     `isPrimary` BOOLEAN NOT NULL DEFAULT false,
     `sortOrder` INTEGER NOT NULL DEFAULT 0,
