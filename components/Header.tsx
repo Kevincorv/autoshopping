@@ -75,11 +75,19 @@ export function Header() {
             </button>
             {userMenuOpen && (
               <div className="absolute right-0 mt-2 w-56 rounded-lg border border-neutral-800 bg-neutral-950 shadow-xl py-1 z-50">
-                <div className="px-4 py-2 border-b border-neutral-800"><p className="text-sm font-medium text-white">{user?.name} {user?.lastname}</p><p className="text-xs text-neutral-400">{user?.email}</p></div>
-                {showDashboard && (<a href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-neutral-800"><BarChart3 className="w-4 h-4" /> Dashboard</a>)}
-                {isAdmin && (<a href="/dashboard/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-neutral-800"><Package className="w-4 h-4" /> Administración</a>)}
-                <hr className="border-neutral-800 my-1" />
-                <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-neutral-800 w-full"><LogOut className="w-4 h-4" /> Cerrar sesión</button>
+                {user ? (
+                  <>
+                    <div className="px-4 py-2 border-b border-neutral-800"><p className="text-sm font-medium text-white">{user.name} {user.lastname}</p><p className="text-xs text-neutral-400">{user.email}</p></div>
+                    {showDashboard && (<a href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-neutral-800"><BarChart3 className="w-4 h-4" /> Dashboard</a>)}
+                    {isAdmin && (<a href="/dashboard/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-neutral-800"><Package className="w-4 h-4" /> Administración</a>)}
+                    <hr className="border-neutral-800 my-1" />
+                    <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-neutral-800 w-full"><LogOut className="w-4 h-4" /> Cerrar sesión</button>
+                  </>
+                ) : (
+                  <div className="px-4 py-2">
+                    <Link href="/login" className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-neutral-800">Iniciar sesión</Link>
+                  </div>
+                )}
               </div>
             )}
           </div>
