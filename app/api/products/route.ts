@@ -68,7 +68,7 @@ export async function GET(request: Request) {
 
     if (lowStock) {
       where.isActive = true;
-      where.stock = { lte: prisma.product.fields.minStock };
+      where.stock = { lte: 5 };
     }
 
     // Selección explícita de productos (carrito, pedidos, listas guardadas)
