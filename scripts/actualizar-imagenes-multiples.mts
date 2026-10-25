@@ -686,12 +686,12 @@ async function main() {
   }
 
   console.log("\n=== Configuración .env ===");
-  console.log("GEMINI_API_KEY=AQ.Ab8RN6Jj2SOxOxHKW09-ECMwdaxfu9MWxTu2WXLQRK_9IKDXfw (añadido)");
-  console.log("OPENVERSE_API_KEY= (opcional, para búsquedas Openverse)");
-  console.log("PEXELS_API_KEY= (opcional, registro gratis en pexels.com)");
-  console.log("PIXABAY_API_KEY= (opcional, registro gratis en pixabay.com)");
-  console.log("SERPAPI_KEY= (ELIMINADO - no usar APIs de pago)");
-  console.log("BRAVE_SEARCH_API_KEY= (ELIMINADO - no usar APIs de pago)");
+  console.log("GEMINI_API_KEY: leer del archivo .env (no commits al repo)");
+  console.log("OPENVERSE_API_KEY= (opcional, registro en openverse.org)");
+  console.log("PEXELS_API_KEY= (opcional, registro en pexels.com)");
+  console.log("PIXABAY_API_KEY= (opcional, registro en pixabay.com)");
+  console.log("SERPAPI_KEY= (NO usar - APIs de pago eliminadas)");
+  console.log("BRAVE_SEARCH_API_KEY= (NO usar - APIs de pago eliminadas)");
 
   console.log("\n=== Próximos pasos ===");
   console.log(
