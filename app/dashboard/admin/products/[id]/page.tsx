@@ -10,20 +10,6 @@ interface Option {
   slug: string;
 }
 
-interface VehicleModelOpt {
-  id: string;
-  name: string;
-  slug: string;
-  makeId: string;
-}
-
-interface VehicleMakeOpt {
-  id: string;
-  name: string;
-  slug: string;
-  models: VehicleModelOpt[];
-}
-
 export default function EditProduct() {
   const router = useRouter();
   const params = useParams();
@@ -33,12 +19,8 @@ export default function EditProduct() {
   const [saving, setSaving] = useState(false);
   const [categories, setCategories] = useState<Option[]>([]);
   const [brands, setBrands] = useState<Option[]>([]);
-  const [vehicleMakes, setVehicleMakes] = useState<VehicleMakeOpt[]>([]);
-  const [vehicleModelIds, setVehicleModelIds] = useState<string[]>([]);
   const [vendors, setVendors] = useState<{ id: string; name: string; status: string }[]>([]);
   const [vendorId, setVendorId] = useState("");
-  const [vMakeId, setVMakeId] = useState("");
-  const [vModelId, setVModelId] = useState("");
   const [form, setForm] = useState({
     name: "",
     slug: "",
@@ -71,11 +53,6 @@ export default function EditProduct() {
       .then((r) => r.json())
       .then((data) => setBrands((data.brands || []).map((b: any) => ({ id: b.slug, name: b.name, slug: b.slug }))));
 
-    fetch("/api/vehicles")
-      .then((r) => r.json())
-      .then((data) => setVehicleMakes(data.makes || []))
-      .catch(() => setVehicleMakes([]));
-
     fetch("/api/admin/vendors")
       .then((r) => r.json())
       .then((data) => setVendors((data.vendors || []).map((v: any) => ({ id: v.id, name: v.name, status: v.status }))))
@@ -97,10 +74,10 @@ export default function EditProduct() {
               price: p.price,
               comparePrice: p.comparePrice || 0,
               stock: p.stock,
-              minStock: 5,
+              minStock: p.minStock ?? 5,
               description: p.description || "",
               shortDescription: p.shortDescription || "",
-              isActive: true,
+              isActive: p.isActive !== false,
               isFeatured: p.featured,
               isNew: p.isNew,
               weight: p.weight || 0,
@@ -108,13 +85,15 @@ export default function EditProduct() {
                 url: typeof img === "string" ? img : img.url,
                 isPrimary: i === 0,
               })) : [{ url: "", isPrimary: true }],
-              specs: p.specs?.length ? p.specs : [{ specName: "", specValue: "" }],
+              specs: p.specs?.length
+                ? p.specs.map((s: any) => ({
+                    specName: s.specName ?? s.name ?? "",
+                    specValue: s.specValue ?? s.value ?? "",
+                  }))
+                : [{ specName: "", specValue: "" }],
               tags: p.tags || [],
               tagInput: "",
             });
-            if (Array.isArray(p.vehicles)) {
-              setVehicleModelIds(p.vehicles.map((v: any) => v.modelId).filter(Boolean));
-            }
             setVendorId(p.vendorId || "");
           }
         })
@@ -141,26 +120,6 @@ export default function EditProduct() {
     setForm((prev) => ({ ...prev, tags: prev.tags.filter((t) => t !== tag) }));
   }
 
-  const vMake = vehicleMakes.find((m) => m.id === vMakeId) || null;
-  const vModelOpts = vMake?.models || [];
-  const vehicleNameById = (id: string) => {
-    for (const mk of vehicleMakes) {
-      const md = mk.models.find((m) => m.id === id);
-      if (md) return `${mk.name} ${md.name}`;
-    }
-    return id;
-  };
-
-  function addVehicle() {
-    if (!vModelId || vehicleModelIds.includes(vModelId)) return;
-    setVehicleModelIds((prev) => [...prev, vModelId]);
-    setVModelId("");
-  }
-
-  function removeVehicle(id: string) {
-    setVehicleModelIds((prev) => prev.filter((v) => v !== id));
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -185,7 +144,6 @@ export default function EditProduct() {
         images: form.images.filter((i) => i.url),
         specs: form.specs.filter((s) => s.specName && s.specValue),
         tags: form.tags,
-        vehicleModelIds,
         vendorId: vendorId || null,
       };
 
@@ -376,59 +334,6 @@ export default function EditProduct() {
                 ))}
               </select>
             </div>
-            <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5 space-y-4">
-              <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Vehículos compatibles</h2>
-              <p className="text-xs text-neutral-500">Agregá los modelos de vehículo con los que es compatible este repuesto. Aparecerán en la búsqueda por vehículo.</p>
-
-              <div className="flex flex-wrap gap-2 items-end">
-                <div className="min-w-[140px]">
-                  <label className="block text-xs text-neutral-400 mb-1">Marca</label>
-                  <select
-                    value={vMakeId}
-                    onChange={(e) => { setVMakeId(e.target.value); setVModelId(""); }}
-                    className="input px-3 py-1.5 text-sm w-full"
-                  >
-                    <option value="">Seleccionar</option>
-                    {vehicleMakes.map((m) => (
-                      <option key={m.id} value={m.id}>{m.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="min-w-[160px]">
-                  <label className="block text-xs text-neutral-400 mb-1">Modelo</label>
-                  <select
-                    value={vModelId}
-                    onChange={(e) => setVModelId(e.target.value)}
-                    disabled={!vMake}
-                    className="input px-3 py-1.5 text-sm w-full"
-                  >
-                    <option value="">{vMake ? "Seleccionar" : "Elegí marca"}</option>
-                    {vModelOpts.map((m) => (
-                      <option key={m.id} value={m.id}>{m.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  type="button"
-                  onClick={addVehicle}
-                  disabled={!vModelId || vehicleModelIds.includes(vModelId)}
-                  className="btn-ghost px-3 py-1.5 text-sm"
-                >
-                  Agregar
-                </button>
-              </div>
-
-              {vehicleModelIds.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {vehicleModelIds.map((id) => (
-                    <span key={id} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-brand-500/10 text-brand-300 text-xs border border-brand-500/20">
-                      {vehicleNameById(id)}
-                      <button type="button" onClick={() => removeVehicle(id)} className="text-brand-500 hover:text-white">&times;</button>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
 
           <div className="space-y-4">
@@ -452,7 +357,12 @@ export default function EditProduct() {
               <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Imagen principal</h2>
               <input
                 value={form.images[0]?.url || ""}
-                onChange={(e) => setForm((prev) => ({ ...prev, images: [{ url: e.target.value, isPrimary: true }] }))}
+                onChange={(e) => setForm((prev) => ({
+                  ...prev,
+                  images: prev.images.length
+                    ? prev.images.map((img, i) => (i === 0 ? { ...img, url: e.target.value } : img))
+                    : [{ url: e.target.value, isPrimary: true }],
+                }))}
                 placeholder="URL de la imagen..."
                 className="input px-3 w-full text-sm"
               />

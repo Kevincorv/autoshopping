@@ -18,7 +18,6 @@ const PUBLIC_API_GET: RegExp[] = [
   /^\/api\/brands(\/|$)/,
   /^\/api\/products(\/|$)/,
   /^\/api\/track(\/|$)/,
-  /^\/api\/vehicles(\/|$)/,
   /^\/api\/posts(\/|$)/,
   /^\/api\/push\/public-key$/,
   /^\/api\/v1\/products$/,

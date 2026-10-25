@@ -76,6 +76,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Demasiados pedidos desde esta conexión. Esperá un minuto." }, { status: 429 });
   }
 
+  // Idempotencia: evita pedidos duplicados por reintento/timeout
+  const idempotencyKey = request.headers.get("Idempotency-Key") || undefined;
+  if (idempotencyKey) {
+    const cleanedKey = idempotencyKey.trim().slice(0, 100);
+    const existing = await prisma.order.findFirst({
+      where: { idempotencyKey: cleanedKey },
+      include: { items: true },
+    });
+    if (existing) {
+      return NextResponse.json({
+        ok: true,
+        order: existing,
+        orderNumber: existing.orderNumber,
+        totals: {
+          subtotal: existing.subtotal,
+          discount: existing.discount,
+          shipping: existing.shipping,
+          total: existing.total,
+        },
+      });
+    }
+  }
+
   let sessionUserId: string | null = null;
   try {
     const token = cookies().get(AUTH_CONFIG.cookieName)?.value;
@@ -108,7 +131,7 @@ export async function POST(request: Request) {
 
     const orderItems = items.map((item) => {
       const product = productMap.get(item.productId)!;
-      const unitPrice = item.price || product.price;
+      const unitPrice = product.price;
       return {
         productId: item.productId,
         productName: item.name || product.name,

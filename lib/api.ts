@@ -42,7 +42,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getProducts: (params?: { category?: string; brand?: string; min?: number; max?: number; q?: string; sort?: string; page?: number; limit?: number; vehicle?: string; vehicleYear?: number }) => {
+  getProducts: (params?: { category?: string; brand?: string; min?: number; max?: number; q?: string; sort?: string; page?: number; limit?: number; sale?: boolean; inStock?: boolean }) => {
     const sp = new URLSearchParams();
     if (params?.category) sp.set("category", params.category);
     if (params?.brand) sp.set("brand", params.brand);
@@ -52,8 +52,8 @@ export const api = {
     if (params?.sort) sp.set("sort", params.sort);
     if (params?.page) sp.set("page", String(params.page));
     if (params?.limit) sp.set("limit", String(params.limit));
-    if (params?.vehicle) sp.set("vehicle", params.vehicle);
-    if (params?.vehicleYear) sp.set("vehicleYear", String(params.vehicleYear));
+    if (params?.sale) sp.set("sale", "1");
+    if (params?.inStock) sp.set("inStock", "1");
     const q = sp.toString();
     return request<{ products: Product[]; total: number }>(`/products${q ? "?" + q : ""}`);
   },

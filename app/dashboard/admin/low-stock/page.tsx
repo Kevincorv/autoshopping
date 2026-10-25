@@ -19,7 +19,7 @@ export default function LowStockPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const r = await fetch("/api/products?limit=100");
+      const r = await fetch("/api/products?lowStock=1&limit=200");
       const d = await r.json();
       setProducts(d.products || []);
     } catch { /* noop */ }

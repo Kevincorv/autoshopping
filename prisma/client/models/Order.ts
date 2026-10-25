@@ -51,6 +51,7 @@ export type OrderSumAggregateOutputType = {
 export type OrderMinAggregateOutputType = {
   id: string | null
   orderNumber: string | null
+  idempotencyKey: string | null
   userId: string | null
   customerId: string | null
   sellerId: string | null
@@ -85,6 +86,7 @@ export type OrderMinAggregateOutputType = {
 export type OrderMaxAggregateOutputType = {
   id: string | null
   orderNumber: string | null
+  idempotencyKey: string | null
   userId: string | null
   customerId: string | null
   sellerId: string | null
@@ -119,6 +121,7 @@ export type OrderMaxAggregateOutputType = {
 export type OrderCountAggregateOutputType = {
   id: number
   orderNumber: number
+  idempotencyKey: number
   userId: number
   customerId: number
   sellerId: number
@@ -177,6 +180,7 @@ export type OrderSumAggregateInputType = {
 export type OrderMinAggregateInputType = {
   id?: true
   orderNumber?: true
+  idempotencyKey?: true
   userId?: true
   customerId?: true
   sellerId?: true
@@ -211,6 +215,7 @@ export type OrderMinAggregateInputType = {
 export type OrderMaxAggregateInputType = {
   id?: true
   orderNumber?: true
+  idempotencyKey?: true
   userId?: true
   customerId?: true
   sellerId?: true
@@ -245,6 +250,7 @@ export type OrderMaxAggregateInputType = {
 export type OrderCountAggregateInputType = {
   id?: true
   orderNumber?: true
+  idempotencyKey?: true
   userId?: true
   customerId?: true
   sellerId?: true
@@ -366,6 +372,7 @@ export type OrderGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type OrderGroupByOutputType = {
   id: string
   orderNumber: string
+  idempotencyKey: string | null
   userId: string | null
   customerId: string | null
   sellerId: string | null
@@ -423,6 +430,7 @@ export type OrderWhereInput = {
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   id?: Prisma.StringFilter<"Order"> | string
   orderNumber?: Prisma.StringFilter<"Order"> | string
+  idempotencyKey?: Prisma.StringNullableFilter<"Order"> | string | null
   userId?: Prisma.StringNullableFilter<"Order"> | string | null
   customerId?: Prisma.StringNullableFilter<"Order"> | string | null
   sellerId?: Prisma.StringNullableFilter<"Order"> | string | null
@@ -465,6 +473,7 @@ export type OrderWhereInput = {
 export type OrderOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   orderNumber?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
   sellerId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -508,6 +517,7 @@ export type OrderOrderByWithRelationInput = {
 export type OrderWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   orderNumber?: string
+  idempotencyKey?: string
   AND?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   OR?: Prisma.OrderWhereInput[]
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
@@ -548,11 +558,12 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   payments?: Prisma.PaymentListRelationFilter
   returns?: Prisma.ReturnOrderListRelationFilter
   loyaltyPoints?: Prisma.LoyaltyPointListRelationFilter
-}, "id" | "orderNumber">
+}, "id" | "orderNumber" | "idempotencyKey">
 
 export type OrderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   orderNumber?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
   sellerId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -595,6 +606,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   NOT?: Prisma.OrderScalarWhereWithAggregatesInput | Prisma.OrderScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Order"> | string
   orderNumber?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  idempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   userId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   customerId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   sellerId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -629,6 +641,7 @@ export type OrderScalarWhereWithAggregatesInput = {
 export type OrderCreateInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -668,6 +681,7 @@ export type OrderCreateInput = {
 export type OrderUncheckedCreateInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -707,6 +721,7 @@ export type OrderUncheckedCreateInput = {
 export type OrderUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -746,6 +761,7 @@ export type OrderUpdateInput = {
 export type OrderUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -785,6 +801,7 @@ export type OrderUncheckedUpdateInput = {
 export type OrderCreateManyInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -819,6 +836,7 @@ export type OrderCreateManyInput = {
 export type OrderUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -850,6 +868,7 @@ export type OrderUpdateManyMutationInput = {
 export type OrderUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -900,6 +919,7 @@ export type OrderOrderByRelevanceInput = {
 export type OrderCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderNumber?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   sellerId?: Prisma.SortOrder
@@ -945,6 +965,7 @@ export type OrderAvgOrderByAggregateInput = {
 export type OrderMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderNumber?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   sellerId?: Prisma.SortOrder
@@ -979,6 +1000,7 @@ export type OrderMaxOrderByAggregateInput = {
 export type OrderMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderNumber?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   sellerId?: Prisma.SortOrder
@@ -1234,6 +1256,7 @@ export type OrderUpdateOneWithoutLoyaltyPointsNestedInput = {
 export type OrderCreateWithoutUserInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -1272,6 +1295,7 @@ export type OrderCreateWithoutUserInput = {
 export type OrderUncheckedCreateWithoutUserInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   customerId?: string | null
   sellerId?: string | null
   status?: string
@@ -1339,6 +1363,7 @@ export type OrderScalarWhereInput = {
   NOT?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
   id?: Prisma.StringFilter<"Order"> | string
   orderNumber?: Prisma.StringFilter<"Order"> | string
+  idempotencyKey?: Prisma.StringNullableFilter<"Order"> | string | null
   userId?: Prisma.StringNullableFilter<"Order"> | string | null
   customerId?: Prisma.StringNullableFilter<"Order"> | string | null
   sellerId?: Prisma.StringNullableFilter<"Order"> | string | null
@@ -1373,6 +1398,7 @@ export type OrderScalarWhereInput = {
 export type OrderCreateWithoutCustomerInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -1411,6 +1437,7 @@ export type OrderCreateWithoutCustomerInput = {
 export type OrderUncheckedCreateWithoutCustomerInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   sellerId?: string | null
   status?: string
@@ -1475,6 +1502,7 @@ export type OrderUpdateManyWithWhereWithoutCustomerInput = {
 export type OrderCreateWithoutItemsInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -1513,6 +1541,7 @@ export type OrderCreateWithoutItemsInput = {
 export type OrderUncheckedCreateWithoutItemsInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -1567,6 +1596,7 @@ export type OrderUpdateToOneWithWhereWithoutItemsInput = {
 export type OrderUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1605,6 +1635,7 @@ export type OrderUpdateWithoutItemsInput = {
 export type OrderUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1643,6 +1674,7 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
 export type OrderCreateWithoutStatusHistoryInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -1681,6 +1713,7 @@ export type OrderCreateWithoutStatusHistoryInput = {
 export type OrderUncheckedCreateWithoutStatusHistoryInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -1735,6 +1768,7 @@ export type OrderUpdateToOneWithWhereWithoutStatusHistoryInput = {
 export type OrderUpdateWithoutStatusHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1773,6 +1807,7 @@ export type OrderUpdateWithoutStatusHistoryInput = {
 export type OrderUncheckedUpdateWithoutStatusHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1811,6 +1846,7 @@ export type OrderUncheckedUpdateWithoutStatusHistoryInput = {
 export type OrderCreateWithoutPaymentsInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -1849,6 +1885,7 @@ export type OrderCreateWithoutPaymentsInput = {
 export type OrderUncheckedCreateWithoutPaymentsInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -1903,6 +1940,7 @@ export type OrderUpdateToOneWithWhereWithoutPaymentsInput = {
 export type OrderUpdateWithoutPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1941,6 +1979,7 @@ export type OrderUpdateWithoutPaymentsInput = {
 export type OrderUncheckedUpdateWithoutPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1979,6 +2018,7 @@ export type OrderUncheckedUpdateWithoutPaymentsInput = {
 export type OrderCreateWithoutCouponInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -2017,6 +2057,7 @@ export type OrderCreateWithoutCouponInput = {
 export type OrderUncheckedCreateWithoutCouponInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -2081,6 +2122,7 @@ export type OrderUpdateManyWithWhereWithoutCouponInput = {
 export type OrderCreateWithoutReturnsInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -2119,6 +2161,7 @@ export type OrderCreateWithoutReturnsInput = {
 export type OrderUncheckedCreateWithoutReturnsInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -2173,6 +2216,7 @@ export type OrderUpdateToOneWithWhereWithoutReturnsInput = {
 export type OrderUpdateWithoutReturnsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2211,6 +2255,7 @@ export type OrderUpdateWithoutReturnsInput = {
 export type OrderUncheckedUpdateWithoutReturnsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2249,6 +2294,7 @@ export type OrderUncheckedUpdateWithoutReturnsInput = {
 export type OrderCreateWithoutLoyaltyPointsInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   sellerId?: string | null
   status?: string
   subtotal: number
@@ -2287,6 +2333,7 @@ export type OrderCreateWithoutLoyaltyPointsInput = {
 export type OrderUncheckedCreateWithoutLoyaltyPointsInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -2341,6 +2388,7 @@ export type OrderUpdateToOneWithWhereWithoutLoyaltyPointsInput = {
 export type OrderUpdateWithoutLoyaltyPointsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2379,6 +2427,7 @@ export type OrderUpdateWithoutLoyaltyPointsInput = {
 export type OrderUncheckedUpdateWithoutLoyaltyPointsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2417,6 +2466,7 @@ export type OrderUncheckedUpdateWithoutLoyaltyPointsInput = {
 export type OrderCreateManyUserInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   customerId?: string | null
   sellerId?: string | null
   status?: string
@@ -2450,6 +2500,7 @@ export type OrderCreateManyUserInput = {
 export type OrderUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2488,6 +2539,7 @@ export type OrderUpdateWithoutUserInput = {
 export type OrderUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2526,6 +2578,7 @@ export type OrderUncheckedUpdateWithoutUserInput = {
 export type OrderUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2559,6 +2612,7 @@ export type OrderUncheckedUpdateManyWithoutUserInput = {
 export type OrderCreateManyCustomerInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   sellerId?: string | null
   status?: string
@@ -2592,6 +2646,7 @@ export type OrderCreateManyCustomerInput = {
 export type OrderUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2630,6 +2685,7 @@ export type OrderUpdateWithoutCustomerInput = {
 export type OrderUncheckedUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2668,6 +2724,7 @@ export type OrderUncheckedUpdateWithoutCustomerInput = {
 export type OrderUncheckedUpdateManyWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2701,6 +2758,7 @@ export type OrderUncheckedUpdateManyWithoutCustomerInput = {
 export type OrderCreateManyCouponInput = {
   id?: string
   orderNumber: string
+  idempotencyKey?: string | null
   userId?: string | null
   customerId?: string | null
   sellerId?: string | null
@@ -2734,6 +2792,7 @@ export type OrderCreateManyCouponInput = {
 export type OrderUpdateWithoutCouponInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2772,6 +2831,7 @@ export type OrderUpdateWithoutCouponInput = {
 export type OrderUncheckedUpdateWithoutCouponInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2810,6 +2870,7 @@ export type OrderUncheckedUpdateWithoutCouponInput = {
 export type OrderUncheckedUpdateManyWithoutCouponInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sellerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2910,6 +2971,7 @@ export type OrderCountOutputTypeCountLoyaltyPointsArgs<ExtArgs extends runtime.T
 export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderNumber?: boolean
+  idempotencyKey?: boolean
   userId?: boolean
   customerId?: boolean
   sellerId?: boolean
@@ -2955,6 +3017,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type OrderSelectScalar = {
   id?: boolean
   orderNumber?: boolean
+  idempotencyKey?: boolean
   userId?: boolean
   customerId?: boolean
   sellerId?: boolean
@@ -2986,7 +3049,7 @@ export type OrderSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNumber" | "userId" | "customerId" | "sellerId" | "status" | "subtotal" | "discount" | "shipping" | "total" | "paymentMethod" | "paymentStatus" | "paymentReference" | "couponId" | "trackingNumber" | "courier" | "notes" | "customerName" | "customerPhone" | "customerEmail" | "customerAddress" | "customerCity" | "deliveryMethod" | "amountPaid" | "paidAt" | "deliveredAt" | "loyaltyPointsEarned" | "loyaltyPointsRedeemed" | "pointsDiscount" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNumber" | "idempotencyKey" | "userId" | "customerId" | "sellerId" | "status" | "subtotal" | "discount" | "shipping" | "total" | "paymentMethod" | "paymentStatus" | "paymentReference" | "couponId" | "trackingNumber" | "courier" | "notes" | "customerName" | "customerPhone" | "customerEmail" | "customerAddress" | "customerCity" | "deliveryMethod" | "amountPaid" | "paidAt" | "deliveredAt" | "loyaltyPointsEarned" | "loyaltyPointsRedeemed" | "pointsDiscount" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.Order$customerArgs<ExtArgs>
   user?: boolean | Prisma.Order$userArgs<ExtArgs>
@@ -3014,6 +3077,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     orderNumber: string
+    idempotencyKey: string | null
     userId: string | null
     customerId: string | null
     sellerId: string | null
@@ -3422,6 +3486,7 @@ export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface OrderFieldRefs {
   readonly id: Prisma.FieldRef<"Order", 'String'>
   readonly orderNumber: Prisma.FieldRef<"Order", 'String'>
+  readonly idempotencyKey: Prisma.FieldRef<"Order", 'String'>
   readonly userId: Prisma.FieldRef<"Order", 'String'>
   readonly customerId: Prisma.FieldRef<"Order", 'String'>
   readonly sellerId: Prisma.FieldRef<"Order", 'String'>

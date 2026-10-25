@@ -60,9 +60,6 @@ export const ModelName = {
   Category: 'Category',
   Brand: 'Brand',
   Product: 'Product',
-  VehicleMake: 'VehicleMake',
-  VehicleModel: 'VehicleModel',
-  ProductVehicle: 'ProductVehicle',
   Post: 'Post',
   PushSubscription: 'PushSubscription',
   ProductImage: 'ProductImage',
@@ -291,47 +288,6 @@ export const ProductScalarFieldEnum = {
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
 
 
-export const VehicleMakeScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug',
-  logo: 'logo',
-  sortOrder: 'sortOrder',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type VehicleMakeScalarFieldEnum = (typeof VehicleMakeScalarFieldEnum)[keyof typeof VehicleMakeScalarFieldEnum]
-
-
-export const VehicleModelScalarFieldEnum = {
-  id: 'id',
-  makeId: 'makeId',
-  name: 'name',
-  slug: 'slug',
-  yearFrom: 'yearFrom',
-  yearTo: 'yearTo',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type VehicleModelScalarFieldEnum = (typeof VehicleModelScalarFieldEnum)[keyof typeof VehicleModelScalarFieldEnum]
-
-
-export const ProductVehicleScalarFieldEnum = {
-  id: 'id',
-  productId: 'productId',
-  modelId: 'modelId',
-  yearFrom: 'yearFrom',
-  yearTo: 'yearTo',
-  createdAt: 'createdAt'
-} as const
-
-export type ProductVehicleScalarFieldEnum = (typeof ProductVehicleScalarFieldEnum)[keyof typeof ProductVehicleScalarFieldEnum]
-
-
 export const PostScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -425,6 +381,7 @@ export type WishlistItemScalarFieldEnum = (typeof WishlistItemScalarFieldEnum)[k
 export const OrderScalarFieldEnum = {
   id: 'id',
   orderNumber: 'orderNumber',
+  idempotencyKey: 'idempotencyKey',
   userId: 'userId',
   customerId: 'customerId',
   sellerId: 'sellerId',
@@ -1005,35 +962,6 @@ export const ProductOrderByRelevanceFieldEnum = {
 export type ProductOrderByRelevanceFieldEnum = (typeof ProductOrderByRelevanceFieldEnum)[keyof typeof ProductOrderByRelevanceFieldEnum]
 
 
-export const VehicleMakeOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug',
-  logo: 'logo'
-} as const
-
-export type VehicleMakeOrderByRelevanceFieldEnum = (typeof VehicleMakeOrderByRelevanceFieldEnum)[keyof typeof VehicleMakeOrderByRelevanceFieldEnum]
-
-
-export const VehicleModelOrderByRelevanceFieldEnum = {
-  id: 'id',
-  makeId: 'makeId',
-  name: 'name',
-  slug: 'slug'
-} as const
-
-export type VehicleModelOrderByRelevanceFieldEnum = (typeof VehicleModelOrderByRelevanceFieldEnum)[keyof typeof VehicleModelOrderByRelevanceFieldEnum]
-
-
-export const ProductVehicleOrderByRelevanceFieldEnum = {
-  id: 'id',
-  productId: 'productId',
-  modelId: 'modelId'
-} as const
-
-export type ProductVehicleOrderByRelevanceFieldEnum = (typeof ProductVehicleOrderByRelevanceFieldEnum)[keyof typeof ProductVehicleOrderByRelevanceFieldEnum]
-
-
 export const PostOrderByRelevanceFieldEnum = {
   id: 'id',
   title: 'title',
@@ -1113,6 +1041,7 @@ export type WishlistItemOrderByRelevanceFieldEnum = (typeof WishlistItemOrderByR
 export const OrderOrderByRelevanceFieldEnum = {
   id: 'id',
   orderNumber: 'orderNumber',
+  idempotencyKey: 'idempotencyKey',
   userId: 'userId',
   customerId: 'customerId',
   sellerId: 'sellerId',

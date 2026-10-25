@@ -1,66 +1,121 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { toHttps } from "@/lib/utils";
+import { slugify } from "@/lib/utils";
+import { requirePermission } from "@/lib/auth/middleware";
 
-export const dynamic = "force-dynamic";
-
-const CATEGORY_IMAGES: Record<string, string> = {
-  "carpitas": "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400",
-  "multimedia": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400",
-  "suntek": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400",
-  "vonixx": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400",
-  "sparco": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400",
-};
-
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const categories = await prisma.category.findMany({
       where: { isActive: true },
-      include: { _count: { select: { products: { where: { isActive: true } } } } },
       orderBy: { sortOrder: "asc" },
     });
+    return NextResponse.json({ categories });
+  } catch (error) {
+    return NextResponse.json({ categories: [] });
+  }
+}
 
-    let sampleByCategory: Record<string, string> = {};
-    if (categories.length > 0) {
-      try {
-        const samples = await prisma.product.findMany({
-          where: {
-            isActive: true,
-            categoryId: { in: categories.map((c) => c.id) },
-            images: { some: {} },
-          },
-          select: {
-            categoryId: true,
-            images: {
-              orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
-              take: 1,
-              select: { url: true },
-            },
-          },
-          orderBy: [{ sold: "desc" }, { createdAt: "desc" }],
-          distinct: ["categoryId"],
-        });
-        sampleByCategory = samples.reduce<Record<string, string>>((acc, p) => {
-          if (p.images[0]?.url) acc[p.categoryId] = p.images[0].url;
-          return acc;
-        }, {});
-      } catch (e) {
-        console.error("Category sample images error:", e);
-      }
+export async function POST(request: NextRequest) {
+  try {
+    const auth = await requirePermission(request as any, "categories.write");
+    if (auth.response) return auth.response;
+    const body = await request.json();
+    const { name, slug, isActive, sortOrder, parentId } = body;
+
+    if (!name || typeof name !== "string") {
+      return NextResponse.json({ error: "El nombre es obligatorio" }, { status: 400 });
     }
 
-    return NextResponse.json({
-      categories: categories.map((c) => ({
-        id: c.slug,
-        name: c.name,
-        slug: c.slug,
-        count: c._count.products,
-        image: toHttps(sampleByCategory[c.id] || c.image || CATEGORY_IMAGES[c.slug]),
-        parentId: c.parentId,
-      })),
+    const cleanName = String(name).trim();
+    if (!cleanName) {
+      return NextResponse.json({ error: "El nombre es obligatorio" }, { status: 400 });
+    }
+
+    const cleanSlug = slug && String(slug).trim()
+      ? slugify(String(slug))
+      : slugify(cleanName);
+
+    const existingSlug = await prisma.category.findUnique({ where: { slug: cleanSlug } });
+    if (existingSlug) {
+      return NextResponse.json({ error: "Ya existe una categoría con ese slug" }, { status: 409 });
+    }
+
+    const category = await prisma.category.create({
+      data: {
+        name: cleanName,
+        slug: cleanSlug,
+        isActive: isActive !== false,
+        sortOrder: sortOrder !== undefined ? sortOrder : 0,
+        parentId,
+      },
     });
+
+    return NextResponse.json({ category });
   } catch (error) {
-    console.error("Categories error:", error);
-    return NextResponse.json({ categories: [] });
+    return NextResponse.json({ error: "Error al crear categoría" }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const auth = await requirePermission(request as any, "categories.write");
+    if (auth.response) return auth.response;
+    const body = await request.json();
+    const { slug, id, name, isActive, sortOrder } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "ID de categoría requerido" }, { status: 400 });
+    }
+
+    const category = await prisma.category.findUnique({ where: { slug: id } });
+    if (!category) {
+      return NextResponse.json({ error: "Categoría no encontrada" }, { status: 404 });
+    }
+
+    const updateData: any = {};
+    if (name) {
+      updateData.name = String(name).trim();
+      updateData.slug = slugify(String(name).trim());
+    }
+    if (isActive !== undefined) updateData.isActive = isActive;
+    if (sortOrder !== undefined) updateData.sortOrder = sortOrder;
+
+    const updated = await prisma.category.update({
+      where: { slug: id },
+      data: updateData,
+    });
+
+    return NextResponse.json({ category: updated });
+  } catch (error) {
+    return NextResponse.json({ error: "Error al actualizar categoría" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const auth = await requirePermission(request as any, "categories.write");
+    if (auth.response) return auth.response;
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "ID de categoría requerido" }, { status: 400 });
+    }
+
+    const category = await prisma.category.findUnique({ where: { slug: id } });
+    if (!category) {
+      return NextResponse.json({ error: "Categoría no encontrada" }, { status: 404 });
+    }
+
+    const productCount = await prisma.product.count({ where: { categoryId: category.id } });
+    if (productCount > 0) {
+      return NextResponse.json({ error: "No se puede borrar: la categoría tiene productos asociados" }, { status: 409 });
+    }
+
+    await prisma.category.delete({ where: { slug: id } });
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json({ error: "Error al borrar categoría" }, { status: 500 });
   }
 }

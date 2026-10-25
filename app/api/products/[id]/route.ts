@@ -19,14 +19,6 @@ export async function GET(
         images: { orderBy: { sortOrder: "asc" } },
         specs: true,
         tags: true,
-        vehicles: {
-          select: {
-            modelId: true,
-            yearFrom: true,
-            yearTo: true,
-            model: { select: { name: true, slug: true, make: { select: { name: true, slug: true } } } },
-          },
-        },
         brand: { select: { name: true, slug: true } },
         category: { select: { name: true, slug: true } },
       },
@@ -72,14 +64,6 @@ export async function GET(
         images: product.images.map((i) => toHttps(i.url)).filter(Boolean) as string[],
         specs: product.specs.map((s) => ({ name: s.specName, value: s.specValue })),
         tags: product.tags.map((t) => t.tag),
-        vehicles: product.vehicles.map((v) => ({
-          modelId: v.modelId,
-          modelName: v.model.name,
-          makeName: v.model.make.name,
-          makeSlug: v.model.make.slug,
-          yearFrom: v.yearFrom,
-          yearTo: v.yearTo,
-        })),
         rating: product.rating,
         reviews: product.reviews,
         featured: product.isFeatured,
@@ -150,7 +134,6 @@ export async function PUT(
       wholesalePrice,
       salePrice,
       unitCost,
-      vehicleModelIds,
       vendorId,
     } = body || {};
 
@@ -173,73 +156,79 @@ export async function PUT(
     const stockNum = stock != null && stock !== "" ? parseFloat(stock) : existing.stock;
     const minStockNum = minStock != null && minStock !== "" ? parseInt(minStock) : existing.minStock;
 
-    await prisma.productImage.deleteMany({ where: { productId: existing.id } });
-    await prisma.productSpec.deleteMany({ where: { productId: existing.id } });
-    await prisma.productTag.deleteMany({ where: { productId: existing.id } });
+    // Acepta tanto {specName, specValue} como {name, value} (formato de lectura)
+    const cleanSpecs = Array.isArray(specs)
+      ? specs
+          .filter((s: any) => s && (s.specName || s.name) && (s.specValue || s.value))
+          .map((s: any) => ({
+            specName: String(s.specName || s.name || "").slice(0, 200),
+            specValue: String(s.specValue || s.value || "").slice(0, 1000),
+          }))
+          .filter((s: any) => s.specName && s.specValue)
+      : null;
 
-    if (Array.isArray(vehicleModelIds)) {
-      await prisma.productVehicle.deleteMany({ where: { productId: existing.id } });
-      const validIds = vehicleModelIds.filter((id: any) => typeof id === "string" && id);
-      if (validIds.length) {
-        await prisma.productVehicle.createMany({
-          data: validIds.map((modelId: string) => ({ productId: existing.id, modelId })),
-          skipDuplicates: true,
-        });
+    // Operaciones destructivas y el update corren en una sola transacción:
+    // si algo falla, no se pierden imágenes/specs/tags del producto.
+    const updated = await prisma.$transaction(async (tx) => {
+      if (Array.isArray(images)) {
+        await tx.productImage.deleteMany({ where: { productId: existing.id } });
       }
-    }
+      if (cleanSpecs) {
+        await tx.productSpec.deleteMany({ where: { productId: existing.id } });
+      }
+      if (Array.isArray(tags)) {
+        await tx.productTag.deleteMany({ where: { productId: existing.id } });
+      }
 
-    const updated = await prisma.product.update({
-      where: { id: existing.id },
-      data: {
-        name: name ? String(name).trim() : existing.name,
-        slug: existing.slug,
-        sku: existing.sku,
-        manufacturerCode: manufacturerCode !== undefined ? (manufacturerCode ? String(manufacturerCode) : null) : existing.manufacturerCode,
-        barcode: barcode !== undefined ? (barcode ? String(barcode) : null) : existing.barcode,
-        secondaryBarcode: secondaryBarcode !== undefined ? (secondaryBarcode ? String(secondaryBarcode) : null) : existing.secondaryBarcode,
-        brandId: brandUpdate ? brandUpdate.id : existing.brandId,
-        categoryId: categoryUpdate ? categoryUpdate.id : existing.categoryId,
-        brandName: brandUpdate ? (await prisma.brand.findUnique({ where: { id: brandUpdate.id } }))?.name : existing.brandName,
-        price: priceNum,
-        comparePrice: compareNum,
-        costPrice: costPrice !== undefined ? (costPrice === "" || costPrice == null ? null : parseFloat(costPrice)) : existing.costPrice,
-        unitCost: unitCost !== undefined ? (unitCost === "" || unitCost == null ? null : parseFloat(unitCost)) : existing.unitCost,
-        salePrice: salePrice !== undefined ? (salePrice === "" || salePrice == null ? null : parseFloat(salePrice)) : existing.salePrice,
-        wholesalePrice: wholesalePrice !== undefined ? (wholesalePrice === "" || wholesalePrice == null ? null : parseFloat(wholesalePrice)) : existing.wholesalePrice,
-        currency: currency || existing.currency,
-        stock: stockNum,
-        minStock: minStockNum,
-        unit: unit || existing.unit,
-        description: description !== undefined ? String(description) : existing.description,
-        shortDescription: shortDescription !== undefined ? String(shortDescription) : existing.shortDescription,
-        isActive: isActive !== undefined ? !!isActive : existing.isActive,
-        isFeatured: isFeatured !== undefined ? !!isFeatured : existing.isFeatured,
-        isNew: isNew !== undefined ? !!isNew : existing.isNew,
-        weight: weight !== undefined ? (weight === "" || weight == null ? null : parseFloat(weight)) : existing.weight,
-        vendorId: vendorId !== undefined ? (vendorId ? String(vendorId) : null) : existing.vendorId,
-        images: Array.isArray(images)
-          ? {
-              create: images
-                .filter((i: any) => i && i.url)
-                .map((i: any, idx: number) => ({
-                  url: String(i.url),
-                  alt: i.alt ? String(i.alt) : null,
-                  isPrimary: idx === 0,
-                  sortOrder: idx,
-                })),
-            }
-          : undefined,
-        specs: Array.isArray(specs)
-          ? {
-              create: specs
-                .filter((s: any) => s && s.specName && s.specValue)
-                .map((s: any) => ({ specName: String(s.specName), specValue: String(s.specValue) })),
-            }
-          : undefined,
-        tags: Array.isArray(tags)
-          ? { create: tags.filter((t: any) => t).map((t: any) => ({ tag: String(t) })) }
-          : undefined,
-      },
+      return tx.product.update({
+        where: { id: existing.id },
+        data: {
+          name: name ? String(name).trim() : existing.name,
+          slug: existing.slug,
+          sku: existing.sku,
+          manufacturerCode: manufacturerCode !== undefined ? (manufacturerCode ? String(manufacturerCode) : null) : existing.manufacturerCode,
+          barcode: barcode !== undefined ? (barcode ? String(barcode) : null) : existing.barcode,
+          secondaryBarcode: secondaryBarcode !== undefined ? (secondaryBarcode ? String(secondaryBarcode) : null) : existing.secondaryBarcode,
+          brandId: brandUpdate ? brandUpdate.id : existing.brandId,
+          categoryId: categoryUpdate ? categoryUpdate.id : existing.categoryId,
+          brandName: brandUpdate ? (await prisma.brand.findUnique({ where: { id: brandUpdate.id } }))?.name : existing.brandName,
+          price: priceNum,
+          comparePrice: compareNum,
+          costPrice: costPrice !== undefined ? (costPrice === "" || costPrice == null ? null : parseFloat(costPrice)) : existing.costPrice,
+          unitCost: unitCost !== undefined ? (unitCost === "" || unitCost == null ? null : parseFloat(unitCost)) : existing.unitCost,
+          salePrice: salePrice !== undefined ? (salePrice === "" || salePrice == null ? null : parseFloat(salePrice)) : existing.salePrice,
+          wholesalePrice: wholesalePrice !== undefined ? (wholesalePrice === "" || wholesalePrice == null ? null : parseFloat(wholesalePrice)) : existing.wholesalePrice,
+          currency: currency || existing.currency,
+          stock: stockNum,
+          minStock: minStockNum,
+          unit: unit || existing.unit,
+          description: description !== undefined ? String(description) : existing.description,
+          shortDescription: shortDescription !== undefined ? String(shortDescription) : existing.shortDescription,
+          isActive: isActive !== undefined ? !!isActive : existing.isActive,
+          isFeatured: isFeatured !== undefined ? !!isFeatured : existing.isFeatured,
+          isNew: isNew !== undefined ? !!isNew : existing.isNew,
+          weight: weight !== undefined ? (weight === "" || weight == null ? null : parseFloat(weight)) : existing.weight,
+          vendorId: vendorId !== undefined ? (vendorId ? String(vendorId) : null) : existing.vendorId,
+          images: Array.isArray(images)
+            ? {
+                create: images
+                  .filter((i: any) => i && i.url)
+                  .map((i: any, idx: number) => ({
+                    url: String(i.url),
+                    alt: i.alt ? String(i.alt) : null,
+                    isPrimary: idx === 0,
+                    sortOrder: idx,
+                  })),
+              }
+            : undefined,
+          specs: cleanSpecs
+            ? { create: cleanSpecs }
+            : undefined,
+          tags: Array.isArray(tags)
+            ? { create: tags.filter((t: any) => t).map((t: any) => ({ tag: String(t) })) }
+            : undefined,
+        },
+      });
     });
 
     return NextResponse.json({ product: { id: updated.id, slug: updated.slug, name: updated.name } });

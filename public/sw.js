@@ -1,7 +1,7 @@
 const CACHE_NAME = "autoshopping-v1";
 const OFFLINE_URL = "/offline";
 
-const PRECACHE = ["/", "/products", "/vehicles", OFFLINE_URL];
+const PRECACHE = ["/", "/products", OFFLINE_URL];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

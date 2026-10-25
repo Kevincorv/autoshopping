@@ -13,7 +13,7 @@ const ROLES = [
 
 const PERMISSIONS: Record<string, { resources: string[]; actions: string[] }> = {
   admin: {
-    resources: ["products", "categories", "orders", "users", "settings", "reports", "roles", "brands", "customers", "suppliers", "purchases", "stock", "vehicles", "returns", "cash", "notifications", "integrations", "sales"],
+    resources: ["products", "categories", "orders", "users", "settings", "reports", "roles", "brands", "customers", "suppliers", "purchases", "stock", "returns", "cash", "notifications", "integrations", "sales"],
     actions: ["create", "read", "update", "delete"],
   },
   sales: {

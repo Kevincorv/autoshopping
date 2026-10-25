@@ -180,3 +180,124 @@ html.light .group:hover .group-hover\:text-white { color: #171717; }
 html.light .group-hover\:text-neutral-200:hover { color: #262626; }
 
 html.light .btn-primary { color: #ffffff; }
+
+/* ============================================================
+   AUTOSHOPPING — DETALLES DE IDENTIDAD
+   Sobre la paleta existente (brand #ff3b1f + accent ámbar).
+   Composición y texturas, sin nuevos colores de marca.
+   ============================================================ */
+
+/* Foco visible accesible en toda la UI (contraste sobre fondo oscuro/claro) */
+:focus-visible {
+  outline: 2px solid #ff3b1f;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  /* Etiqueta técnica estilo panel de instrumentos */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-400;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply inline-block h-[3px] w-6 rounded-full bg-brand-500;
+  }
+
+  /* Título de sección con barra de acento */
+  .section-head {
+    @apply relative mb-5 flex items-end justify-between gap-4;
+  }
+  .section-title {
+    @apply text-xl md:text-2xl font-extrabold tracking-tight;
+  }
+
+  /* Patrón "pista/checkered" sutil para héroes y bandas */
+  .pattern-racing {
+    background-image:
+      repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.05) 0px,
+        rgba(255, 255, 255, 0.05) 2px,
+        transparent 2px,
+        transparent 14px
+      );
+  }
+
+  /* Rejilla técnica tipo plano de taller */
+  .pattern-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 34px 34px;
+  }
+  html.light .pattern-grid {
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  }
+
+  /* Corte diagonal de acento (detalle automotriz) */
+  .cut-accent {
+    position: relative;
+    overflow: hidden;
+  }
+  .cut-accent::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -40px;
+    width: 140px;
+    height: 100%;
+    background: linear-gradient(105deg, transparent 45%, rgba(255, 59, 31, 0.16) 46%, rgba(255, 59, 31, 0.16) 54%, transparent 55%);
+    pointer-events: none;
+  }
+
+  /* Tarjeta de producto: elevación sutil y borde de acento al pasar */
+  .product-card {
+    @apply relative flex flex-col overflow-hidden rounded-xl border border-neutral-800/80 bg-neutral-900/60 transition-all duration-300;
+  }
+  html.light .product-card { @apply border-neutral-200 bg-white; }
+  .product-card:hover {
+    @apply border-brand-500/40;
+    box-shadow: 0 14px 34px -18px rgba(255, 59, 31, 0.55);
+    transform: translateY(-3px);
+  }
+
+  /* Precio: cifras tabulares y peso comercial */
+  .price {
+    @apply font-extrabold tabular-nums tracking-tight text-brand-400;
+  }
+
+  /* Chip de filtro activo */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-300;
+  }
+
+  /* Badge de estado */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide;
+  }
+}
+
+/* Barra de resaltado para tabs del catálogo */
+.tab-indicator {
+  box-shadow: inset 0 -2px 0 0 #ff3b1f;
+}
+
+/* Skeleton accesible: evita parpadeo en cargas cortas */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer { animation: none; }
+}
+

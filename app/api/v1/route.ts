@@ -12,7 +12,7 @@ export async function GET(request: Request) {
         version: "1.0.0",
         auth: "Bearer token (Authorization: Bearer <jwt>) o cookie de sesión",
         endpoints: {
-          "GET /api/v1/products": "Catálogo con filtros: q, category, brand, vehicle, limit, offset",
+          "GET /api/v1/products": "Catálogo con filtros: q, category, brand, limit, offset",
           "GET /api/v1/orders": "Pedidos del usuario autenticado (Bearer o cookie)",
           "POST /api/v1/orders": "Crear pedido (auth requerido): items, customer, paymentMethod, couponCode?, pointsToRedeem?",
           "GET /api/v1/me": "Perfil del usuario autenticado + balance de puntos",

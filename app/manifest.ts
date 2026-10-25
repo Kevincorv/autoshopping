@@ -5,11 +5,11 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "AutoShopping — Repuestos y accesorios automotrices",
     short_name: "AutoShopping",
     description:
-      "Tienda de repuestos y accesorios automotrices en San Ignacio, Misiones, Paraguay. Buscá por vehículo y comprá online.",
+      "Tienda online de accesorios, equipamiento y productos automotrices en San Ignacio, Misiones, Paraguay. Marcas originales, stock real y envíos a todo el país.",
     start_url: "/",
     display: "standalone",
     background_color: "#0a0a0a",
-    theme_color: "#dc2626",
+    theme_color: "#ff3b1f",
     orientation: "portrait-primary",
     lang: "es-PY",
     categories: ["shopping", "automotive"],

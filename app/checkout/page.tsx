@@ -59,7 +59,7 @@ function CheckoutInner() {
     let alive = true;
     setLoading(true);
     Promise.all([
-      api.getProducts({}),
+      api.getProducts({ limit: 200 }),
       fetch("/api/payment/providers").then((r) => r.json()),
     ])
       .then(([prods, payData]) => {

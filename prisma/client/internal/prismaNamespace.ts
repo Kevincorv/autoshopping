@@ -406,9 +406,6 @@ export const ModelName = {
   Category: 'Category',
   Brand: 'Brand',
   Product: 'Product',
-  VehicleMake: 'VehicleMake',
-  VehicleModel: 'VehicleModel',
-  ProductVehicle: 'ProductVehicle',
   Post: 'Post',
   PushSubscription: 'PushSubscription',
   ProductImage: 'ProductImage',
@@ -458,7 +455,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "role" | "permission" | "customer" | "receivablePayment" | "address" | "category" | "brand" | "product" | "vehicleMake" | "vehicleModel" | "productVehicle" | "post" | "pushSubscription" | "productImage" | "productSpec" | "productTag" | "cartItem" | "wishlistItem" | "order" | "orderItem" | "orderStatusHistory" | "payment" | "coupon" | "review" | "auditLog" | "setting" | "notification" | "session" | "loginAttempt" | "supplier" | "purchase" | "purchaseItem" | "stockMovement" | "returnOrder" | "returnItem" | "cashSession" | "cashMovement" | "paymentMethod" | "customerTag" | "campaign" | "loyaltyRule" | "loyaltyPoint" | "chatSession" | "chatMessage" | "vendor"
+    modelProps: "user" | "role" | "permission" | "customer" | "receivablePayment" | "address" | "category" | "brand" | "product" | "post" | "pushSubscription" | "productImage" | "productSpec" | "productTag" | "cartItem" | "wishlistItem" | "order" | "orderItem" | "orderStatusHistory" | "payment" | "coupon" | "review" | "auditLog" | "setting" | "notification" | "session" | "loginAttempt" | "supplier" | "purchase" | "purchaseItem" | "stockMovement" | "returnOrder" | "returnItem" | "cashSession" | "cashMovement" | "paymentMethod" | "customerTag" | "campaign" | "loyaltyRule" | "loyaltyPoint" | "chatSession" | "chatMessage" | "vendor"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1053,204 +1050,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProductCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProductCountAggregateOutputType> | number
-        }
-      }
-    }
-    VehicleMake: {
-      payload: Prisma.$VehicleMakePayload<ExtArgs>
-      fields: Prisma.VehicleMakeFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.VehicleMakeFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.VehicleMakeFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload>
-        }
-        findFirst: {
-          args: Prisma.VehicleMakeFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.VehicleMakeFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload>
-        }
-        findMany: {
-          args: Prisma.VehicleMakeFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload>[]
-        }
-        create: {
-          args: Prisma.VehicleMakeCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload>
-        }
-        createMany: {
-          args: Prisma.VehicleMakeCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        delete: {
-          args: Prisma.VehicleMakeDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload>
-        }
-        update: {
-          args: Prisma.VehicleMakeUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload>
-        }
-        deleteMany: {
-          args: Prisma.VehicleMakeDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.VehicleMakeUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        upsert: {
-          args: Prisma.VehicleMakeUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleMakePayload>
-        }
-        aggregate: {
-          args: Prisma.VehicleMakeAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateVehicleMake>
-        }
-        groupBy: {
-          args: Prisma.VehicleMakeGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VehicleMakeGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.VehicleMakeCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VehicleMakeCountAggregateOutputType> | number
-        }
-      }
-    }
-    VehicleModel: {
-      payload: Prisma.$VehicleModelPayload<ExtArgs>
-      fields: Prisma.VehicleModelFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.VehicleModelFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.VehicleModelFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload>
-        }
-        findFirst: {
-          args: Prisma.VehicleModelFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.VehicleModelFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload>
-        }
-        findMany: {
-          args: Prisma.VehicleModelFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload>[]
-        }
-        create: {
-          args: Prisma.VehicleModelCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload>
-        }
-        createMany: {
-          args: Prisma.VehicleModelCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        delete: {
-          args: Prisma.VehicleModelDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload>
-        }
-        update: {
-          args: Prisma.VehicleModelUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload>
-        }
-        deleteMany: {
-          args: Prisma.VehicleModelDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.VehicleModelUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        upsert: {
-          args: Prisma.VehicleModelUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleModelPayload>
-        }
-        aggregate: {
-          args: Prisma.VehicleModelAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateVehicleModel>
-        }
-        groupBy: {
-          args: Prisma.VehicleModelGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VehicleModelGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.VehicleModelCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VehicleModelCountAggregateOutputType> | number
-        }
-      }
-    }
-    ProductVehicle: {
-      payload: Prisma.$ProductVehiclePayload<ExtArgs>
-      fields: Prisma.ProductVehicleFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ProductVehicleFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ProductVehicleFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload>
-        }
-        findFirst: {
-          args: Prisma.ProductVehicleFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ProductVehicleFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload>
-        }
-        findMany: {
-          args: Prisma.ProductVehicleFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload>[]
-        }
-        create: {
-          args: Prisma.ProductVehicleCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload>
-        }
-        createMany: {
-          args: Prisma.ProductVehicleCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        delete: {
-          args: Prisma.ProductVehicleDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload>
-        }
-        update: {
-          args: Prisma.ProductVehicleUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload>
-        }
-        deleteMany: {
-          args: Prisma.ProductVehicleDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ProductVehicleUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        upsert: {
-          args: Prisma.ProductVehicleUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProductVehiclePayload>
-        }
-        aggregate: {
-          args: Prisma.ProductVehicleAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateProductVehicle>
-        }
-        groupBy: {
-          args: Prisma.ProductVehicleGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ProductVehicleGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ProductVehicleCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ProductVehicleCountAggregateOutputType> | number
         }
       }
     }
@@ -3713,47 +3512,6 @@ export const ProductScalarFieldEnum = {
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
 
 
-export const VehicleMakeScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug',
-  logo: 'logo',
-  sortOrder: 'sortOrder',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type VehicleMakeScalarFieldEnum = (typeof VehicleMakeScalarFieldEnum)[keyof typeof VehicleMakeScalarFieldEnum]
-
-
-export const VehicleModelScalarFieldEnum = {
-  id: 'id',
-  makeId: 'makeId',
-  name: 'name',
-  slug: 'slug',
-  yearFrom: 'yearFrom',
-  yearTo: 'yearTo',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type VehicleModelScalarFieldEnum = (typeof VehicleModelScalarFieldEnum)[keyof typeof VehicleModelScalarFieldEnum]
-
-
-export const ProductVehicleScalarFieldEnum = {
-  id: 'id',
-  productId: 'productId',
-  modelId: 'modelId',
-  yearFrom: 'yearFrom',
-  yearTo: 'yearTo',
-  createdAt: 'createdAt'
-} as const
-
-export type ProductVehicleScalarFieldEnum = (typeof ProductVehicleScalarFieldEnum)[keyof typeof ProductVehicleScalarFieldEnum]
-
-
 export const PostScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -3847,6 +3605,7 @@ export type WishlistItemScalarFieldEnum = (typeof WishlistItemScalarFieldEnum)[k
 export const OrderScalarFieldEnum = {
   id: 'id',
   orderNumber: 'orderNumber',
+  idempotencyKey: 'idempotencyKey',
   userId: 'userId',
   customerId: 'customerId',
   sellerId: 'sellerId',
@@ -4427,35 +4186,6 @@ export const ProductOrderByRelevanceFieldEnum = {
 export type ProductOrderByRelevanceFieldEnum = (typeof ProductOrderByRelevanceFieldEnum)[keyof typeof ProductOrderByRelevanceFieldEnum]
 
 
-export const VehicleMakeOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug',
-  logo: 'logo'
-} as const
-
-export type VehicleMakeOrderByRelevanceFieldEnum = (typeof VehicleMakeOrderByRelevanceFieldEnum)[keyof typeof VehicleMakeOrderByRelevanceFieldEnum]
-
-
-export const VehicleModelOrderByRelevanceFieldEnum = {
-  id: 'id',
-  makeId: 'makeId',
-  name: 'name',
-  slug: 'slug'
-} as const
-
-export type VehicleModelOrderByRelevanceFieldEnum = (typeof VehicleModelOrderByRelevanceFieldEnum)[keyof typeof VehicleModelOrderByRelevanceFieldEnum]
-
-
-export const ProductVehicleOrderByRelevanceFieldEnum = {
-  id: 'id',
-  productId: 'productId',
-  modelId: 'modelId'
-} as const
-
-export type ProductVehicleOrderByRelevanceFieldEnum = (typeof ProductVehicleOrderByRelevanceFieldEnum)[keyof typeof ProductVehicleOrderByRelevanceFieldEnum]
-
-
 export const PostOrderByRelevanceFieldEnum = {
   id: 'id',
   title: 'title',
@@ -4535,6 +4265,7 @@ export type WishlistItemOrderByRelevanceFieldEnum = (typeof WishlistItemOrderByR
 export const OrderOrderByRelevanceFieldEnum = {
   id: 'id',
   orderNumber: 'orderNumber',
+  idempotencyKey: 'idempotencyKey',
   userId: 'userId',
   customerId: 'customerId',
   sellerId: 'sellerId',
@@ -5061,9 +4792,6 @@ export type GlobalOmitConfig = {
   category?: Prisma.CategoryOmit
   brand?: Prisma.BrandOmit
   product?: Prisma.ProductOmit
-  vehicleMake?: Prisma.VehicleMakeOmit
-  vehicleModel?: Prisma.VehicleModelOmit
-  productVehicle?: Prisma.ProductVehicleOmit
   post?: Prisma.PostOmit
   pushSubscription?: Prisma.PushSubscriptionOmit
   productImage?: Prisma.ProductImageOmit

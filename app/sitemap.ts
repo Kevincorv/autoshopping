@@ -24,7 +24,6 @@ export default async function sitemap() {
   const staticPages = [
     { url: BASE_URL, lastModified: new Date(), changeFrequency: "daily" as const, priority: 1 },
     { url: `${BASE_URL}/products`, lastModified: new Date(), changeFrequency: "daily" as const, priority: 0.9 },
-    { url: `${BASE_URL}/vehicles`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
     { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.6 },
     { url: `${BASE_URL}/cart`, lastModified: new Date(), changeFrequency: "never" as const, priority: 0.3 },
     { url: `${BASE_URL}/login`, lastModified: new Date(), changeFrequency: "never" as const, priority: 0.2 },

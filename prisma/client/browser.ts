@@ -63,21 +63,6 @@ export type Brand = Prisma.BrandModel
  */
 export type Product = Prisma.ProductModel
 /**
- * Model VehicleMake
- * 
- */
-export type VehicleMake = Prisma.VehicleMakeModel
-/**
- * Model VehicleModel
- * 
- */
-export type VehicleModel = Prisma.VehicleModelModel
-/**
- * Model ProductVehicle
- * 
- */
-export type ProductVehicle = Prisma.ProductVehicleModel
-/**
  * Model Post
  * 
  */

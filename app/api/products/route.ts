@@ -14,14 +14,25 @@ export async function GET(request: Request) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
     const search = searchParams.get("search");
-    const vehicle = searchParams.get("vehicle");
-    const vehicleYear = searchParams.get("vehicleYear");
+    const sale = searchParams.get("sale") === "1";
+    const inStock = searchParams.get("inStock") === "1";
+    const featured = searchParams.get("featured") === "1";
+    const lowStock = searchParams.get("lowStock") === "1";
+    const idsParam = searchParams.get("ids");
     const sort = searchParams.get("sort") || "featured";
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1") || 1);
+    const limit = Math.min(Math.max(1, parseInt(searchParams.get("limit") || "50") || 50), 100);
 
     const includeInactive = searchParams.get("includeInactive") === "1";
     const where: Record<string, unknown> = {};
+
+    if (includeInactive) {
+      // Listar productos no publicados es una operación de staff:
+      // exige permiso de escritura sobre productos (el endpoint GET es público).
+      const auth = await requirePermission(request as any, "products.write");
+      if (auth.response) return auth.response;
+    }
+
     if (!includeInactive) where.isActive = true;
 
     if (category) {
@@ -38,21 +49,31 @@ export async function GET(request: Request) {
       if (maxPrice) (where.price as Record<string, unknown>).lte = parseFloat(maxPrice);
     }
 
-    if (vehicle) {
-      const year = vehicleYear ? parseInt(vehicleYear, 10) : undefined;
-      where.vehicles = {
-        some: {
-          model: { slug: vehicle },
-          ...(year && !isNaN(year)
-            ? {
-                AND: [
-                  { OR: [{ yearFrom: null }, { yearFrom: { lte: year } }] },
-                  { OR: [{ yearTo: null }, { yearTo: { gte: year } }] },
-                ],
-              }
-            : {}),
-        },
-      };
+    if (sale) {
+      where.comparePrice = { gt: prisma.product.fields.price };
+    }
+
+    if (inStock) {
+      where.stock = { gt: 0 };
+    }
+
+    if (featured) {
+      where.isFeatured = true;
+    }
+
+    if (lowStock) {
+      where.isActive = true;
+      where.stock = { lte: prisma.product.fields.minStock };
+    }
+
+    // Selección explícita de productos (carrito, pedidos, listas guardadas)
+    const idList = idsParam
+      ? idsParam.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 200)
+      : null;
+    if (idList && idList.length > 0) {
+      where.id = { in: idList };
+    } else if (idList) {
+      return NextResponse.json({ products: [], total: 0 });
     }
 
     if (search) {
@@ -70,6 +91,7 @@ export async function GET(request: Request) {
       case "name": orderBy.push({ name: "asc" }); break;
       case "rating": orderBy.push({ rating: "desc" }); break;
       case "sold": orderBy.push({ sold: "desc" }); break;
+      case "new": orderBy.push({ createdAt: "desc" }); break;
       default: orderBy.push({ isFeatured: "desc" }, { createdAt: "desc" });
     }
 
@@ -102,6 +124,10 @@ export async function GET(request: Request) {
       sku: p.sku,
       description: p.description,
       shortDescription: p.shortDescription,
+      isActive: p.isActive,
+      minStock: p.minStock,
+      unit: p.unit,
+      brandName: p.brand.name,
       images: p.images.map((i) => toHttps(i.url)).filter(Boolean) as string[],
       rating: p.rating,
       reviews: p.reviews,
@@ -173,7 +199,7 @@ export async function POST(request: Request) {
       wholesalePrice,
       salePrice,
       unitCost,
-      vehicleModelIds,
+      vendorId,
     } = body || {};
 
     if (!name || typeof name !== "string" || !name.trim()) {
@@ -216,6 +242,7 @@ export async function POST(request: Request) {
         brandId: brand.id,
         categoryId: category.id,
         brandName: brand.name,
+        vendorId: vendorId ? String(vendorId) : null,
         price: priceNum,
         comparePrice: compareNum,
         costPrice: costPrice != null && costPrice !== "" ? parseFloat(costPrice) : null,
@@ -254,19 +281,11 @@ export async function POST(request: Request) {
         tags: Array.isArray(tags) && tags.length
           ? { create: tags.filter((t: any) => t).map((t: any) => ({ tag: String(t) })) }
           : undefined,
-        vehicles: Array.isArray(vehicleModelIds) && vehicleModelIds.length
-          ? {
-              create: vehicleModelIds
-                .filter((id: any) => typeof id === "string" && id)
-                .map((id: string) => ({ modelId: id })),
-            }
-          : undefined,
       },
       include: {
         images: true,
         specs: true,
         tags: true,
-        vehicles: { select: { modelId: true } },
         brand: { select: { name: true } },
         category: { select: { name: true, slug: true } },
       },
