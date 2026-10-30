@@ -97,8 +97,7 @@ const FALLBACK_CATEGORIES = [
 
 function fallbackImage(name: string): string {
   const h = hashSeed(name);
-  const cat = FALLBACK_CATEGORIES[h % FALLBACK_CATEGORIES.length];
-  return `https://loremflickr.com/600/450/${cat}?lock=${h}`;
+  return `https://picsum.photos/seed/${h}/600/450`;
 }
 
 function translateQuery(name: string): string {
