@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
-const BASE_URL = "https://autoshopping.com.py";
+const BASE_URL = "https://autoshopping.vercel.app";
 
 export default async function sitemap() {
   const products = await prisma.product.findMany({
